@@ -93,7 +93,15 @@ body = "\n".join(out)
 body = body.replace('<h1>LOS GARDIOS</h1>\n<h2>הסכם התקשרות עם לקוח</h2>',
                     '<div class="doctitle">הסכם התקשרות עם לקוח</div>', 1)
 
-# annex cover pages, matching the original's A / B / C divider sheets
+# annex cover pages — matching the original PDF's own divider-page design exactly:
+# white background, a per-annex accent color (sampled from the source file), a small
+# top masthead line with a colored circular letter badge, a colored "annex X" tag, the
+# title and body in black/gray, and a giant, pale-tinted oversized letter bottom-left.
+ANNEX_COLORS = {
+    "A": ("#5B2986", "#F4F0F6"),  # Genesis — purple (also the brand's primary accent)
+    "B": ("#1A836E", "#EEF6F4"),  # Commercial terms — teal
+    "C": ("#B3531D", "#F9F3EF"),  # Data & privacy — burnt orange
+}
 for L, title, sub in [
     ("A", "פרוטוקול Genesis",
      "איך מתחילים לעבוד יחד: מחקר Genesis הראשוני שהארגון מבצע ומממן ברובו, ההשתתפות העצמית של הלקוח, מה קורה אם בסוף המחקר מחליטים שלא להמשיך, ואופציית הרכישה (Buyout)."),
@@ -102,11 +110,22 @@ for L, title, sub in [
     ("C", "נתונים, פרטיות ותקשורת מוקלטת",
      "שלוש שכבות המידע ומה נעשה בכל שכבה, איך שומרים על פרטיות הלקוח, ואיך ומתי מוקלטות שיחות ופגישות."),
 ]:
-    cover = (f'<section class="annex-cover"><div class="ac-letter">{L}</div>'
-             f'<div class="ac-brand"><img src="{LOGO_MARK}" alt="" class="ac-mark">LOS GARDIOS<span>· הסכם התקשרות עם לקוח</span></div>'
-             f'<div class="ac-tag">נספח {L}</div><div class="ac-title">{title}</div>'
-             f'<p class="ac-sub">{sub}</p>'
-             f'<div class="ac-foot">מהווה חלק בלתי-נפרד מההסכם (סעיף 15(א)) · נכנס לתוקף עם החתימה בסוף מסמך זה</div></section>')
+    accent, tint = ANNEX_COLORS[L]
+    cover = (
+        f'<section class="annex-cover" style="--ax:{accent};--ax-tint:{tint}">'
+        f'<div class="ac-mast"><span class="ac-mast-text">הסכם התקשרות עם לקוח · LOS GARDIOS</span>'
+        f'<span class="ac-badge">{L}</span></div>'
+        f'<div class="ac-rule"></div>'
+        f'<div class="ac-body">'
+        f'<div class="ac-tag"><span class="ac-tag-dash"></span>נספח {L}</div>'
+        f'<div class="ac-title">{title}</div>'
+        f'<p class="ac-sub">{sub}</p>'
+        f'</div>'
+        f'<div class="ac-letter">{L}</div>'
+        f'<div class="ac-footrule"></div>'
+        f'<div class="ac-foot">מהווה חלק בלתי-נפרד מההסכם (סעיף 15(א)) · נכנס לתוקף עם החתימה בסוף מסמך זה</div>'
+        f'</section>'
+    )
     body = body.replace(f"<h1>נספח {L} — ", cover + f'<h1 class="annex-h">נספח {L} — ', 1)
 
 # Signature blocks: the organization's column carries the official stamp — the authorized
@@ -169,30 +188,39 @@ tbody tr:nth-child(even){background:var(--soft)}
  padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#333c4a}
 hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 .pagebreak{border-top:1px solid var(--rule);margin:26px 0}
-.annex-cover{page-break-before:always;break-before:page;margin:36px -46px;padding:74px 46px;
- background:linear-gradient(160deg,#101418 0%,#1d2530 62%,#2b3542 100%);color:#fff;
- min-height:340px;position:relative}
-.ac-letter{position:absolute;inset-inline-start:40px;top:26px;
- font-family:Helvetica,Arial,sans-serif;font-size:120pt;font-weight:700;
- color:rgba(255,255,255,.075);line-height:1}
-.ac-brand{font-family:Helvetica,Arial,sans-serif;font-size:11pt;font-weight:700;
- letter-spacing:.26em;margin-bottom:44px;display:flex;align-items:center;gap:10px}
-.ac-brand span{font-weight:400;letter-spacing:.06em;font-size:8.6pt;
- color:rgba(255,255,255,.62);margin-inline-start:10px}
-.ac-mark{height:26px;width:auto;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+/* Annex divider pages — matches the original PDF's own design: white background,
+   a per-annex accent color (--ax / --ax-tint, set inline per section), a thin
+   colored rule under a small running-header line, a colored circular letter badge,
+   a colored tag with a short dash, and a giant pale-tinted letter bottom-left. */
+.annex-cover{page-break-before:always;break-before:page;margin:36px -46px 0;padding:0 46px 56px;
+ background:#fff;color:var(--ink);min-height:620px;position:relative;overflow:hidden}
+.ac-mast{display:flex;justify-content:space-between;align-items:center;padding-top:36px}
+.ac-mast-text{font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.20em;
+ color:var(--muted)}
+.ac-badge{width:30px;height:30px;border-radius:50%;background:var(--ax);color:#fff;
+ font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:11pt;
+ display:flex;align-items:center;justify-content:center;flex:none}
+.ac-rule{height:2px;background:var(--ax);margin:14px 0 0}
+.ac-body{padding-top:150px;position:relative;z-index:1}
+.ac-tag{font-family:Helvetica,Arial,sans-serif;font-size:8.6pt;font-weight:700;
+ letter-spacing:.22em;color:var(--ax);margin-bottom:12px;
+ display:flex;align-items:center;gap:12px;justify-content:flex-end}
+.ac-tag-dash{display:inline-block;width:34px;height:2px;background:var(--ax)}
+.ac-title{font-size:24pt;font-weight:700;margin-bottom:16px;color:var(--ink);text-align:right}
+.ac-sub{max-width:560px;margin-inline-start:auto;color:var(--muted);font-size:9.8pt;
+ line-height:1.85;text-align:right}
+.ac-letter{position:absolute;left:-18px;bottom:-40px;
+ font-family:Georgia,"Times New Roman",serif;font-size:280pt;font-weight:700;
+ color:var(--ax-tint);line-height:1;z-index:0;user-select:none}
+.ac-footrule{border-top:1px solid var(--rule);margin-inline-start:34%;margin-top:200px;
+ position:relative;z-index:1}
+.ac-foot{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.06em;
+ color:var(--muted);text-align:right;margin-top:8px;position:relative;z-index:1}
 .stampcell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .stampimg{width:92px;height:92px;object-fit:contain;opacity:.9}
 .stampline{width:100%;border-top:1px solid var(--ink);margin-top:2px}
 .stampcaption{font-family:Helvetica,Arial,sans-serif;font-size:6.6pt;color:var(--muted);
  letter-spacing:.03em;text-align:center}
-.ac-tag{font-family:Helvetica,Arial,sans-serif;font-size:8.4pt;letter-spacing:.24em;
- color:var(--accent);margin-bottom:8px}
-.ac-title{font-size:25pt;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
-.ac-sub{max-width:560px;color:rgba(255,255,255,.80);font-size:9.6pt;line-height:1.85;
- text-align:justify;position:relative;z-index:1}
-.ac-foot{position:absolute;bottom:26px;inset-inline-start:46px;
- font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.10em;
- color:rgba(255,255,255,.50)}
 .doctitle{font-size:23pt;font-weight:700;margin:6px 0 4px;letter-spacing:.01em}
 .docfoot{margin-top:34px;padding-top:12px;border-top:1px solid var(--rule);
  font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.10em;
