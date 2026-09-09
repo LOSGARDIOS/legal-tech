@@ -146,8 +146,32 @@ body = body.replace(
     1,
 )
 
+# Clause cards — the original wraps each סעיף's body in a pale card sitting below the
+# bold heading (the heading itself stays outside/above it, on the white page). Every
+# <h2> here is either "סעיף N — ..." (gets the card) or a signature sub-heading like
+# "אישורי קריאה"/"חתימות" (left alone, matching the original's plain signature pages).
+_parts = re.split(r'(<h[12][^>]*>.*?</h[12]>)', body)
+_out2, _pending, _in_clause = [], [], False
+def _flush():
+    global _pending, _in_clause
+    if _in_clause and _pending:
+        _out2.append('<div class="clausebox">' + "".join(_pending) + '</div>')
+    else:
+        _out2.extend(_pending)
+    _pending = []
+for _tok in _parts:
+    _m = re.match(r'<h([12])[^>]*>(.*?)</h\1>', _tok, re.S)
+    if _m:
+        _flush()
+        _in_clause = _m.group(1) == "2" and _m.group(2).strip().startswith("סעיף ")
+        _out2.append(_tok)
+    else:
+        _pending.append(_tok)
+_flush()
+body = "".join(_out2)
+
 CSS = """
-:root{--ink:#14181f;--muted:#5b6472;--rule:#d9dee6;--accent:#8a6a2f;--soft:#f7f8fa;--band:#101418}
+:root{--ink:#14181f;--muted:#5b6472;--rule:#d9dee6;--accent:#5B2986;--soft:#f7f8fa;--band:#101418;--card:#FAFAFD}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
@@ -165,10 +189,11 @@ body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
 .conf{display:inline-block;border:1px solid var(--accent);color:var(--accent);
  font-family:Helvetica,Arial,sans-serif;font-size:7pt;letter-spacing:.24em;
  padding:2px 9px;border-radius:2px}
-h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--band);
+h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid var(--accent);
  letter-spacing:.01em}
-h1.annex-h{border-bottom-color:var(--accent)}
 h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band)}
+.clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px}
+.clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
 h3{font-size:10.9pt;margin:16px 0 6px;color:#2a3444}
 h4{font-size:10pt;margin:13px 0 5px;color:var(--muted)}
 p{margin:0 0 9px;text-align:justify}
