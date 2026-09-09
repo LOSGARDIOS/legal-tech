@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 """Render AGREEMENT_v2_HE.md as an A4, RTL, print-ready document that keeps
 the visual language of the original Los Gardios PDF."""
-import io, re, html
+import io, re, html, base64, os
 
 src = io.open("AGREEMENT_v2_HE.md", encoding="utf-8").read()
 lines = src.split("\n")
+
+# Brand assets (logo mark + official stamp), embedded as base64 so the HTML/PDF is self-contained.
+_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+def _data_uri(fname):
+    with open(os.path.join(_ASSETS, fname), "rb") as f:
+        return "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+
+LOGO_MARK = _data_uri("logo_mark_web.png")
+LOGO_STAMP = _data_uri("logo_stamp_web.png")
 
 def inline(t):
     t = html.escape(t)
@@ -94,11 +103,29 @@ for L, title, sub in [
      "שלוש שכבות המידע ומה נעשה בכל שכבה, איך שומרים על פרטיות הלקוח, ואיך ומתי מוקלטות שיחות ופגישות."),
 ]:
     cover = (f'<section class="annex-cover"><div class="ac-letter">{L}</div>'
-             f'<div class="ac-brand">LOS GARDIOS<span>· הסכם התקשרות עם לקוח</span></div>'
+             f'<div class="ac-brand"><img src="{LOGO_MARK}" alt="" class="ac-mark">LOS GARDIOS<span>· הסכם התקשרות עם לקוח</span></div>'
              f'<div class="ac-tag">נספח {L}</div><div class="ac-title">{title}</div>'
              f'<p class="ac-sub">{sub}</p>'
              f'<div class="ac-foot">מהווה חלק בלתי-נפרד מההסכם (סעיף 15(א)) · נכנס לתוקף עם החתימה בסוף מסמך זה</div></section>')
     body = body.replace(f"<h1>נספח {L} — ", cover + f'<h1 class="annex-h">נספח {L} — ', 1)
+
+# Signature blocks: the organization's column carries the official stamp — the authorized
+# signatory signs across/beside it on the printed page, in addition to filling in their
+# details in the rows above (name, title, ID) which remain plain fill-in lines.
+_STAMP_CELL = (
+    '<div class="stampcell"><img src="' + LOGO_STAMP + '" alt="חותמת הארגון" class="stampimg">'
+    '<div class="stampline"></div><div class="stampcaption">חתימת המורשה — על החותמת ולצידה</div></div>'
+)
+body = body.replace(
+    '<tr><td style="text-align:right">חתימה וחותמת</td><td style="text-align:right">______________________</td><td style="text-align:right">______________________</td></tr>',
+    '<tr><td style="text-align:right">חתימה וחותמת</td><td style="text-align:right">______________________</td><td style="text-align:right">' + _STAMP_CELL + '</td></tr>',
+    1,
+)
+body = body.replace(
+    '<tr><td style="text-align:right">חתימה</td><td style="text-align:right">______________________</td><td style="text-align:right">______________________</td></tr>',
+    '<tr><td style="text-align:right">חתימה</td><td style="text-align:right">______________________</td><td style="text-align:right">' + _STAMP_CELL + '</td></tr>',
+    1,
+)
 
 CSS = """
 :root{--ink:#14181f;--muted:#5b6472;--rule:#d9dee6;--accent:#8a6a2f;--soft:#f7f8fa;--band:#101418}
@@ -112,7 +139,8 @@ body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
 .masthead{border-bottom:2.5px solid var(--band);padding-bottom:14px;margin-bottom:26px;
  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
 .mh-brand{font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:19pt;
- letter-spacing:.30em;color:var(--band)}
+ letter-spacing:.30em;color:var(--band);display:flex;align-items:center;gap:10px}
+.mh-mark{height:34px;width:auto;flex:none}
 .mh-meta{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.16em;
  color:var(--muted);text-align:left;line-height:1.9;direction:ltr}
 .conf{display:inline-block;border:1px solid var(--accent);color:var(--accent);
@@ -148,9 +176,15 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
  font-family:Helvetica,Arial,sans-serif;font-size:120pt;font-weight:700;
  color:rgba(255,255,255,.075);line-height:1}
 .ac-brand{font-family:Helvetica,Arial,sans-serif;font-size:11pt;font-weight:700;
- letter-spacing:.26em;margin-bottom:44px}
+ letter-spacing:.26em;margin-bottom:44px;display:flex;align-items:center;gap:10px}
 .ac-brand span{font-weight:400;letter-spacing:.06em;font-size:8.6pt;
  color:rgba(255,255,255,.62);margin-inline-start:10px}
+.ac-mark{height:26px;width:auto;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.stampcell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.stampimg{width:92px;height:92px;object-fit:contain;opacity:.9}
+.stampline{width:100%;border-top:1px solid var(--ink);margin-top:2px}
+.stampcaption{font-family:Helvetica,Arial,sans-serif;font-size:6.6pt;color:var(--muted);
+ letter-spacing:.03em;text-align:center}
 .ac-tag{font-family:Helvetica,Arial,sans-serif;font-size:8.4pt;letter-spacing:.24em;
  color:var(--accent);margin-bottom:8px}
 .ac-title{font-size:25pt;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
@@ -184,7 +218,7 @@ doc = f"""<!doctype html>
 <style>{CSS}</style></head>
 <body><div class="sheet">
 <div class="masthead">
-  <div><div class="mh-brand">LOS GARDIOS</div>
+  <div><div class="mh-brand"><img src="{LOGO_MARK}" alt="Los Gardios" class="mh-mark">LOS GARDIOS</div>
     <div style="margin-top:7px"><span class="conf">סודי · CONFIDENTIAL</span></div></div>
   <div class="mh-meta">Los Gardios Holdings [ ]<br>516819257 · השדרה המרכזית 15, מודיעין<br>גרסת תבנית 2 · ערכת מסמכי התקשרות אחידה</div>
 </div>
