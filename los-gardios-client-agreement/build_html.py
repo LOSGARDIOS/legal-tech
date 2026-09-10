@@ -214,6 +214,7 @@ body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
  padding:2px 9px;border-radius:2px}
 h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid var(--accent);
  letter-spacing:.01em}
+h1:not(.annex-h){page-break-before:always;break-before:page}
 h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band)}
 .clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px}
 .clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
