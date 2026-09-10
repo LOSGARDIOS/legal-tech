@@ -221,10 +221,10 @@ body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
  font-family:Helvetica,Arial,sans-serif;font-size:7pt;letter-spacing:.24em;
  padding:2px 9px;border-radius:2px}
 h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid var(--accent);
- letter-spacing:.01em}
-h1:not(.annex-h){page-break-before:always;break-before:page}
-h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band)}
-.clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px}
+ letter-spacing:.01em;page-break-before:always;break-before:page}
+h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band);break-after:avoid;page-break-after:avoid}
+.clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px;
+ break-inside:avoid;page-break-inside:avoid}
 .clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
 h3{font-size:10.9pt;margin:16px 0 6px;color:#2a3444}
 h4{font-size:10pt;margin:13px 0 5px;color:var(--muted)}
