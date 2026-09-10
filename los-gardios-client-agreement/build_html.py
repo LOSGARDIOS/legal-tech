@@ -128,6 +128,29 @@ for L, title, sub in [
     )
     body = body.replace(f"<h1>נספח {L} — ", cover + f'<h1 class="annex-h">נספח {L} — ', 1)
 
+# the framework agreement itself (chapters א'-ד') gets the same divider treatment as the
+# three annexes, so all four parts of the document open with a matching cover page —
+# using the base brand purple (the framework's own identity, not a sub-annex hue) and a
+# section-mark (§) in place of an annex letter, since this part isn't "annex X".
+_fw_accent, _fw_tint = ANNEX_COLORS["A"]
+_fw_cover = (
+    f'<section class="annex-cover" style="--ax:{_fw_accent};--ax-tint:{_fw_tint}">'
+    f'<div class="ac-mast"><span class="ac-mast-text">הסכם התקשרות עם לקוח · LOS GARDIOS</span>'
+    f'<span class="ac-badge">§</span></div>'
+    f'<div class="ac-rule"></div>'
+    f'<div class="ac-body">'
+    f'<div class="ac-tag"><span class="ac-tag-dash"></span>פרקים א׳–ד׳</div>'
+    f'<div class="ac-title">הסכם המסגרת</div>'
+    f'<p class="ac-sub">יסודות ההתקשרות וחובות הצדדים, הגנה על נכסי הארגון וקניין רוחני, פיצוי מוסכם והגבלת אחריות, ותקופת ההתקשרות, סיומה ויישוב סכסוכים.</p>'
+    f'</div>'
+    f'<div class="ac-letter">§</div>'
+    f'<div class="ac-footrule"></div>'
+    f'<div class="ac-foot">חלק א׳ מארבעת חלקי ההסכם · ראו מפת ההסכם לעיל</div>'
+    f'</section>'
+)
+body = body.replace('<h1>פרק א&#x27; — יסודות ההתקשרות</h1>',
+                     _fw_cover + '<h1 class="annex-h">פרק א׳ — יסודות ההתקשרות</h1>', 1)
+
 # Signature blocks: the organization's column carries the official stamp — the authorized
 # signatory signs across/beside it on the printed page, in addition to filling in their
 # details in the rows above (name, title, ID) which remain plain fill-in lines.
