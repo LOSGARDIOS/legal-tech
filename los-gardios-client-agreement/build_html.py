@@ -296,7 +296,7 @@ doc = f"""<!doctype html>
 <div class="masthead">
   <div><div class="mh-brand"><img src="{LOGO_MARK}" alt="Los Gardios" class="mh-mark">LOS GARDIOS</div>
     <div style="margin-top:7px"><span class="conf">סודי · CONFIDENTIAL</span></div></div>
-  <div class="mh-meta">Los Gardios Holdings [ ]<br>516819257 · השדרה המרכזית 15, מודיעין<br>גרסת תבנית 2 · ערכת מסמכי התקשרות אחידה</div>
+  <div class="mh-meta">לוס גרדיוס בע"מ<br>516819257 · השדרה המרכזית 15, מודיעין<br>גרסת תבנית 2 · ערכת מסמכי התקשרות אחידה</div>
 </div>
 {body}
 <div class="docfoot"><span>Los Gardios — הסכם התקשרות עם לקוח (סודי)</span><span>גרסת תבנית 2</span></div>
