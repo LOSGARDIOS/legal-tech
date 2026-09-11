@@ -38,6 +38,14 @@ while i < len(lines):
     if not s:
         close_tbl(); i += 1; continue
 
+    # explicit keep-together group (heading/intro + the table it introduces,
+    # so a table that doesn't fit the remaining page takes its heading with it
+    # instead of stranding the heading/intro on the previous page)
+    if s == "<!--group-start-->":
+        out.append('<div class="keepgroup">'); i += 1; continue
+    if s == "<!--group-end-->":
+        out.append('</div>'); i += 1; continue
+
     # table
     if s.startswith("|") and i + 1 < len(lines) and re.match(r'^\|[\s:|-]+\|$', lines[i+1].strip()):
         close_tbl()
@@ -210,6 +218,7 @@ h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid 
 h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band);break-after:avoid;page-break-after:avoid}
 .clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px;
  break-inside:avoid;page-break-inside:avoid}
+.keepgroup{break-inside:avoid;page-break-inside:avoid}
 .clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
 h3{font-size:10.9pt;margin:16px 0 6px;color:#2a3444}
 h4{font-size:10pt;margin:13px 0 5px;color:var(--muted)}
