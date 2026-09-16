@@ -295,12 +295,129 @@ PAGES.append(f'''<div class="page dark cover">
 </div>''')
 
 # ==================================================================
-# DIVIDER 01
+# DIVIDER 01 — How Los Gardios Works
 # ==================================================================
 PAGES.append('''<div class="page dark divider">
   <div class="divider-ghost">01</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>פרק 01</div>
+    <div class="divider-title">איך לוס גרדיוס עובד</div>
+    <div class="divider-sub">מי אנחנו, אילו נכסים ומערכות עומדים מאחורי העבודה, ואיך מורכבת מעטפת המומחים סביב הפרויקט שלכם.</div>
+    <div class="divider-endrule"></div>
+  </div>
+</div>''')
+
+# ==================================================================
+# 1.1 — Who we are + the client-controlled principle
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "מי אנחנו")}
+<div class="eyebrow">זהות</div>
+<h1 class="sec">מי אנחנו</h1>
+<div class="secrule"></div>
+<p class="body-copy">לוס גרדיוס היא קבוצת שירותים מקצועית הפועלת בתחומי המיתוג, השיווק, הפיתוח והמסחר, המעמידה ללקוחותיה החיצוניים צוותים, מתודולוגיות ומערכות קנייניות לצורך קידום עסקיהם. אנחנו עובדים עם כל לקוח כישות עסקית נפרדת (B2B), במסגרת פרויקט מסחרי בתשלום.</p>
+<h2 class="sub">העיקרון המנחה: הלקוח קובע את המסגרת</h2>
+<p class="body-copy">עיקרון התפעול המרכזי של הארגון פשוט: הלקוח מגדיר את המסגרת הכלכלית והאסטרטגית שבה הוא רוצה ויכול לפעול, והארגון בוחן מה ניתן לבנות באחריות בתוכה — ורק אז, יחד, מגיעים לתוכנית ולמודל מסחרי קונקרטיים. זהו ההפך מהמודל הנפוץ, שבו ספק קובע מראש כמה על הלקוח לשלם.</p>
+<div class="callout"><span class="callout-label">בהמשך המדריך:</span> פרק 3 (תקציב, מסגרת השקעה וטווח זמן) מסביר את העיקרון הזה לעומק, כולל האופן שבו הוא בא לידי ביטוי בפועל.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 1.2 — Organization's assets
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "נכסי הארגון וההשקעה שביסודם")}
+<div class="eyebrow">מה עומד מאחורי העבודה</div>
+<h1 class="sec">נכסי הארגון וההשקעה שביסודם</h1>
+<div class="secrule"></div>
+<p class="body-copy">כדי לספק שירות ברמה גבוהה ועקבית לכל לקוח, אנחנו משקיעים משאבים משמעותיים עוד לפני תחילת ההתקשרות הספציפית עמכם — בגיוס ובהכשרת אנשי מקצוע, בבניית קשרים עסקיים, בפיתוח ידע ותהליכים פנימיים, ובמערכות טכנולוגיות קנייניות (ראו העמוד הבא). ההגנה על נכסים אלה היא הבסיס שמאפשר לנו להמשיך להשקיע באותה רצינות בכל התקשרות, בלי קשר להיקפה.</p>
+<div class="cardgrid grid2">
+  <div class="card"><div class="card-label">הון אנושי</div><p>איתור, סינון והכשרה מקצועית מתמשכת (הנפרסת על פני כשלוש שנים), ליווי ופיקוח שוטפים של כל נציג ושותף מטעמנו.</p></div>
+  <div class="card"><div class="card-label">רשת קשרים עסקיים</div><p>קשרים עם ספקים, יצרנים, מפיצים ושותפים עסקיים, המבוססים על אמון ומוניטין שנצברים לאורך זמן ולא בבת-אחת.</p></div>
+  <div class="card"><div class="card-label">מידע סודי</div><p>מבנה תמחור, תהליכים פנימיים, ומידע מצטבר על ספקים ולקוחות.</p></div>
+  <div class="card"><div class="card-label">הון אינטלקטואלי ותשתית</div><p>מתודולוגיות, מודלים, תבניות עבודה, ומערכות טכנולוגיות — לרבות מערכות Neuron (ראו העמוד הבא).</p></div>
+</div>
+<div class="fine">הכלל האופרטיבי: פגיעה מכוונת באחד מהנכסים האלה — למשל שידול של נציג מטעמנו לעבוד ישירות מולכם מחוץ למסגרת הארגון, או עקיפת קשר עסקי שנחשפתם אליו באמצעותנו — מזכה אותנו בפיצוי מוסכם, ללא צורך בהוכחת נזק, לפי הסכומים והתקרות הקבועים בסעיף 11 להסכם. זה אינו חל על ההתקשרות הרגילה שלכם עמנו; זה חל רק על ניצול לרעה מכוון של מה שחשפנו לכם.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 1.3 — Proprietary technology (Neuron) + specialist capabilities
+# ==================================================================
+_neuron_icon_os = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="3.5" y="4.5" width="17" height="12" rx="1.5"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16.5" x2="12" y2="20"/></svg>'
+_neuron_icon_net = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><circle cx="6" cy="6" r="2.3"/><circle cx="18" cy="6" r="2.3"/><circle cx="12" cy="18" r="2.3"/><line x1="7.8" y1="7.5" x2="10.5" y2="16"/><line x1="16.2" y1="7.5" x2="13.5" y2="16"/><line x1="8.3" y1="6" x2="15.7" y2="6"/></svg>'
+PAGES.append(f'''<div class="page">
+{pagehead("01", "טכנולוגיה קניינית ומערכות פנימיים")}
+<div class="eyebrow">תשתית תפעולית</div>
+<h1 class="sec">טכנולוגיה קניינית ומערכות פנימיים</h1>
+<div class="secrule"></div>
+<p class="body-copy">חלק מהיכולת שלנו לתאם מחקר, ניתוח, אסטרטגיה, הפקה וביצוע בו-זמנית, עבור לקוחות מרובים, נשען על מערכות טכנולוגיה פנימיות שפיתחנו ומחזיקים — מערכות Neuron.</p>
+<div class="cardgrid grid2">
+  <div class="card"><div class="card-label">{_neuron_icon_os}</div><div class="card-title">Neuron OS</div><p>מערכת התיעוד, ניהול הפרויקטים והתקשורת הפנימית של הארגון — ובה, בין היתר, הדוחות התקופתיים שתקבלו.</p></div>
+  <div class="card"><div class="card-label">{_neuron_icon_net}</div><div class="card-title">Neuron Network</div><p>שכבת המודלים, האלגוריתמים והאנליטיקה של הארגון, המשמשת לניתוח ולתכנון.</p></div>
+</div>
+<div class="callout"><span class="callout-label">מה זה אומר עבורכם:</span> מערכות אלה, לרבות כל שיפור בהן, הן נכס קנייני בלעדי שלנו בכל עת — גם כשהן משמשות לתכנון או לביצוע עבורכם באופן ספציפי. אתם מקבלים רישיון שימוש בתוצרים שהופקו באמצעותן (התוכניות, הניתוחים והחומרים שנמסרים לכם) — לא בעלות או גישה למערכות עצמן. אנחנו לא חושפים כאן פרטים על הארכיטקטורה הטכנית או השיטות הפנימיות — אלה סוד מסחרי שלנו. מה שחשוב שתדעו: התכנון שתקבלו נשען על תשתית תפעולית אמיתית, לא רק על עבודה ידנית של איש מקצוע בודד.</div>
+<h2 class="sub">יכולות מומחים</h2>
+<p class="body-copy">אנחנו לא בנויים סביב חבילת שירות אחידה. כל התקשרות נבנית סביב הצרכים בפועל של העסק — שילוב שונה של אסטרטגיה, מחקר, שיווק, קריאייטיב, פיתוח ותפעול, בהתאם למה שהפרויקט דורש. הביטוי המובנה ביותר לעיקרון הזה הוא הרכב מעטפת המומחים במחקר Genesis — ראו פרק 3.</p>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# DIVIDER 02 — Engagement Models
+# ==================================================================
+PAGES.append('''<div class="page dark divider">
+  <div class="divider-ghost">02</div>
+  <div class="divider-inner">
+    <div class="divider-eyebrow"><span class="dash"></span>פרק 02</div>
+    <div class="divider-title">מודלי ההתקשרות</div>
+    <div class="divider-sub">ארבעת המסלולים שההסכם תומך בהם, ולמה גמישות מסחרית היא ארכיטקטורה — לא הנחה.</div>
+    <div class="divider-endrule"></div>
+  </div>
+</div>''')
+
+# ==================================================================
+# 2.1 — The four tracks
+# ==================================================================
+_track_badge = lambda t: f'<div class="igroup-num" style="width:32px;height:32px;font-size:12pt">{t}</div>'
+PAGES.append(f'''<div class="page">
+{pagehead("02", "ארבעת המסלולים")}
+<div class="eyebrow">מסגרות מסחריות נתמכות</div>
+<h1 class="sec">ארבעת המסלולים</h1>
+<div class="secrule"></div>
+<p class="body-copy">התמורה הכלכלית הסופית של כל התקשרות ספציפית נקבעת ונחתמת ב"הצעה" נפרדת, לאחר השלמת מחקר Genesis (פרק 3) — אבל כדאי להכיר כבר עכשיו את מסגרות המודל המסחרי שההסכם תומך בהן.</p>
+<div class="cardgrid grid2">
+  <div class="card"><div class="card-label">{_track_badge("0")} מסלול 0</div><div class="card-title">מחקר ואסטרטגיה, ללא תקציב שוטף</div><p>תשלום חד-פעמי במחיר בסיס של 10,000$ בתוספת מע"מ (נספח A סעיף 2) — אותו מחקר ואותו שווי כמו במסלולים מבוססי-התקציב; ההבדל הוא באופן המימון בלבד.</p></div>
+  <div class="card"><div class="card-label">{_track_badge("A")} מסלול A</div><div class="card-title">ריטיינר קבוע</div><p>תמורה חודשית קבועה ומוסכמת מראש עבור היקף עבודה ומשאבים מוגדרים. מתאים כשאתם מעדיפים ודאות תקציבית מלאה.</p></div>
+  <div class="card"><div class="card-label">{_track_badge("B")} מסלול B</div><div class="card-title">מודל משולב</div><p>ריטיינר מופחת + חלוקת ערך (רכיב מבוסס-תוצאות). מתאים כשרוצים לחלוק סיכון והזדמנות, בלי לוותר לגמרי על ודאות תשלום בסיסית.</p></div>
+  <div class="card"><div class="card-label">{_track_badge("C")} מסלול C</div><div class="card-title">מודל תוצאות</div><p>התמורה מבוססת בעיקרה על חלוקת ערך/אחוזים, בכפוף למנגנון שייקבע בהצעה. מתאים כשההשתתפות הכלכלית שלנו קשורה ישירות לתוצאה.</p></div>
+</div>
+<div class="fine">בכל מסלול מבוסס-אחוזים או משולב: פרטי המנגנון המדויק — על מה חל האחוז, מה מפעיל אותו, מהי תקופת ההתחשבנות — ייקבעו ויירשמו ב"הצעה" החתומה עצמה; טבלת התנאים המסחריים שבנספח B קובעת רק את פרמטרי הקלט (תקציב, גבולות גזרה, סובלנות ו-Stop-Loss), לא את מבנה התמורה הסופי.</div>
+<div class="callout"><span class="callout-label">לא בטוחים איזה מסלול מתאים?</span> אפשר לסמן "ייקבע בהצעה" ולבקש את המלצתנו (ראו "שני נתיבים אפשריים", פרק 3) — מחקר Genesis מתבצע באותו אופן ובאותו מחיר קבוע, שאינו תלוי במסלול, והמסלול הסופי נקבע עם חתימת ההצעה.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 2.2 — Flexibility + shared growth
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("02", "גמישות מסחרית וצמיחה משותפת")}
+<div class="eyebrow">ארכיטקטורה, לא הנחה</div>
+<h1 class="sec">גמישות מסחרית — ארכיטקטורה, לא הנחה</h1>
+<div class="secrule"></div>
+<p class="body-copy">כשההזדמנות, ההתאמה האסטרטגית והערך הצפוי לטווח ארוך מצדיקים זאת, אנחנו עשויים לבנות את השתתפותנו בהתקשרות באופן שונה — למשל היקף התחלתי מצומצם שגדל בהדרגה, או שלביות בהתקשרות. אלה מבני התקשרות שהמסמכים המשפטיים תומכים בהם, לא הנחות ולא צעד של רצון טוב — זו ארכיטקטורה מסחרית, שנועדה להתאים את ההתקשרות למציאות של העסק.</p>
+<h2 class="sub">צמיחה משותפת — עד כמה שהמבנה המסחרי מאפשר זאת</h2>
+<p class="body-copy">כאשר המבנה המסחרי כולל רכיב תלוי-ערך (מסלול B או C), האינטרס הכלכלי שלנו מתואם באופן חלקי עם האינטרס שלכם — ככל שהפרויקט מצליח יותר, כך גדלה גם ההשתתפות הכלכלית שלנו בו. זו הסיבה שאנחנו עשויים להעדיף מבנה כזה כשיש לנו אמון גבוה בפוטנציאל הפרויקט.</p>
+<div class="fine">זהו תיאור של תמריץ מבני — לא הבטחה לתוצאה או להצלחה משותפת; הביצועים בפועל תלויים בגורמים רבים, כמפורט בפרק 3.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# DIVIDER 03 — Budget / investment / timeline
+# ==================================================================
+PAGES.append('''<div class="page dark divider">
+  <div class="divider-ghost">03</div>
+  <div class="divider-inner">
+    <div class="divider-eyebrow"><span class="dash"></span>פרק 03</div>
     <div class="divider-title">תקציב, מסגרת השקעה וטווח זמן</div>
     <div class="divider-sub">איך אנחנו חושבים על תקציב, מדוע אנחנו שואלים עליו, ואיך זה מתורגם לתוכנית אמיתית.</div>
     <div class="divider-endrule"></div>
@@ -311,7 +428,7 @@ PAGES.append('''<div class="page dark divider">
 # 3 — Opening hook (trimmed)
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "למה אנחנו שואלים")}
+{pagehead("03", "למה אנחנו שואלים")}
 <div class="eyebrow">פתיח</div>
 <h1 class="sec">אנחנו לא מתחילים מ"הנה החבילה שלנו והמחיר שלה"</h1>
 <div class="secrule"></div>
@@ -328,7 +445,7 @@ PAGES.append(f'''<div class="page">
 _flow_icon = '''<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
 <circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="21" y2="21"/></svg>'''
 PAGES.append(f'''<div class="page">
-{pagehead("01", "המודל שלנו")}
+{pagehead("03", "המודל שלנו")}
 <div class="eyebrow">הגישה שלנו</div>
 <h1 class="sec">אתם קובעים את המסגרת. אנחנו בוחנים מה אפשר לבנות בתוכה</h1>
 <div class="secrule"></div>
@@ -351,7 +468,7 @@ PAGES.append(f'''<div class="page">
 # 5 — NEW: trust + permission
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "האמון שלנו מתחיל בכנות")}
+{pagehead("03", "האמון שלנו מתחיל בכנות")}
 <div class="permission-quote">"תנו לנו את המספר האמיתי —<br>לא את המספר שאתם חושבים שאנחנו רוצים לשמוע."</div>
 <div class="permission-dots">
   <span class="permission-dot"></span><span class="permission-dot"></span><span class="permission-dot you"></span><span class="permission-dot"></span><span class="permission-dot"></span>
@@ -368,7 +485,7 @@ PAGES.append(f'''<div class="page">
 # 6 — Two paths (trimmed)
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "שני נתיבים אפשריים")}
+{pagehead("03", "שני נתיבים אפשריים")}
 <div class="eyebrow">בחירה</div>
 <h1 class="sec">שני נתיבים אפשריים</h1>
 <div class="secrule"></div>
@@ -389,7 +506,7 @@ PAGES.append(f'''<div class="page">
 # 7 — Goals reflection
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "היעד והציפיות שלכם")}
+{pagehead("03", "היעד והציפיות שלכם")}
 <div class="eyebrow">לפני המספרים</div>
 <h1 class="sec">היעד והציפיות שלכם</h1>
 <div class="secrule"></div>
@@ -404,7 +521,7 @@ PAGES.append(f'''<div class="page">
 # 8 — Investment framework
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "מסגרת ההשקעה שלכם")}
+{pagehead("03", "מסגרת ההשקעה שלכם")}
 <div class="eyebrow">תשומת הקלט המרכזית</div>
 <h1 class="sec">מסגרת ההשקעה שלכם</h1>
 <div class="secrule"></div>
@@ -426,7 +543,7 @@ PAGES.append(f'''<div class="page">
 # 9 — Timeline
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "טווח הזמן שלכם")}
+{pagehead("03", "טווח הזמן שלכם")}
 <div class="eyebrow">תכנון</div>
 <h1 class="sec">טווח הזמן שלכם</h1>
 <div class="secrule"></div>
@@ -449,7 +566,7 @@ for i, r in enumerate(_radii):
     _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
 _horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
 PAGES.append(f'''<div class="page">
-{pagehead("01", "העיקרון שמנחה אותנו")}
+{pagehead("03", "העיקרון שמנחה אותנו")}
 <div class="eyebrow">עמדה שקופה</div>
 <h1 class="sec">לא למצות עד הסוף</h1>
 <div class="secrule"></div>
@@ -463,7 +580,7 @@ PAGES.append(f'''<div class="page">
 # 11 — Tolerance (redesigned, plain-language first, neutral deficit callout)
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "רמת ותקופת הסובלנות שלכם")}
+{pagehead("03", "רמת ותקופת הסובלנות שלכם")}
 <div class="eyebrow">גמישות סביב רווחיות</div>
 <h1 class="sec">רמת ותקופת הסובלנות שלכם</h1>
 <div class="secrule"></div>
@@ -481,7 +598,7 @@ PAGES.append(f'''<div class="page">
 # 12 — Financial boundaries
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "גבולות פיננסיים")}
+{pagehead("03", "גבולות פיננסיים")}
 <div class="eyebrow">הגנה עליכם</div>
 <h1 class="sec">גבולות פיננסיים</h1>
 <div class="secrule"></div>
@@ -502,13 +619,13 @@ PAGES.append(f'''<div class="page">
 # 13 — NEW: oversight & reporting
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "בקרה ודיווח שוטף")}
+{pagehead("03", "בקרה ודיווח שוטף")}
 <div class="eyebrow">מה קורה אחרי החתימה</div>
 <h1 class="sec">בקרה ודיווח שוטף</h1>
 <div class="secrule"></div>
 <p class="body-copy">כדי שתוכלו לעקוב אחרי הפרויקט בלי להיות מעורבים בכל החלטה תפעולית יומיומית, ההסכם קובע כמה מנגנוני בקרה קבועים — כדאי שתכירו אותם כבר בשלב הזה:</p>
 <div class="cardgrid grid2">
-  <div class="card"><div class="card-label">דיווח שוטף</div><p>דוח ביצועים חודשי תמציתי אחד לפחות, וסקירה אסטרטגית רבעונית אחת לפחות — הוצאה בפועל, תוצאות ומדדי רווחיות/נקודת איזון מול התוכנית.</p></div>
+  <div class="card"><div class="card-label">דיווח שוטף</div><p>דוח ביצועים חודשי תמציתי אחד לפחות, וסקירה אסטרטגית רבעונית אחת לפחות — הוצאה בפועל, תוצאות ומדדי רווחיות/נקודת איזון מול התוכנית. הדוחות מועברים בכתב, באמצעות מערכת Neuron OS (פרק 1) ו/או בדוא"ל לנציג המוסמך שלכם.</p></div>
   <div class="card"><div class="card-label">כניסה לערוץ חדש</div><p>גם בתוך התקציב שאושר, כניסה לערוץ שיווקי או מסחרי חדש שלא נכלל בתוכנית שאושרה טעונה אישור מפורש שלכם מראש ובכתב.</p></div>
   <div class="card"><div class="card-label">אם נחצה רף ה-Stop-Loss</div><p>הפעילות בתשלום תיעצר או תצומצם תוך יום עסקים אחד, ותקבלו הודעה בכתב המפרטת את הגורם וחלופה להמשך; חידוש הפעילות טעון אישורכם.</p></div>
   <div class="card"><div class="card-label">אתם יכולים לעצור בכל עת</div><p>עצירה יזומה מצדכם מתבצעת תוך יום עסקים אחד מבקשתכם; עד חמישה ימי עסקים בחודש אינה נחשבת הפחתת תקציב ואינה הפרה מצדכם.</p></div>
@@ -520,7 +637,7 @@ PAGES.append(f'''<div class="page">
 # 14 — Break-even (tightened, micro-table)
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "נקודת האיזון (Break-Even)")}
+{pagehead("03", "נקודת האיזון (Break-Even)")}
 <div class="eyebrow">כלי תכנון, לא הבטחה</div>
 <h1 class="sec">נקודת האיזון (Break-Even)</h1>
 <div class="secrule"></div>
@@ -545,7 +662,7 @@ _icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="v
 _icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
 _icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
 PAGES.append(f'''<div class="page">
-{pagehead("01", "מה עומד מאחורי מחקר Genesis")}
+{pagehead("03", "מה עומד מאחורי מחקר Genesis")}
 <div class="eyebrow">לא נקודת מבט אחת</div>
 <h1 class="sec">כמה עדשות מקצועיות, בו-זמנית</h1>
 <div class="secrule"></div>
@@ -558,7 +675,23 @@ PAGES.append(f'''<div class="page">
 </div>
 <div class="lens-converge"><div class="lens-line"></div><div class="lens-node">התוכנית</div></div>
 <p class="body-copy" style="text-align:center;color:var(--muted);font-size:9pt">תוכנית עסקית, שיווקית ופיננסית אחת — לא מבט בודד וגנרי על העסק שלכם</p>
-<div class="callout"><span class="callout-label">התוכנית שווה בפני עצמה.</span> התוכנית שנבנה עבורכם היא תוצר אנליטי אמיתי — לא רק שלב מקדים להצעה. גם אם בסופו של דבר תחליטו שלא להמשיך להתקשרות בפועל, לא יחול עליכם חיוב נוסף מעבר לדמי ההשתתפות העצמית, והתובנות שנאספו עבורכם עומדות בפני עצמן.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 15.1 — NEW: Genesis output rights (two-layer: explanation + operative rule)
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("03", "מה מקבלים, ומה זה לא כולל")}
+<div class="eyebrow">שקיפות מלאה</div>
+<h1 class="sec">מה מקבלים, ומה זה לא כולל</h1>
+<div class="secrule"></div>
+<p class="body-copy"><strong>מה זה אומר עבורכם בפועל:</strong> תקבלו תוכנית עסקית, שיווקית ופיננסית מלאה — תוצר אנליטי אמיתי, לא רק שלב מקדים לקראת הצעת מחיר. תוכלו לקרוא אותה, ללמוד ממנה, ולהחליט על בסיסה אם להמשיך. גם אם תחליטו שלא להמשיך, לא יחול עליכם חיוב נוסף מעבר לדמי ההשתתפות העצמית ששילמתם (נספח A סעיף 1).</p>
+<div class="callout warn"><span class="callout-label">מה זה לא אומר:</span> קבלת התוכנית אינה מקנה לכם רישיון ליישם אותה באופן עצמאי — בעצמכם, באמצעות חברה קשורה או באמצעות צד שלישי — כי אנחנו נושאים ב-95% מעלות המחקר עוד לפני שאנחנו יודעים אם תמשיכו. בחרתם שלא להמשיך לביצוע בפועל מולנו: יישום עצמאי של מחקר Genesis, האסטרטגיה או ההצעה שהוכנו עבורכם טעון אישור מוקדם ובכתב מאיתנו, או רכישת רישיון יישום עצמאי (Buyout, ראו בהמשך) — למשך <strong>עשרים וארבעה (24) חודשים</strong> ממועד מסירת המחקר, לכל מחקר בנפרד (נספח A סעיף 3(א)). מגבלה זו אינה חלה על יישום המבוסס על ידע כללי, מגמות שוק פומביות, או מידע שהיה בידיכם כדין קודם לכן.</div>
+<h2 class="sub">רישיון היישום העצמאי (Buyout)</h2>
+<p class="body-copy">בכל עת, ניתן לרכוש מאיתנו רישיון עולמי, בלתי-ייחודי ולצמיתות ליישום עצמאי של תוצרי מחקר מסוים, במחיר השווה לשוויו המלא (10,000$) בניכוי דמי ההשתתפות העצמית וכל תמורה ששולמה כבר בגינו — כלומר 9,500$ עבור מי שביצע Genesis בלבד (נספח A סעיף 3(ב)). <strong>לקוחות מסלול 0</strong> ששילמו את מלוא התמורה נחשבים כמי שמימשו את ה-Buyout באופן אוטומטי, ללא צורך בפעולה נוספת, והמגבלה שלעיל אינה חלה עליהם כלל. בעלותנו במודלים, באלגוריתמים ובמערכות Neuron נותרת בידינו בכל מקרה, ואינה נמכרת במסגרת ה-Buyout.</p>
+<div class="fine"><strong>המשכתם אלינו לביצוע בפועל?</strong> אתם ממשיכים ליישם את התוכנית דרכנו, כך שהמגבלה שלעיל אינה רלוונטית כל עוד אותה התקשרות ספציפית נמשכת — אך זה אינו שחרור קבוע ובלתי-תלוי ממנה: הסתיימה ההתקשרות בתוך 24 החודשים ממועד מסירת המחקר, עשויה המגבלה לחול מחדש ביחס להמשך יישום עצמאי, מעבר לתוצרים שכבר נמסרו ושולמו במלואם (שבהם יש לכם רישיון קבוע לשימוש הרגיל בעסקכם, סעיף 10(ב) להסכם). <strong>סודיות:</strong> מחקר Genesis ותוצריו הם מידע סודי לכל דבר ועניין (סעיף 9 להסכם) — מיועדים לשימושכם הפנימי בלבד.</div>
+<p class="fine"><strong>מתי נדרש מחקר Genesis נפרד:</strong> לכל פרויקט, מותג או יחידה עסקית הדורש מיצוב, קהל יעד, אסטרטגיה שיווקית או מודל הכנסה נפרדים, או שוק גיאוגרפי/רגולטורי נפרד — אך לא לגיוון פנימי באותו מותג או פרויקט (נספח A סעיף 1(ה)). מספר המחקרים וזהותם ייקבעו מראש בתום-לב ויירשמו בטבלת התנאים המסחריים; מחקר נוסף שהתברר תוך כדי עבודה ייערך ויחויב אך ורק לאחר אישורכם בכתב.</p>
 {pagefoot()}
 </div>''')
 
@@ -566,7 +699,7 @@ PAGES.append(f'''<div class="page">
 # 16 — Process diagram
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "מהמדריך להצעה")}
+{pagehead("03", "מהמדריך להצעה")}
 <div class="eyebrow">התהליך</div>
 <h1 class="sec">מהמדריך להצעה</h1>
 <div class="secrule"></div>
@@ -585,7 +718,7 @@ PAGES.append(f'''<div class="page">
 # 17 — Reminder (fixed: track-aware)
 # ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01", "תזכורת")}
+{pagehead("03", "תזכורת")}
 <div class="eyebrow">לפני שממשיכים לטופס</div>
 <h1 class="sec">תזכורת</h1>
 <div class="secrule"></div>
@@ -598,7 +731,7 @@ PAGES.append(f'''<div class="page">
 # 18 — Intake divider (reframed)
 # ==================================================================
 PAGES.append('''<div class="page dark divider">
-  <div class="divider-ghost">02</div>
+  <div class="divider-ghost">04</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>הצעד הבא</div>
     <div class="divider-title">טופס קליטה</div>
@@ -648,7 +781,7 @@ INTAKE_GROUPS = [
     ]),
 ]
 
-def intake_page(num, title, groups, intro=None):
+def intake_page(num, title, groups, intro=None, outro=None):
     html = [f'<div class="page">{pagehead(num, title)}']
     if intro:
         html.append(f'<div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div><p class="intake-intro">{intro}</p>')
@@ -661,13 +794,16 @@ def intake_page(num, title, groups, intro=None):
             grp.append(field(it))
         grp.append('</div></div>')
         html.append("".join(grp))
+    if outro:
+        html.append(f'<p class="fine">{outro}</p>')
     html.append(pagefoot() + '</div>')
     return "".join(html)
 
 numbered = [(i, t, n, it) for i, (t, n, it) in enumerate(INTAKE_GROUPS, start=1)]
-PAGES.append(intake_page("02", "טופס קליטה", numbered[:5],
+PAGES.append(intake_page("04", "טופס קליטה", numbered[:5],
     intro='מטרת הטופס: לאסוף את המידע הדרוש לצוות המחקר והתכנון כדי לבנות עבורכם תוכנית עסקית, שיווקית ופיננסית מותאמת, ולתרגם אותה בהמשך להצעת התקשרות מסחרית ספציפית. מה שלמעלה היה ההסבר; מה שלמטה הוא רק התרגום שלו לשדות קצרים — שום דבר כאן לא אמור להפתיע אתכם.'))
-PAGES.append(intake_page("02", "טופס קליטה (המשך)", numbered[5:]))
+PAGES.append(intake_page("04", "טופס קליטה (המשך)", numbered[5:],
+    outro='הטופס תמציתי במכוון — כל שדה כאן משמש ישירות את שלב המחקר והתכנון. פרטים נוספים ומדויקים יותר ייאספו בשיחה ישירה איתכם, ואינם "נועלים" אתכם בשום מחויבות עד לחתימה על הצעה ספציפית.'))
 
 # ==================================================================
 # Closing
