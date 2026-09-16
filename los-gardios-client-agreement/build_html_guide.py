@@ -5,12 +5,18 @@ Design language: dark espresso section dividers with ghost numerals, a
 cream content-page body, a brass/gold accent system (rules, eyebrows,
 stat tiles, key-insight callouts), and Los Gardios' own Velvet Purple
 used sparingly as the brand-identity touch (logo mark, one accent line
-on the cover) rather than as the dominant hue — the warm gold/espresso
-palette is the editorial atmosphere; purple is the brand anchor.
+on the cover, a single narrative accent inside two of the new diagrams)
+rather than as the dominant hue — the warm gold/espresso palette is the
+editorial atmosphere; purple is the brand anchor.
 
 The underlying Hebrew CONTENT is copied verbatim from CLIENT_GUIDE_HE.md
-(source of truth); only its visual presentation and the Intake Form's
-grouping/ordering are redesigned here.
+(source of truth); this build script is presentation-only — page
+grouping, diagram composition and the Intake Form's field grouping/order
+are the only structural decisions made here, and they never introduce a
+sentence that isn't in the .md. New concepts (the operating-model flow,
+the sustainability principle, the Genesis specialist-lens system, the
+oversight/reporting mechanics) are all authored in CLIENT_GUIDE_HE.md
+first and merely visualized here.
 """
 import io, os, base64
 
@@ -21,7 +27,10 @@ def _data_uri(fname):
     with open(os.path.join(_ASSETS, fname), "rb") as f:
         return "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
 
-LOGO_MARK = _data_uri("logo_mark_web.png")
+# Full-resolution, tight-cropped source (see assets/ note) — replaces the
+# low-res logo_mark_web.png that caused visible blur when placed small in
+# headers/cover/closing. Same artwork, no redesign, just more real pixels.
+LOGO_MARK = _data_uri("logo_mark_crisp.png")
 
 CSS = """
 :root{
@@ -50,8 +59,10 @@ em,i{font-style:italic}
 .pagehead .brand{display:flex;align-items:center;gap:8px;text-transform:uppercase;color:var(--ink);font-weight:700}
 .pagehead.on-dark .brand{color:#EDE6D8}
 .pagehead .brand img{height:15px}
-.pagehead .crumb{color:var(--gold-deep);font-weight:600}
+.pagehead .brand .lat{unicode-bidi:isolate}
+.pagehead .crumb{color:var(--gold-deep);font-weight:700}
 .pagehead.on-dark .crumb{color:var(--gold)}
+.pagehead .crumb .num{unicode-bidi:isolate}
 .pagehead .org{color:var(--purple);opacity:.72}
 .pagehead.on-dark .org{color:#b9a4d6;opacity:.8}
 
@@ -67,7 +78,7 @@ em,i{font-style:italic}
  align-items:center;justify-content:center;text-align:center;position:relative}
 .cover-mark{width:60px;height:auto;margin-bottom:34px;filter:brightness(0) invert(1);opacity:.95}
 .cover-eyebrow{font-family:"Heebo",sans-serif;font-weight:700;font-size:10.5pt;
- letter-spacing:.55em;margin:0 0 24px;color:var(--gold)}
+ letter-spacing:.4em;margin:0 0 24px;color:var(--gold);unicode-bidi:isolate}
 .cover-title{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:32pt;
  letter-spacing:.01em;margin:0 0 14px;color:#F7F1E4}
 .cover-rule{width:56px;height:2px;background:linear-gradient(to left,var(--gold),var(--purple));margin:22px 0}
@@ -77,28 +88,28 @@ em,i{font-style:italic}
 .cover-tag{border:1px solid var(--espresso-line);color:#a99a7d;font-family:"Heebo",sans-serif;
  font-size:7.4pt;letter-spacing:.14em;padding:4px 12px;border-radius:1px}
 .cover-foot{position:absolute;bottom:20mm;font-family:"Heebo",sans-serif;font-size:7.4pt;
- letter-spacing:.16em;color:#7c6f5a}
+ letter-spacing:.16em;color:#7c6f5a;unicode-bidi:isolate}
 
 /* ---------- SECTION DIVIDER (dark, bottom-anchored, ghost numeral) ---------- */
 .divider{min-height:257mm;display:flex;flex-direction:column;justify-content:flex-end;
  position:relative;overflow:hidden}
-.divider-ghost{position:absolute;left:-6mm;bottom:8mm;font-family:"Frank Ruhl Libre",serif;
- font-weight:700;font-size:230pt;line-height:1;color:var(--gold-pale);z-index:0;user-select:none}
+.divider-ghost{position:absolute;inset-inline-end:-6mm;bottom:8mm;font-family:"Frank Ruhl Libre",serif;
+ font-weight:700;font-size:230pt;line-height:1;color:var(--gold-pale);z-index:0;user-select:none;unicode-bidi:isolate}
 .divider-inner{position:relative;z-index:1;padding-bottom:8mm}
 .divider-eyebrow{display:flex;align-items:center;gap:12px;font-family:"Heebo",sans-serif;
- font-size:8.2pt;letter-spacing:.28em;color:var(--gold);margin-bottom:16px}
+ font-size:8.2pt;letter-spacing:.16em;color:var(--gold);margin-bottom:16px}
 .divider-eyebrow .dash{width:30px;height:1px;background:var(--gold)}
 .divider-title{font-family:"Frank Ruhl Libre",serif;font-size:27pt;font-weight:600;
- max-width:520px;line-height:1.35;margin:0 0 16px;color:#F7F1E4}
+ max-width:520px;line-height:1.45;margin:0 0 16px;color:#F7F1E4}
 .divider-sub{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#b9ac93;
  max-width:420px;line-height:1.9;margin-bottom:18px}
 .divider-endrule{width:36px;height:1px;background:var(--espresso-line)}
 
 /* ---------- SECTION HEADING on content pages ---------- */
-.eyebrow{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.24em;
+.eyebrow{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.15em;
  color:var(--gold-deep);font-weight:700;margin-bottom:6px}
 h1.sec{font-family:"Frank Ruhl Libre",serif;font-size:20pt;font-weight:600;
- margin:0 0 10px}
+ line-height:1.35;margin:0 0 10px}
 .secrule{height:1px;background:linear-gradient(to left,var(--gold),transparent);margin:0 0 16px}
 h2.sub{display:flex;align-items:center;gap:10px;font-family:"Frank Ruhl Libre",serif;
  font-size:13pt;font-weight:600;color:var(--ink);margin:24px 0 10px}
@@ -110,9 +121,10 @@ strong{font-weight:700;color:var(--ink)}
 /* ---------- CARDS (two-up profile style) ---------- */
 .cardgrid{display:flex;gap:14px;margin:16px 0}
 .cardgrid.stack{flex-direction:column}
+.cardgrid.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .card{flex:1;background:var(--cream2);border:1px solid var(--rule);border-top:3px solid var(--gold);
  border-radius:2px;padding:16px 18px;break-inside:avoid-page;page-break-inside:avoid}
-.card-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.2em;
+.card-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
  color:var(--gold-deep);margin-bottom:8px;font-weight:700}
 .card-title{font-family:"Frank Ruhl Libre",serif;font-size:12.5pt;font-weight:600;margin:0 0 8px}
 .card p{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#4a3d2c;line-height:1.85;margin:0}
@@ -127,31 +139,89 @@ strong{font-weight:700;color:var(--ink)}
 .callout-label{font-style:italic;font-weight:700}
 
 /* ---------- STAT TILE ROW ---------- */
-.stats{display:flex;gap:10px;margin:18px 0}
+.stats{display:flex;gap:10px;margin:18px 0;break-inside:avoid-page;page-break-inside:avoid}
 .stat{flex:1;background:var(--cream2);border:1px solid var(--rule);border-radius:2px;
  padding:14px 8px;text-align:center;break-inside:avoid-page}
-.stat-num{font-family:"Frank Ruhl Libre",serif;font-size:16pt;font-weight:700;color:var(--gold-deep)}
+.stat-num{font-family:"Frank Ruhl Libre",serif;font-size:16pt;font-weight:700;color:var(--gold-deep);unicode-bidi:isolate}
 .stat-cap{font-family:"Heebo",sans-serif;font-size:7.6pt;color:var(--muted);
  margin-top:5px;line-height:1.5}
 
 /* ---------- PROMPT / REFLECTION BOX ---------- */
 .prompt{background:var(--cream2);border-radius:2px;padding:14px 18px;margin:14px 0;
  border-inline-start:2px solid var(--gold);break-inside:avoid-page;page-break-inside:avoid}
-.prompt-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.2em;
+.prompt-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
  color:var(--gold-deep);font-weight:700;margin-bottom:6px}
 .prompt-q{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#382c1f;line-height:1.85}
 .fine{font-family:"Heebo",sans-serif;font-size:8.5pt;color:var(--muted);
- line-height:1.8;border-inline-start:2px solid var(--rule);padding-inline-start:12px;margin:12px 0}
+ line-height:1.8;border-inline-start:2px solid var(--rule);padding-inline-start:12px;margin:12px 0;
+ break-inside:avoid-page;page-break-inside:avoid}
 
 /* ---------- PROCESS DIAGRAM ---------- */
 .process{margin:20px 0}
 .pstep{display:flex;gap:16px;align-items:flex-start;padding:13px 0;
- border-bottom:1px solid var(--rule);break-inside:avoid-page}
+ border-bottom:1px solid var(--rule);break-inside:avoid-page;page-break-inside:avoid}
 .pstep:last-child{border-bottom:none}
 .pnum{flex:none;width:28px;height:28px;border-radius:50%;background:var(--espresso);color:var(--gold);
  font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:11.5pt;
- display:flex;align-items:center;justify-content:center}
+ display:flex;align-items:center;justify-content:center;unicode-bidi:isolate}
 .ptxt{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#382c1f;line-height:1.85;padding-top:3px}
+
+/* ---------- FLOW (operating-model diagram) ---------- */
+.flow{display:flex;align-items:center;gap:8px;margin:22px 0 8px}
+.flow-stage{flex:1;text-align:center}
+.flow-eyebrow{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
+ color:var(--gold-deep);font-weight:700;margin-bottom:8px}
+.flow-card{background:var(--cream2);border:1px solid var(--rule);border-radius:2px;
+ padding:14px 8px;font-family:"Frank Ruhl Libre",serif;font-size:10.5pt;font-weight:600;color:var(--ink)}
+.flow-node{width:60px;height:60px;border-radius:50%;background:var(--espresso);color:var(--gold);
+ display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.flow-connector{flex:0 0 22px;height:1px;background:var(--gold);align-self:center;margin-top:20px}
+.flow-loop{margin-top:14px;font-family:"Heebo",sans-serif;font-size:8.6pt;color:var(--muted);
+ text-align:center;line-height:1.8;padding:0 20px}
+
+/* ---------- CONTRAST ROW (not-vs-is) ---------- */
+.contrast{border-radius:2px;padding:11px 16px;margin:10px 0;font-family:"Heebo",sans-serif;
+ font-size:9.3pt;break-inside:avoid-page;page-break-inside:avoid}
+.contrast.dim{background:var(--cream3);color:var(--muted);border:1px dashed var(--rule)}
+.contrast.affirm{background:var(--cream2);border-inline-start:3px solid var(--gold);
+ color:var(--gold-deep);font-weight:700;padding:15px 18px;font-size:9.8pt}
+
+/* ---------- PERMISSION PAGE (quiet, typographic) ---------- */
+.permission-quote{font-family:"Frank Ruhl Libre",serif;font-style:italic;font-weight:600;
+ font-size:19pt;text-align:center;line-height:1.55;color:var(--ink);max-width:520px;margin:34px auto 24px}
+.permission-dots{display:flex;justify-content:center;gap:11px;margin:8px 0 10px}
+.permission-dot{width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.permission-dot.you{background:transparent;border:2px solid var(--purple)}
+.permission-cap{text-align:center;font-family:"Heebo",sans-serif;font-size:7.8pt;
+ color:var(--muted);letter-spacing:.08em;margin-bottom:28px}
+
+/* ---------- HORIZON (sustainability rings) ---------- */
+.horizon-wrap{position:relative;min-height:96mm;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.horizon-svg{position:absolute;inset-inline-end:-10mm;top:50%;transform:translateY(-50%);z-index:0;opacity:.9}
+.horizon-cap{position:relative;z-index:1;text-align:center;font-family:"Heebo",sans-serif;
+ font-size:9.6pt;color:var(--muted);max-width:360px;line-height:1.9}
+
+/* ---------- GENESIS LENSES ---------- */
+.lenses{display:flex;gap:10px;margin:20px 0 4px}
+.lens{flex:1;border-top:3px solid var(--gold);background:var(--cream2);padding:12px 8px;text-align:center}
+.lens.c2{border-top-color:var(--gold-deep)}
+.lens.c3{border-top-color:var(--muted)}
+.lens.c4{border-top-color:var(--purple)}
+.lens-icon{margin:0 auto 8px;width:26px;height:26px}
+.lens-label{font-family:"Heebo",sans-serif;font-size:8pt;font-weight:700;color:var(--ink);line-height:1.4}
+.lens-converge{display:flex;flex-direction:column;align-items:center;margin:14px 0 6px}
+.lens-line{width:1px;height:20px;background:var(--gold)}
+.lens-node{width:52px;height:52px;border-radius:50%;background:var(--espresso);color:var(--gold);
+ display:flex;align-items:center;justify-content:center;font-family:"Frank Ruhl Libre",serif;
+ font-size:8.6pt;font-weight:700;text-align:center;line-height:1.15}
+
+/* ---------- MICRO TABLE (break-even defaults) ---------- */
+table.micro{width:100%;border-collapse:collapse;margin:14px 0;font-family:"Heebo",sans-serif;
+ font-size:9.2pt;break-inside:avoid-page;page-break-inside:avoid}
+table.micro th{text-align:start;font-size:7.6pt;letter-spacing:.1em;color:var(--gold-deep);
+ font-weight:700;padding:0 0 8px;border-bottom:1px solid var(--rule)}
+table.micro td{padding:10px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:#382c1f}
+table.micro td:first-child{color:var(--ink);font-weight:600;width:38%}
 
 /* ---------- INTAKE FORM ---------- */
 .intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
@@ -160,11 +230,11 @@ strong{font-weight:700;color:var(--ink)}
 .igroup-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .igroup-num{font-family:"Frank Ruhl Libre",serif;background:var(--espresso);color:var(--gold);
  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
- font-weight:700;font-size:10pt;flex:none}
+ font-weight:700;font-size:10pt;flex:none;unicode-bidi:isolate}
 .igroup-title{font-family:"Frank Ruhl Libre",serif;font-size:12pt;font-weight:600}
 .igroup-note{font-family:"Heebo",sans-serif;font-size:8.2pt;color:var(--gold-deep);
- margin-bottom:6px;margin-right:38px}
-.ifields{margin-right:38px;font-family:"Heebo",sans-serif;font-size:9.3pt;
+ margin-bottom:6px;margin-inline-start:38px}
+.ifields{margin-inline-start:38px;font-family:"Heebo",sans-serif;font-size:9.3pt;
  color:#382c1f;line-height:2.2}
 .ifields .f{display:flex;align-items:baseline;gap:8px;border-bottom:1px dotted var(--rule);
  padding:4px 0}
@@ -174,14 +244,14 @@ strong{font-weight:700;color:var(--ink)}
 /* ---------- CLOSING (sign-off style) ---------- */
 .closing{min-height:257mm;display:flex;flex-direction:column;justify-content:flex-end;
  position:relative;overflow:hidden}
-.closing-ghost{position:absolute;left:0mm;bottom:-8mm;font-family:"Frank Ruhl Libre",serif;
+.closing-ghost{position:absolute;inset-inline-end:0mm;bottom:-8mm;font-family:"Frank Ruhl Libre",serif;
  font-weight:700;font-size:210pt;line-height:1;color:var(--gold-pale);z-index:0;user-select:none}
 .closing-inner{position:relative;z-index:1;padding-bottom:8mm}
 .closing-eyebrow{display:flex;align-items:center;gap:12px;font-family:"Heebo",sans-serif;
- font-size:8.2pt;letter-spacing:.28em;color:var(--gold);margin-bottom:16px}
+ font-size:8.2pt;letter-spacing:.16em;color:var(--gold);margin-bottom:16px}
 .closing-eyebrow .dash{width:30px;height:1px;background:var(--gold)}
 .closing-title{font-family:"Frank Ruhl Libre",serif;font-size:25pt;font-weight:600;
- margin:0 0 16px;color:#F7F1E4}
+ line-height:1.4;margin:0 0 16px;color:#F7F1E4}
 .closing p{font-family:"Heebo",sans-serif;font-size:9.8pt;color:#c9bda5;line-height:1.95;
  max-width:480px;margin:0 0 22px}
 .closing-brand{display:flex;align-items:center;gap:10px;margin-top:10px}
@@ -194,32 +264,39 @@ strong{font-weight:700;color:var(--ink)}
 @media print{
  body{background:#fff}
  .sheet{max-width:none}
- .card,.prompt,.callout,.stat,table{break-inside:avoid}
- h1.sec,h2.sub,.igroup-head,.divider-title{break-after:avoid}
+ .card,.prompt,.callout,.stat,.stats,.pstep,.fine,table.micro{break-inside:avoid}
+ h1.sec,h2.sub,.igroup-head,.divider-title,.eyebrow{break-after:avoid}
 }
 """
 
-def pagehead(eyebrow, dark=False):
+def pagehead(num, title, dark=False):
     cls = "pagehead on-dark" if dark else "pagehead"
-    return f'''<div class="{cls}"><span class="brand"><img src="{LOGO_MARK}">LOS GARDIOS · מדריך הלקוח</span><span class="crumb">{eyebrow}</span><span class="org">לוס גרדיוס בע"מ</span></div>'''
+    return (f'<div class="{cls}"><span class="brand"><img src="{LOGO_MARK}">'
+            f'<span class="lat">LOS GARDIOS</span> · מדריך הלקוח</span>'
+            f'<span class="crumb"><span class="num">{num}</span> · {title}</span>'
+            f'<span class="org">לוס גרדיוס בע"מ</span></div>')
 
 def pagefoot():
-    return '<div class="pagefoot"><span>סודי · טיוטת עבודה פנימית</span><span>© Los Gardios Group</span></div>'
+    return '<div class="pagefoot"><span>סודי · חלק ממכלול ההתקשרות</span><span>© לוס גרדיוס בע"מ</span></div>'
 
 PAGES = []
 
-# ---- Cover ----
+# ==================================================================
+# COVER
+# ==================================================================
 PAGES.append(f'''<div class="page dark cover">
   <img src="{LOGO_MARK}" class="cover-mark">
   <div class="cover-eyebrow">L O S &nbsp; G A R D I O S</div>
   <div class="cover-title">מדריך הלקוח</div>
   <div class="cover-rule"></div>
   <div class="cover-sub">תקציב · מסגרת השקעה · טווח זמן<br>קריאה לפני תחילת הדרך המשותפת</div>
-  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסת מדריך 1</span></div>
+  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסת מדריך 2</span></div>
   <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS GROUP</div>
 </div>''')
 
-# ---- Section divider 01 ----
+# ==================================================================
+# DIVIDER 01
+# ==================================================================
 PAGES.append('''<div class="page dark divider">
   <div class="divider-ghost">01</div>
   <div class="divider-inner">
@@ -230,47 +307,68 @@ PAGES.append('''<div class="page dark divider">
   </div>
 </div>''')
 
-# ---- Opening philosophy statement ----
+# ==================================================================
+# 3 — Opening hook (trimmed)
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · למה אנחנו שואלים")}
+{pagehead("01", "למה אנחנו שואלים")}
 <div class="eyebrow">פתיח</div>
 <h1 class="sec">אנחנו לא מתחילים מ"הנה החבילה שלנו והמחיר שלה"</h1>
 <div class="secrule"></div>
 <p class="body-copy">אנחנו מתחילים מ: ספרו לנו מה אתם מנסים להשיג, כמה אתם באמת מוכנים ויכולים להשקיע, אילו אילוצים קיימים, ומה אתם מאמינים שאפשר. אנחנו נקבע מה ניתן לבנות באחריות בתוך המסגרת הזו.</p>
 <p class="body-copy">לפני שאנחנו בונים תוכנית עסקית, שיווקית ופיננסית עבורכם, אנחנו צריכים להבין את המציאות הכלכלית שבתוכה אתם רוצים ויכולים לפעול. המידע הזה לא נועד לקבוע כמה אפשר לגבות מכם — הוא נועד לקבוע מה אפשר לבנות באחריות, בהיקף, בקצב ובמודל שמתאימים לעסק שלכם.</p>
 <div class="callout"><span class="callout-label">העיקרון:</span> תקציב גדול יותר עשוי לאפשר היקף רחב יותר — אבל לא תוצאה טובה יותר מאליה. הקשר בין תקציב להיקף העבודה הוא שאלה של תכנון, לא הבטחה.</div>
-<p class="body-copy"><strong>רמת תשומת הלב, המקצועיות וההשקעה שלנו בפרויקט שלכם אינה תלויה בגודל התקציב — היא זהה, בכל היקף עבודה.</strong> עסק עם פוטנציאל יוצא דופן, נזילות מוגבלת כרגע, הזדמנות שוק ייחודית או חזון מייסד חזק עשוי להצדיק מבנה מסחרי מותאם באותה מידה שעסק עם תקציב גדול יכול שלא להתאים לנו כלל. אנחנו בוחנים פוטנציאל, מציאות, משאבים, מחויבות והתאמה אסטרטגית — לא רק את גובה התקציב.</p>
+<p class="body-copy"><strong>רמת תשומת הלב, המקצועיות וההשקעה שלנו בפרויקט שלכם אינה תלויה בגודל התקציב — היא זהה, בכל היקף עבודה.</strong></p>
 {pagefoot()}
 </div>''')
 
+# ==================================================================
+# 4 — NEW: operating-model flow + contrast
+# ==================================================================
+_flow_icon = '''<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+<circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="21" y2="21"/></svg>'''
 PAGES.append(f'''<div class="page">
-{pagehead("01 · הכלל המנחה")}
+{pagehead("01", "המודל שלנו")}
 <div class="eyebrow">הגישה שלנו</div>
-<h1 class="sec">אתם מגדירים את המסגרת. אנחנו בוחנים מה אפשר לבנות בתוכה</h1>
+<h1 class="sec">אתם קובעים את המסגרת. אנחנו בוחנים מה אפשר לבנות בתוכה</h1>
 <div class="secrule"></div>
-<p class="body-copy">הכלל המנחה שלנו פשוט: אתם מגדירים את המסגרת הכלכלית שבה אתם רוצים לפעול, אנחנו בוחנים מה ניתן לבנות באחריות בתוכה, ורק אז אנחנו מציעים תוכנית ומודל מסחרי קונקרטיים. המטרה שלנו היא התקשרות שאתם יכולים לקיים לאורך זמן — לא התקשרות שדוחקת אתכם מעבר ליכולת שלכם.</p>
-<p class="body-copy">מטרתנו איננה למקסם הוצאה. היא לשמר את יכולתו של העסק להמשיך להשקיע, לפעול ולצמוח. עסק שמיצה את תזרים המזומנים שלו אינו יכול להמשיך לבנות, לבחון, להרחיב, להשקיע או לשלם עבור משאבים מקצועיים — ולכן המטרה היא לבנות התקשרות שבת-קיימא כלכלית לשני הצדדים.</p>
-<p class="body-copy">לפעמים, אחרי שנבחן את המסגרת שהגדרתם, נגיע למסקנה שהיא אינה תואמת את היקף הפרויקט המבוקש. במקרה כזה ננהל איתכם שיחה בתום-לב לפני כל החלטה על המשך התהליך — לא נבנה עבורכם הצעה שאיננו מאמינים שהיא בת-קיימא.</p>
-<h2 class="sub">בקשה הדדית</h2>
-<p class="body-copy">איכות האסטרטגיה תלויה באיכות המידע שעומד לרשותנו לבנייתה. אנחנו מבקשים מכם להיות גלויים לגבינו לגבי אילוצים, בדיוק כפי שאנחנו גלויים לגביכם לגבי מה שאנחנו מאמינים שריאלי. תנו לנו את המספר האמיתי — לא את המספר שאתם חושבים שאנחנו רוצים לשמוע. תקציב נמוך כרגע יכול להתקיים לצד הזדמנות גדולה מאוד לטווח ארוך; תקציב גדול, מצדו, אינו הופך עסק אוטומטית להזדמנות אסטרטגית.</p>
+<div class="flow">
+  <div class="flow-stage"><div class="flow-eyebrow">שלב 1</div><div class="flow-card">אתם<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">תקציב · מסגרת · חזון</span></div></div>
+  <div class="flow-connector"></div>
+  <div class="flow-stage"><div class="flow-eyebrow">שלב 2</div><div class="flow-node">{_flow_icon}</div><div style="font-family:'Heebo',sans-serif;font-size:9pt;font-weight:700">אנחנו בוחנים</div></div>
+  <div class="flow-connector"></div>
+  <div class="flow-stage"><div class="flow-eyebrow">שלב 3</div><div class="flow-card">יחד<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">תוכנית + הצעה</span></div></div>
+</div>
+<div class="flow-loop">אם המסגרת שהגדרתם אינה תואמת את היקף הפרויקט המבוקש — ננהל איתכם שיחה בתום-לב לפני כל החלטה על המשך התהליך, ולא נבנה עבורכם הצעה שאיננו מאמינים שהיא בת-קיימא.</div>
+<h2 class="sub">לא ככה, אלא ככה</h2>
+<div class="contrast dim">✕ אנחנו קובעים כמה עליכם לשלם, ואתם מתאימים את עצמכם לזה</div>
+<div class="contrast affirm">✓ אתם קובעים את המסגרת הכלכלית. אנחנו בוחנים מה ניתן לבנות באחריות בתוכה — ורק אז מגיעים יחד לתוכנית ולמודל מסחרי קונקרטיים.</div>
+<p class="body-copy" style="margin-top:14px">המטרה שלנו היא התקשרות שאתם יכולים לקיים לאורך זמן — לא התקשרות שדוחקת אתכם מעבר ליכולת שלכם.</p>
 {pagefoot()}
 </div>''')
 
-# ---- Track 0 callout as its own card page ----
+# ==================================================================
+# 5 — NEW: trust + permission
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · הערה למסלול מסוים")}
-<div class="eyebrow">לתשומת לבכם</div>
-<h1 class="sec">הערה ללקוחות מסלול 0</h1>
-<div class="secrule"></div>
-<div class="callout"><span class="callout-label">רלוונטי רק למסלול זה:</span> אם בחרתם ברכישת מחקר Genesis חד-פעמית בלבד, ללא תקציב שוטף ("מסלול 0", נספח A סעיף 2 להסכם) — רוב הפרקים הבאים בעמודים הקרובים (מסגרת השקעה, סובלנות, Stop-Loss, נקודת האיזון — נספח B סעיפים 1–3) אינם חלים עליכם, ואינכם נדרשים למלא את השדות הנוגעים אליהם. גם דמי ההשתתפות העצמית המוזכרים בהמשך שייכים למסלולים A/B/C בלבד — תנאי התשלום במסלול 0 מפורטים בנספח A סעיף 2. אפשר לדלג ישירות לתהליך שבסוף המדריך.</div>
-<h2 class="sub">לפני שממשיכים — חשוב שתדעו</h2>
-<p class="body-copy">המידע שתמסרו בפרק הזה משמש אותנו לתכנון, להערכה ולבניית ה"הצעה" — ואינו מהווה כשלעצמו התחייבות לרכישת שירותים, לתשלום סכום מסוים, לקבלת הצעה מסחרית מסוימת, או להשגת תוצאה עסקית כלשהי. שום מספר, טווח או ציפייה שתרשמו כאן אינם סופיים ואינם "נועלים" אתכם — תמיד אפשר לעדכן, לדייק או לשנות כיוון בהמשך השיחה. אם חלק מהמספרים עדיין לא ברורים לכם — זה בסדר גמור; נוכל להעריך אותם יחד. התנאים המסחריים המחייבים של כל "התקשרות ספציפית" נקבעים אך ורק ב"הצעה" חתומה כהגדרתה בהסכם ההתקשרות, שתקבלו בהמשך.</p>
+{pagehead("01", "האמון שלנו מתחיל בכנות")}
+<div class="permission-quote">"תנו לנו את המספר האמיתי —<br>לא את המספר שאתם חושבים שאנחנו רוצים לשמוע."</div>
+<div class="permission-dots">
+  <span class="permission-dot"></span><span class="permission-dot"></span><span class="permission-dot you"></span><span class="permission-dot"></span><span class="permission-dot"></span>
+</div>
+<div class="permission-cap">אותה תשומת לב. בכל היקף.</div>
+<p class="body-copy">מרבית הלקוחות חוששים משתי טעויות הפוכות: להגיד מספר קטן מדי ולהיראות לא רציניים, או להגיד מספר גדול מדי כדי להצדיק את החזון. שתי הטעויות מובילות לאותה תוצאה — תוכנית שלא מתאימה לכם באמת. יש לכך גם השלכה מעשית: לאחר החתימה, התקציב שתקבעו הופך למחויבות תפעולית לשלושה חודשים לפחות — כך שמספר מנופח לא הופך את הפרויקט שלכם למרשים יותר; הוא הופך למחויבות אמיתית שתצטרכו לעמוד בה. <strong>אין כאן מספר "קטן מדי" — יש רק מספר לא מדויק.</strong></p>
+<h2 class="sub">חזון גדול, תקציב קטן כרגע</h2>
+<p class="body-copy">זה בדיוק המצב שיש לנו מבנה בשבילו. תקציב הוא שאלה של איפה העסק נמצא היום; הזדמנות היא שאלה של לאן הוא יכול להגיע — אלה שני צירים נפרדים, לא אחד. עסק עם פוטנציאל יוצא דופן, נזילות מוגבלת כרגע, הזדמנות שוק ייחודית או חזון מייסד חזק עשוי להצדיק מבנה מסחרי מותאם באותה מידה שעסק עם תקציב גדול יכול שלא להתאים לנו כלל. כשהפער הזה קיים, יש לנו מבנים מסחריים שנבנו בדיוק בשבילו — היקף התחלתי מצומצם, מבנה מבוסס-אחוזים, או שלביות (ראו "שני נתיבים אפשריים" בעמוד הבא). אלה לא הנחות שבות-לב — הן ארכיטקטורה מסחרית. אבל כדי שנוכל להשתמש בהן, אנחנו צריכים את התקציב הנוכחי האמיתי.</p>
+<div class="fine">המידע שתמסרו בפרק הזה משמש לתכנון, להערכה ולבניית ה"הצעה" בלבד — ואינו מהווה התחייבות לרכישת שירותים, לתשלום סכום מסוים או להשגת תוצאה עסקית. שום מספר שתרשמו אינו סופי ואינו "נועל" אתכם. הערה זו חלה על כל הלקוחות, ללא תלות במסלול.</div>
 {pagefoot()}
 </div>''')
 
-# ---- Two paths concept page ----
+# ==================================================================
+# 6 — Two paths (trimmed)
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · שני נתיבים אפשריים")}
+{pagehead("01", "שני נתיבים אפשריים")}
 <div class="eyebrow">בחירה</div>
 <h1 class="sec">שני נתיבים אפשריים</h1>
 <div class="secrule"></div>
@@ -281,16 +379,17 @@ PAGES.append(f'''<div class="page">
     <p>למשל: "אנחנו רוצים להשקיע כ-X בחודש למשך כ-Y חודשים" — ואנחנו בונים את התוכנית בתוכה.</p></div>
   <div class="card"><div class="card-label">נתיב ב׳</div>
     <div class="card-title">אתם מבקשים שנציע מודל מסחרי</div>
-    <p>אנחנו מציגים מבנה תמחור, ריטיינר או מודל אחר שלדעתנו המקצועית מתאים לפרויקט, ואתם שוקלים אותו. אפשר להשיב על השאלות הבאות בטווחים כלליים, לציין אילוצים בלבד, או להשאיר אותן לשיקול דעתנו המקצועי בהצעה הראשונית — אין צורך לנחש מספר.</p></div>
+    <p>אנחנו מציגים מבנה תמחור, ריטיינר או מודל אחר שלדעתנו המקצועית מתאים לפרויקט, ואתם שוקלים אותו. אפשר להשיב על השאלות הבאות בטווחים כלליים, לציין אילוצים בלבד, או להשאיר אותן לשיקול דעתנו המקצועי — אין צורך לנחש מספר.</p></div>
 </div>
-<h2 class="sub">גמישות מסחרית — לא הנחה</h2>
-<p class="body-copy">כשההזדמנות, ההתאמה האסטרטגית והערך הצפוי לטווח ארוך מצדיקים זאת, הארגון עשוי לבנות את השתתפותו בהתקשרות באופן שונה — למשל מבנה מבוסס-אחוזים, מבנה משולב, היקף התחלתי מצומצם, או שלביות בהתקשרות. אלה מבני התקשרות שהמסמכים המשפטיים תומכים בהם, לא הנחות ולא צעד של רצון טוב — זו ארכיטקטורה מסחרית, שנועדה להתאים את ההתקשרות למציאות של העסק.</p>
+<p class="body-copy"><strong>גמישות מסחרית — לא הנחה.</strong> כשההזדמנות, ההתאמה האסטרטגית והערך הצפוי לטווח ארוך מצדיקים זאת, הארגון עשוי לבנות את השתתפותו בהתקשרות באופן שונה — למשל מבנה מבוסס-אחוזים, מבנה משולב, היקף התחלתי מצומצם, או שלביות בהתקשרות. אלה מבני התקשרות שהמסמכים המשפטיים תומכים בהם, לא הנחות ולא צעד של רצון טוב — זו ארכיטקטורה מסחרית, שנועדה להתאים את ההתקשרות למציאות של העסק.</p>
 {pagefoot()}
 </div>''')
 
-# ---- Reflection page: goals ----
+# ==================================================================
+# 7 — Goals reflection
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · היעד והציפיות שלכם")}
+{pagehead("01", "היעד והציפיות שלכם")}
 <div class="eyebrow">לפני המספרים</div>
 <h1 class="sec">היעד והציפיות שלכם</h1>
 <div class="secrule"></div>
@@ -301,28 +400,33 @@ PAGES.append(f'''<div class="page">
 {pagefoot()}
 </div>''')
 
-# ---- Investment framework ----
+# ==================================================================
+# 8 — Investment framework
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · מסגרת ההשקעה שלכם")}
+{pagehead("01", "מסגרת ההשקעה שלכם")}
 <div class="eyebrow">תשומת הקלט המרכזית</div>
 <h1 class="sec">מסגרת ההשקעה שלכם</h1>
 <div class="secrule"></div>
 <p class="body-copy">השדה החשוב ביותר עבורנו כדי להתחיל לתכנן הוא <strong>התקציב החודשי</strong>; שאר השאלות כאן עוזרות לנו לדייק את התוכנית, וניתן לחדד אותן יחד איתנו בהמשך.</p>
 <div class="prompt"><div class="prompt-label">ספרו לנו</div>
 <div class="prompt-q">מהו התקציב החודשי המועדף עליכם?<br>האם יש היקף השקעה כולל שאתם מתכננים אליו?<br>מהו טווח הגמישות שלכם — תקציב קבוע, או מרחב תמרון בכפוף לאישורכם?<br>התקציב שאתם מוסרים כולל או לא כולל עלויות חיצוניות מסוימות (כגון תקציבי מדיה המועברים ישירות לפלטפורמות)?</div></div>
-<p class="body-copy">המספר שתמסרו הוא נקודת פתיחה לתכנון בלבד — לא הצעת מחיר ולא רצפה מחייבת. התוכנית שנציג לכם עשויה להיות שונה ממנו, בכל כיוון.</p>
+<p class="body-copy">המספר שתמסרו הוא נקודת פתיחה לתכנון בלבד — לא הצעת מחיר ולא רצפה מחייבת. <strong>תזכורת לפני שאתם עונים: אין כאן "תשובה גדולה יותר שנכון לתת". מספר קטן ואמיתי מאפשר לנו לבנות תוכנית שמדויקת לגודל הזה; מספר מנופח רק מרחיק את התוכנית מהמציאות שלכם.</strong></p>
 <div class="eyebrow" style="margin-top:22px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>
 <div class="stats">
   <div class="stat"><div class="stat-num">3</div><div class="stat-cap">חודשים · התחייבות תקציב מינימלית</div></div>
   <div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · הודעה מראש להפחתת תקציב</div></div>
 </div>
-<p class="fine">שימו לב: במסלולים מבוססי-תקציב (A/B/C), לאחר שהתקציב ייקבע בהצעה החתומה, ההתחייבות התפעולית היא לתקציב חודשי קבוע לשלושה חודשים לפחות; הפחתתו לאחר מכן טעונה הודעה מוקדמת בכתב של 30 יום. זהו תנאי מההסכם עצמו (נספח B), לא תנאי מהפרק הזה — אך כדאי שתכירו אותו כבר עכשיו.</p>
+<p class="fine">זה קיים כדי ששנינו נוכל לתכנן — לא כדי לגרום לכם להרגיש נעולים. זהו תנאי מההסכם עצמו (נספח B), לא תנאי מהפרק הזה — אך כדאי שתכירו אותו כבר עכשיו.</p>
+<div class="callout"><span class="callout-label">מסלול 0 בלבד:</span> אם בחרתם ברכישת מחקר Genesis חד-פעמית בלבד, ללא תקציב שוטף (נספח A סעיף 2) — פרקי המשנה מכאן ועד "נקודת האיזון" (כולל) אינם חלים עליכם, ואינכם נדרשים למלא את השדות הנוגעים אליהם. גם דמי ההשתתפות העצמית שיוזכרו בהמשך שייכים למסלולים A/B/C בלבד. אפשר לדלג ישירות לתהליך שבסוף הפרק.</div>
 {pagefoot()}
 </div>''')
 
-# ---- Timeline ----
+# ==================================================================
+# 9 — Timeline
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · טווח הזמן שלכם")}
+{pagehead("01", "טווח הזמן שלכם")}
 <div class="eyebrow">תכנון</div>
 <h1 class="sec">טווח הזמן שלכם</h1>
 <div class="secrule"></div>
@@ -333,27 +437,51 @@ PAGES.append(f'''<div class="page">
 {pagefoot()}
 </div>''')
 
-# ---- Tolerance ----
+# ==================================================================
+# 10 — NEW: sustainability principle (horizon rings)
+# ==================================================================
+_rings = []
+_radii = [14, 24, 35, 47, 60]
+for i, r in enumerate(_radii):
+    t = i / (len(_radii) - 1)
+    # gold -> purple stroke gradient across rings
+    color = f"rgb({int(169+(91-169)*t)},{int(130+(41-130)*t)},{int(79+(134-79)*t)})"
+    _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
+_horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
 PAGES.append(f'''<div class="page">
-{pagehead("01 · רמת ותקופת הסובלנות שלכם")}
-<div class="eyebrow">גמישות סביב רווחיות</div>
-<h1 class="sec">רמת ותקופת הסובלנות שלכם</h1>
+{pagehead("01", "העיקרון שמנחה אותנו")}
+<div class="eyebrow">עמדה שקופה</div>
+<h1 class="sec">לא למצות עד הסוף</h1>
 <div class="secrule"></div>
-<p class="body-copy">תקופת הסובלנות היא הזמן שבו אתם מאפשרים לנו גמישות לפעול בתוך מסגרת התקציב שהגדרתם, מבלי לדרוש שההתקשרות תהיה רווחית כבר מהיום הראשון. לדוגמה: תקציב של 20,000 ₪ לחודש ותקופת סובלנות של חמישה חודשים אומרים שבמהלך התקופה הזו, אנחנו רשאים להשתמש בתקציב הזמין כדי לבנות, לבחון ולהרחיב את הפעילות — גם אם היא עדיין לא מניבה רווח.</p>
-<div class="callout"><span class="callout-label">ברירת המחדל: נקודת איזון, לא הפסד.</span> גם בתוך תקופת הסובלנות, היעד השוטף הוא לפעול בנקודת האיזון — לא לייצר רווח מלאכותי ולא לייצר הפסד במתכוון. הסובלנות מקנה גמישות סביב ציפיית הרווחיות; היא אינה אישור להפסיד כסף.</div>
-<div class="callout warn"><span class="callout-label">גירעון זמני — רק אם תבחרו זאת במפורש, ותמיד עם תקרה.</span> לקוחות מסוימים מעדיפים להטות את מלוא התקציב לבנייה והרחבה בתקופה הראשונה, גם אם זה אומר גירעון תפעולי זמני ולא רק היעדר רווח. זו העדפה עסקית לגיטימית — אך שונה מברירת המחדל, ותצוין במפורש עם מסגרת ותקרה מוסכמות מראש. התקרה שתיקבע היא רף ה-Stop-Loss התפעולי לאותה תקופה — לא מנגנון נוסף עליו.</div>
-<div class="prompt"><div class="prompt-label">ספרו לנו</div>
-<div class="prompt-q">כמה זמן אתם מוכנים לתת למודל להתפתח (תקופת סובלנות)?<br>אתם מעדיפים שנתמקד בהגעה מהירה לרווחיות, או בבנייה והרחבה תוך הישארות בנקודת האיזון (רמת סובלנות: שמרנית / מאוזנת / אגרסיבית / הרחבה מרבית)?<br>אם רלוונטי — האם אתם מוכנים לגירעון זמני בפועל, ובאיזו תקרה?</div></div>
-</div>
-<div class="page">
-{pagehead("01 · רמת ותקופת הסובלנות שלכם")}
-<p class="fine">חשוב שתדעו: זה לא אומר שאתם מוותרים על זכות כלשהי. בכל עת, גם בתוך תקופת הסובלנות, תוכלו לעצור פעילות, לבחון תוצאות ולסיים את ההתקשרות בהתאם לתנאי ההסכם וההצעה — שום דבר כאן אינו משהה, מגביל או דוחה את הזכויות האלה. וכמו תמיד — גם בתום התקופה, אין בכך הבטחה לתוצאה או לרווחיות. רמת ותקופת הסובלנות, וכן גירעון זמני מוסכם אם הוסכם, יירשמו בטבלת התנאים המסחריים (נספח B); אף אחד מהם אינו יוצר מנגנון משפטי חדש מעבר לקבוע שם.</p>
+<div class="horizon-wrap">{_horizon_svg}
+<div class="horizon-cap">נאמר את זה בגלוי: יש לנו אינטרס ברור לא לדחוף אתכם למצות את התקציב החודשי. לקוח שמיצה את תזרים המזומנים שלו לא ממשיך להשקיע ברבעון הבא — מיצוי מלא היום עולה לנו בלקוח לטווח ארוך, בשביל חשבונית גדולה יותר לטווח קצר.</div></div>
+<p class="body-copy">זו לא רק עמדה ערכית מצידנו — זה ההיגיון הכלכלי שמניע אותנו לשמר את יכולתו של העסק להמשיך להשקיע, לפעול ולצמוח. וזו גם הסיבה שברירת המחדל התפעולית שלנו, בכל התקשרות, היא לפעול <strong>בנקודת איזון</strong> ולא במיצוי תקציב מלא — לא רק כמשפט כאן, אלא כתוב במנגנון עצמו (ראו "נקודת האיזון" בהמשך).</p>
 {pagefoot()}
 </div>''')
 
-# ---- Financial boundaries (own page) ----
+# ==================================================================
+# 11 — Tolerance (redesigned, plain-language first, neutral deficit callout)
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · גבולות פיננסיים")}
+{pagehead("01", "רמת ותקופת הסובלנות שלכם")}
+<div class="eyebrow">גמישות סביב רווחיות</div>
+<h1 class="sec">רמת ותקופת הסובלנות שלכם</h1>
+<div class="secrule"></div>
+<p class="body-copy"><strong>במילים פשוטות:</strong> יש לכם תקופה מוסכמת מראש שבה מותר לנו לבנות ולבחון בלי לרדוף אחרי רווח מיידי — אבל יש לזה שני בלמים מובנים שמגנים עליכם. הבלם הראשון: גם בתקופה הזו, ברירת המחדל היא שאנחנו פועלים בנקודת איזון — לא גורמים לכם הפסד בכוונה, גם אם עוד אין רווח. הבלם השני: אם תבחרו במפורש לרדת מתחת לאיזון כדי להאיץ בנייה, תמיד תיקבע תקרה מוסכמת מראש (Stop-Loss) שאסור לחרוג ממנה. במילים אחרות: אתם קובעים כמה "מרחב נשימה" לתת למודל, ואנחנו לא יכולים לעבור את התקרה שקבעתם — לא משנה מה.</p>
+<p class="fine">לדוגמה: תקציב של 20,000 ₪ לחודש ותקופת סובלנות של חמישה חודשים אומרים שבמהלך התקופה הזו, אנחנו רשאים להשתמש בתקציב הזמין כדי לבנות, לבחון ולהרחיב את הפעילות — גם אם היא עדיין לא מניבה רווח, ותמיד בתוך הבלמים שלמעלה.</p>
+<div class="callout"><span class="callout-label">ברירת המחדל: נקודת איזון, לא הפסד.</span> גם בתוך תקופת הסובלנות, היעד השוטף הוא לפעול בנקודת האיזון — לא לייצר רווח מלאכותי ולא לייצר הפסד במתכוון. הסובלנות מקנה גמישות סביב ציפיית הרווחיות; היא אינה אישור להפסיד כסף.</div>
+<div class="callout"><span class="callout-label">גירעון זמני — רק אם תבחרו זאת במפורש, ותמיד עם תקרה.</span> לקוחות מסוימים מעדיפים להטות את מלוא התקציב לבנייה והרחבה בתקופה הראשונה, גם אם זה אומר גירעון תפעולי זמני ולא רק היעדר רווח. זו העדפה עסקית לגיטימית — אך שונה מברירת המחדל, ותצוין במפורש עם מסגרת ותקרה מוסכמות מראש. התקרה שתיקבע היא רף ה-Stop-Loss התפעולי לאותה תקופה — לא מנגנון נוסף עליו.</div>
+<div class="prompt"><div class="prompt-label">ספרו לנו</div>
+<div class="prompt-q">כמה זמן אתם מוכנים לתת למודל להתפתח (תקופת סובלנות)?<br>אתם מעדיפים שנתמקד בהגעה מהירה לרווחיות, או בבנייה והרחבה תוך הישארות בנקודת האיזון (רמת סובלנות: שמרנית / מאוזנת / אגרסיבית / הרחבה מרבית)?<br>אם רלוונטי — האם אתם מוכנים לגירעון זמני בפועל, ובאיזו תקרה?</div></div>
+<p class="fine">חשוב שתדעו: זה לא אומר שאתם מוותרים על זכות כלשהי. בכל עת, גם בתוך תקופת הסובלנות, תוכלו לעצור פעילות, לבחון תוצאות ולסיים את ההתקשרות בהתאם לתנאי ההסכם וההצעה. רמת ותקופת הסובלנות, וגירעון זמני מוסכם אם הוסכם, יירשמו בטבלת התנאים המסחריים (נספח B); אף אחד מהם אינו יוצר מנגנון משפטי חדש מעבר לקבוע שם.</p>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 12 — Financial boundaries
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "גבולות פיננסיים")}
 <div class="eyebrow">הגנה עליכם</div>
 <h1 class="sec">גבולות פיננסיים</h1>
 <div class="secrule"></div>
@@ -370,44 +498,111 @@ PAGES.append(f'''<div class="page">
 {pagefoot()}
 </div>''')
 
-# ---- Break-even ----
+# ==================================================================
+# 13 — NEW: oversight & reporting
+# ==================================================================
 PAGES.append(f'''<div class="page">
-{pagehead("01 · נקודת האיזון (Break-Even)")}
+{pagehead("01", "בקרה ודיווח שוטף")}
+<div class="eyebrow">מה קורה אחרי החתימה</div>
+<h1 class="sec">בקרה ודיווח שוטף</h1>
+<div class="secrule"></div>
+<p class="body-copy">כדי שתוכלו לעקוב אחרי הפרויקט בלי להיות מעורבים בכל החלטה תפעולית יומיומית, ההסכם קובע כמה מנגנוני בקרה קבועים — כדאי שתכירו אותם כבר בשלב הזה:</p>
+<div class="cardgrid grid2">
+  <div class="card"><div class="card-label">דיווח שוטף</div><p>דוח ביצועים חודשי תמציתי אחד לפחות, וסקירה אסטרטגית רבעונית אחת לפחות — הוצאה בפועל, תוצאות ומדדי רווחיות/נקודת איזון מול התוכנית.</p></div>
+  <div class="card"><div class="card-label">כניסה לערוץ חדש</div><p>גם בתוך התקציב שאושר, כניסה לערוץ שיווקי או מסחרי חדש שלא נכלל בתוכנית שאושרה טעונה אישור מפורש שלכם מראש ובכתב.</p></div>
+  <div class="card"><div class="card-label">אם נחצה רף ה-Stop-Loss</div><p>הפעילות בתשלום תיעצר או תצומצם תוך יום עסקים אחד, ותקבלו הודעה בכתב המפרטת את הגורם וחלופה להמשך; חידוש הפעילות טעון אישורכם.</p></div>
+  <div class="card"><div class="card-label">אתם יכולים לעצור בכל עת</div><p>עצירה יזומה מצדכם מתבצעת תוך יום עסקים אחד מבקשתכם; עד חמישה ימי עסקים בחודש אינה נחשבת הפחתת תקציב ואינה הפרה מצדכם.</p></div>
+</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 14 — Break-even (tightened, micro-table)
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "נקודת האיזון (Break-Even)")}
 <div class="eyebrow">כלי תכנון, לא הבטחה</div>
 <h1 class="sec">נקודת האיזון (Break-Even)</h1>
 <div class="secrule"></div>
-<p class="body-copy">נקודת האיזון היא נקודת ייחוס תכנונית: כל עוד עלות הרכישה בפועל אינה עולה על שווי העסקה הממוצע כפול שיעור הרווח הגולמי שלכם — הפעילות נחשבת בנקודת האיזון או מעליה. זהו כלי תכנון, <strong>לא הבטחה לרווחיות ולא תחזית מובטחת</strong>.</p>
-<p class="body-copy">שיעור הרווח הגולמי הוא נתון שרק אתם יודעים — אין לו ברירת מחדל גנרית. אם לא תמסרו אותו, מנגנון נקודת האיזון כולו פשוט לא יופעל. שווי העסקה הממוצע (AOV) כן מקבל ברירת מחדל אם אינו ידוע לכם: השווי שייקבע במחקר Genesis שלכם.</p>
+<p class="body-copy"><strong>מה זה אומר עבורכם בפועל:</strong> תחשבו על נקודת האיזון כמו מד דלק, לא כמו יעד רווח. כל עוד עלות הרכישה של לקוח לא עוברת את מה שהלקוח הזה שווה לכם בממוצע — אנחנו בטווח הבטוח. זה לא אומר שיש רווח נקי גדול; זה אומר שאנחנו לא שורפים כסף כדי להביא לקוחות. זהו כלי תכנון, <strong>לא הבטחה לרווחיות ולא תחזית מובטחת</strong>.</p>
+<p class="body-copy">ובמונחים מדויקים: נקודת האיזון היא נקודת ייחוס תכנונית — כל עוד עלות הרכישה בפועל אינה עולה על שווי העסקה הממוצע כפול שיעור הרווח הגולמי שלכם, הפעילות נחשבת בנקודת האיזון או מעליה.</p>
+<table class="micro">
+  <tr><th>שדה</th><th>ברירת מחדל אם לא יימסר</th></tr>
+  <tr><td>שיעור הרווח הגולמי (לפני הוצאות קבועות)</td><td><strong>אין ברירת מחדל.</strong> מנגנון נקודת האיזון כולו לא יופעל</td></tr>
+  <tr><td>שווי עסקה ממוצע (AOV)</td><td><strong>יש</strong> — השווי שייקבע במחקר Genesis שלכם</td></tr>
+</table>
 <div class="prompt"><div class="prompt-label">ספרו לנו, אם ידוע לכם</div>
 <div class="prompt-q">מהו שיעור הרווח הגולמי שלכם?<br>מהו שווי העסקה הממוצע שלכם, או שנסתמך על מחקר Genesis?</div></div>
 <p class="fine">נקודת האיזון היא רצפה, לא תקרה — אפשר וכדאי להגדיר גם יעדי רווחיות נוספים מעליה. ככל שנקודת האיזון וההגדרות הפיננסיות רשומות בהסכם ובטבלת התנאים המסחריים — הן אלה שיחייבו, לא ההסברים הכלליים כאן.</p>
 {pagefoot()}
 </div>''')
 
-# ---- Process diagram ----
+# ==================================================================
+# 15 — NEW: Genesis specialist lenses
+# ==================================================================
+_icon_a = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="4" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>'
+_icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>'
+_icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
+_icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
 PAGES.append(f'''<div class="page">
-{pagehead("01 · מהמדריך להצעה")}
+{pagehead("01", "מה עומד מאחורי מחקר Genesis")}
+<div class="eyebrow">לא נקודת מבט אחת</div>
+<h1 class="sec">כמה עדשות מקצועיות, בו-זמנית</h1>
+<div class="secrule"></div>
+<p class="body-copy">מחקר Genesis אינו נשען על נקודת מבט בודדת. הוא מבוצע באמצעות מעטפת מומחים רב-תחומית — ארבעה תחומים בוחנים את ההזדמנות שלכם, כל אחד דרך העדשה שלו, לפני שהתובנות מתכנסות לכדי תוכנית אחת.</p>
+<div class="lenses">
+  <div class="lens"><div class="lens-icon">{_icon_a}</div><div class="lens-label">אנליטיקה<br>ומחקר</div></div>
+  <div class="lens c2"><div class="lens-icon">{_icon_b}</div><div class="lens-label">שיווק<br>ופרסום</div></div>
+  <div class="lens c3"><div class="lens-icon">{_icon_c}</div><div class="lens-label">קריאייטיב ופסיכולוגיה צרכנית</div></div>
+  <div class="lens c4"><div class="lens-icon">{_icon_d}</div><div class="lens-label">אסטרטגיה ופיתוח עסקי</div></div>
+</div>
+<div class="lens-converge"><div class="lens-line"></div><div class="lens-node">התוכנית</div></div>
+<p class="body-copy" style="text-align:center;color:var(--muted);font-size:9pt">תוכנית עסקית, שיווקית ופיננסית אחת — לא מבט בודד וגנרי על העסק שלכם</p>
+<div class="callout"><span class="callout-label">התוכנית שווה בפני עצמה.</span> התוכנית שנבנה עבורכם היא תוצר אנליטי אמיתי — לא רק שלב מקדים להצעה. גם אם בסופו של דבר תחליטו שלא להמשיך להתקשרות בפועל, לא יחול עליכם חיוב נוסף מעבר לדמי ההשתתפות העצמית, והתובנות שנאספו עבורכם עומדות בפני עצמן.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 16 — Process diagram
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "מהמדריך להצעה")}
 <div class="eyebrow">התהליך</div>
 <h1 class="sec">מהמדריך להצעה</h1>
 <div class="secrule"></div>
 <div class="process">
   <div class="pstep"><div class="pnum">1</div><div class="ptxt">אתם מספרים לנו את המסגרת שלכם — תקציב, מטרות, טווח זמן, סובלנות וגבולות — בטופס הקליטה שבסוף מדריך זה; הנתונים מועתקים ומאושרים בטבלת התנאים המסחריים שבנספח B להסכם.</div></div>
-  <div class="pstep"><div class="pnum">2</div><div class="ptxt">עם חתימת הסכם ההתקשרות ותשלום הרלוונטי למסלולכם (דמי ההשתתפות העצמית במסלולים A/B/C, או מחיר המחקר המלא במסלול 0), אנחנו עורכים את מחקר Genesis ובוחנים מה ניתן לבנות באחריות בתוך המסגרת שהגדרתם.</div></div>
+  <div class="pstep"><div class="pnum">2</div><div class="ptxt">עם חתימת הסכם ההתקשרות ותשלום הרלוונטי למסלולכם (דמי ההשתתפות העצמית במסלולים A/B/C, או מחיר המחקר המלא במסלול 0), אנחנו עורכים את מחקר Genesis באמצעות מעטפת המומחים הרב-תחומית, ובוחנים מה ניתן לבנות באחריות בתוך המסגרת שהגדרתם.</div></div>
   <div class="pstep"><div class="pnum">3</div><div class="ptxt">אנחנו מציגים לכם תוכנית עסקית, שיווקית ופיננסית, לצד הצעת התקשרות מסחרית — היקף, מבנה תמחור, לוח זמנים ומסגרת עבודה.</div></div>
   <div class="pstep"><div class="pnum">4</div><div class="ptxt">אתם מחליטים — לאשר, לדחות או לדון בהצעה המוצעת.</div></div>
   <div class="pstep"><div class="pnum">5</div><div class="ptxt">ה"הצעה" שתאושר ותיחתם מפעילה את ההתקשרות הספציפית הרלוונטית, לפי מסגרת ההסכם.</div></div>
 </div>
-<div class="callout"><span class="callout-label">לקוחות קיימים:</span> אם כבר חתמתם עם הארגון על הסכם ההתקשרות, והפרק הזה רלוונטי עבורכם לגבי התקשרות נוספת — פרויקט, מותג או יחידה עסקית נפרדים, או מסלול שטרם הופעל — התהליך שלעיל חוזר על עצמו ביחס לאותה התקשרות ספציפית החדשה בלבד, ואינו מצריך חתימה מחודשת על הסכם ההתקשרות עצמו; טבלת נספח B תעודכן ביחס אליה בלבד, מבלי לשנות תנאים שנקבעו בהצעה חתומה אחרת שנותרה בתוקף.</div>
+<div class="callout"><span class="callout-label">לקוחות קיימים:</span> אם כבר חתמתם על הסכם ההתקשרות, והפרק הזה רלוונטי עבורכם לגבי התקשרות נוספת — התהליך חוזר על עצמו ביחס לאותה התקשרות בלבד, ואינו מצריך חתימה מחודשת; טבלת נספח B תעודכן ביחס אליה בלבד.</div>
 {pagefoot()}
 </div>''')
 
-# ---- Intake divider ----
+# ==================================================================
+# 17 — Reminder (fixed: track-aware)
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "תזכורת")}
+<div class="eyebrow">לפני שממשיכים לטופס</div>
+<h1 class="sec">תזכורת</h1>
+<div class="secrule"></div>
+<p class="body-copy">כל המידע שתמסרו בפרק הזה — תקציב, טווח זמן, סובלנות וגבולות — משמש לתכנון ולהערכה בלבד, ואינו יוצר כשלעצמו התחייבות כלכלית.</p>
+<p class="body-copy">שימו לב: חתימה על הסכם ההתקשרות עצמו כרוכה בתשלום מהמסלול שבחרתם — דמי ההשתתפות העצמית למחקר Genesis במסלולים A/B/C, או מחיר המחקר המלא במסלול 0 — אך ההתחייבות המסחרית המלאה להיקף, למחיר ולתנאי ההתקשרות הספציפית נוצרת רק ב"הצעה" חתומה בנפרד, כפי שקיבלתם הסבר עליה למעלה.</p>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 18 — Intake divider (reframed)
+# ==================================================================
 PAGES.append('''<div class="page dark divider">
   <div class="divider-ghost">02</div>
   <div class="divider-inner">
-    <div class="divider-eyebrow"><span class="dash"></span>פרק 02</div>
+    <div class="divider-eyebrow"><span class="dash"></span>הצעד הבא</div>
     <div class="divider-title">טופס קליטה</div>
-    <div class="divider-sub">המידע כאן משמש לתכנון בלבד ואינו קובע בעצמו היקף, מחיר או תנאים מחייבים. תמציתי במכוון — כל שדה משמש ישירות את שלב המחקר והתכנון.</div>
+    <div class="divider-sub">המידע כאן משמש לתכנון בלבד ואינו קובע בעצמו היקף, מחיר או תנאים מחייבים. תמציתי במכוון, ואורך כ-5 דקות למילוי.</div>
     <div class="divider-endrule"></div>
   </div>
 </div>''')
@@ -425,13 +620,13 @@ INTAKE_GROUPS = [
     ("האנשים שמקבלים את ההחלטות", None, [
         "נציג מוסמך ראשי — שם, תפקיד, דוא\"ל", "נציג מוסמך חלופי, אם יש — שם, תפקיד, דוא\"ל",
     ]),
+    ("הנתיב המועדף", "מסלולים A/B/C בלבד — ראו \"שני נתיבים אפשריים\"; שתי התשובות תקפות באותה מידה. מסלול 0: כל שדות קבוצות 3–6 אינם רלוונטיים לכם — השאירו ריק ועברו לקבוצה 7", [
+        "אתם מגדירים את מסגרת ההשקעה, או מבקשים שנציע מודל מסחרי?",
+    ]),
     ("מסגרת ההשקעה שלכם", None, [
         "תקציב חודשי מועדף", "היקף השקעה כולל, אם ידוע", "טווח הגמישות (תקציב קבוע / מרחב תמרון)",
     ]),
-    ("הנתיב המועדף", "ראו \"שני נתיבים אפשריים\" — שתי התשובות תקפות באותה מידה", [
-        "אתם מגדירים את מסגרת ההשקעה, או מבקשים שנציע מודל מסחרי?",
-    ]),
-    ("סובלנות ורווחיות", "מסלול 0: השאירו ריק ועברו הלאה", [
+    ("סובלנות ורווחיות", None, [
         "תקופת הסובלנות המועדפת", "רמת הסובלנות (שמרנית / מאוזנת / אגרסיבית / הרחבה מרבית)",
         "העדפת רווחיות: מהר ככל האפשר, או בנייה והרחבה תוך שמירה על נקודת האיזון",
         "נכונות לגירעון תפעולי זמני בפועל, ואם כן — התקרה המבוקשת (תשמש כרף ה-Stop-Loss)",
@@ -453,14 +648,12 @@ INTAKE_GROUPS = [
     ]),
 ]
 
-# split the 9 groups across two content pages (5 + 4) to keep header/footer
-# repeating naturally instead of one very long flowing section
-def intake_page(eyebrow, groups, intro=None):
-    html = [f'<div class="page">{pagehead(eyebrow)}']
+def intake_page(num, title, groups, intro=None):
+    html = [f'<div class="page">{pagehead(num, title)}']
     if intro:
         html.append(f'<div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div><p class="intake-intro">{intro}</p>')
-    for idx, title, note, items in groups:
-        grp = [f'<div class="igroup"><div class="igroup-head"><span class="igroup-num">{idx:02d}</span><span class="igroup-title">{title}</span></div>']
+    for idx, title_, note, items in groups:
+        grp = [f'<div class="igroup"><div class="igroup-head"><span class="igroup-num">{idx:02d}</span><span class="igroup-title">{title_}</span></div>']
         if note:
             grp.append(f'<div class="igroup-note">{note}</div>')
         grp.append('<div class="ifields">')
@@ -472,17 +665,19 @@ def intake_page(eyebrow, groups, intro=None):
     return "".join(html)
 
 numbered = [(i, t, n, it) for i, (t, n, it) in enumerate(INTAKE_GROUPS, start=1)]
-PAGES.append(intake_page("02 · טופס קליטה", numbered[:5],
-    intro='מטרת הטופס: לאסוף את המידע הדרוש לצוות המחקר והתכנון כדי לבנות עבורכם תוכנית עסקית, שיווקית ופיננסית מותאמת, ולתרגם אותה בהמשך להצעת התקשרות מסחרית ספציפית. הטופס תמציתי במכוון — כל שדה כאן משמש ישירות את שלב המחקר והתכנון; פרטים נוספים ומדויקים יותר ייאספו בשיחה ישירה איתכם, ואינם "נועלים" אתכם בשום מחויבות עד לחתימה על הצעה ספציפית.'))
-PAGES.append(intake_page("02 · טופס קליטה (המשך)", numbered[5:]))
+PAGES.append(intake_page("02", "טופס קליטה", numbered[:5],
+    intro='מטרת הטופס: לאסוף את המידע הדרוש לצוות המחקר והתכנון כדי לבנות עבורכם תוכנית עסקית, שיווקית ופיננסית מותאמת, ולתרגם אותה בהמשך להצעת התקשרות מסחרית ספציפית. מה שלמעלה היה ההסבר; מה שלמטה הוא רק התרגום שלו לשדות קצרים — שום דבר כאן לא אמור להפתיע אתכם.'))
+PAGES.append(intake_page("02", "טופס קליטה (המשך)", numbered[5:]))
 
-# ---- Closing ----
+# ==================================================================
+# Closing
+# ==================================================================
 PAGES.append(f'''<div class="page dark closing">
   <div class="closing-ghost">LG</div>
   <div class="closing-inner">
     <div class="closing-eyebrow"><span class="dash"></span>לסיום</div>
     <div class="closing-title">כל המידע במדריך זה משמש לתכנון ולהערכה בלבד</div>
-    <p>חתימה על הסכם ההתקשרות עצמו כן כרוכה בתשלום הרלוונטי למסלולכם. ההתחייבות המסחרית המלאה להיקף, למחיר ולתנאי ההתקשרות הספציפית נוצרת רק ב"הצעה" חתומה בנפרד.<br><br>אנחנו מוכנים כשאתם מוכנים.</p>
+    <p>חתימה על הסכם ההתקשרות עצמו כן כרוכה בתשלום הרלוונטי למסלולכם. ההתחייבות המסחרית המלאה להיקף, למחיר ולתנאי ההתקשרות הספציפית נוצרת רק ב"הצעה" חתומה בנפרד — עד אז, כל מה שסיפרתם לנו נשאר פתוח לשינוי.<br><br>אנחנו מוכנים כשאתם מוכנים.</p>
     <div class="closing-brand"><img src="{LOGO_MARK}"><div class="tx"><div class="n">LOS GARDIOS</div><div class="t">מדריך הלקוח — סודי</div></div></div>
   </div>
 </div>''')
@@ -495,11 +690,11 @@ doc = f"""<!doctype html>
 <title>Los Gardios — מדריך הלקוח</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Frank+Ruhl+Libre:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head>
 <body><div class="sheet">
 {body}
 </div></body></html>"""
 
 io.open("CLIENT_GUIDE_HE.html", "w", encoding="utf-8").write(doc)
-print("wrote CLIENT_GUIDE_HE.html", len(doc), "bytes")
+print("wrote CLIENT_GUIDE_HE.html", len(doc), "bytes,", len(PAGES), "page blocks")
