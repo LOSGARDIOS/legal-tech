@@ -239,12 +239,13 @@ table.data th:last-child,table.data td:last-child{text-align:start}
  color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
 
 /* ---------- WIDE DATA TABLE (illustrative 12-month forecast, many columns) ---------- */
-table.data-full{width:100%;border-collapse:collapse;margin:6px 0;font-family:"Heebo",sans-serif;
- font-size:6.6pt;break-inside:avoid-page;page-break-inside:avoid}
+table.data-full{width:100%;table-layout:fixed;border-collapse:collapse;margin:6px 0;
+ font-family:"Heebo",sans-serif;font-size:6.6pt;break-inside:avoid-page;page-break-inside:avoid}
 table.data-full th{text-align:center;font-size:6pt;letter-spacing:.01em;color:var(--gold-deep);
- font-weight:700;padding:2px 1px 5px;border-bottom:1px solid var(--rule);white-space:nowrap}
-table.data-full td{padding:4.5px 1px;border-bottom:1px solid var(--rule);text-align:center;
- color:#382c1f;white-space:nowrap}
+ font-weight:700;padding:2px 1px 3px;border-bottom:1px solid var(--rule);line-height:1.1;
+ word-break:break-word}
+table.data-full td{padding:3.5px 1px;border-bottom:1px solid var(--rule);text-align:center;
+ color:#382c1f;overflow-wrap:break-word}
 table.data-full td:first-child{color:var(--ink);font-weight:600}
 table.data-full th:last-child,table.data-full td:last-child{text-align:start}
 table.data-full th.sec-mkt,table.data-full td.sec-mkt{background:rgba(169,130,79,.08)}
@@ -724,29 +725,43 @@ _FORECAST_COLS = [
 _FORECAST_ROWS = [
     [1, "15,000 ₪", "20 ₪", "750,000", "1.8%", "13,500", "3.00", "1.2%", "162", "93 ₪", "93 ₪", "3",
      "278 ₪", "–", "–", "162", "45,000 ₪", "4,000 ₪", "51,000 ₪", "-6,000 ₪", "-12%"],
-    [2, "20,000 ₪", "20 ₪", "1,000,000", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪", "98 ₪", "3",
+    [2, "20,000 ₪", "20 ₪", "1.0M", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪", "98 ₪", "3",
      "294 ₪", "8%", "13", "251", "70,000 ₪", "4,500 ₪", "74,000 ₪", "-4,000 ₪", "-5%"],
-    [3, "26,000 ₪", "19 ₪", "1,368,000", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪", "102 ₪", "3",
+    [3, "26,000 ₪", "19 ₪", "1.37M", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪", "102 ₪", "3",
      "305 ₪", "12%", "29", "357", "100,000 ₪", "5,000 ₪", "93,000 ₪", "7,000 ₪", "8%"],
-    [4, "34,000 ₪", "19 ₪", "1,789,000", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪", "104 ₪", "3",
+    [4, "34,000 ₪", "19 ₪", "1.79M", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪", "104 ₪", "3",
      "311 ₪", "16%", "52", "502", "140,000 ₪", "5,500 ₪", "119,000 ₪", "21,000 ₪", "18%"],
-    [5, "42,000 ₪", "18 ₪", "2,333,000", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪", "110 ₪", "3",
+    [5, "42,000 ₪", "18 ₪", "2.33M", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪", "110 ₪", "3",
      "330 ₪", "19%", "86", "646", "185,000 ₪", "6,000 ₪", "147,000 ₪", "38,000 ₪", "26%"],
-    [6, "50,000 ₪", "18 ₪", "2,778,000", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪", "111 ₪", "3",
+    [6, "50,000 ₪", "18 ₪", "2.78M", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪", "111 ₪", "3",
      "332 ₪", "21%", "118", "811", "230,000 ₪", "6,500 ₪", "174,000 ₪", "56,000 ₪", "32%"],
-    [7, "58,000 ₪", "17 ₪", "3,412,000", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪", "109 ₪", "3",
+    [7, "58,000 ₪", "17 ₪", "3.41M", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪", "109 ₪", "3",
      "327 ₪", "23%", "159", "984", "270,000 ₪", "7,000 ₪", "200,000 ₪", "70,000 ₪", "35%"],
-    [8, "65,000 ₪", "17 ₪", "3,824,000", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪", "110 ₪", "3",
+    [8, "65,000 ₪", "17 ₪", "3.82M", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪", "110 ₪", "3",
      "330 ₪", "24%", "198", "1,122", "305,000 ₪", "7,000 ₪", "229,000 ₪", "76,000 ₪", "33%"],
-    [9, "70,000 ₪", "17 ₪", "4,118,000", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪", "118 ₪", "3",
+    [9, "70,000 ₪", "17 ₪", "4.12M", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪", "118 ₪", "3",
      "353 ₪", "25%", "231", "1,179", "335,000 ₪", "7,500 ₪", "258,000 ₪", "77,000 ₪", "30%"],
-    [10, "76,000 ₪", "16 ₪", "4,750,000", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪", "111 ₪", "3",
+    [10, "76,000 ₪", "16 ₪", "4.75M", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪", "111 ₪", "3",
      "334 ₪", "26%", "246", "1,339", "365,000 ₪", "7,500 ₪", "285,000 ₪", "80,000 ₪", "28%"],
-    [11, "82,000 ₪", "16 ₪", "5,125,000", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪", "124 ₪", "3",
+    [11, "82,000 ₪", "16 ₪", "5.13M", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪", "124 ₪", "3",
      "373 ₪", "27%", "295", "1,355", "395,000 ₪", "8,000 ₪", "313,000 ₪", "82,000 ₪", "26%"],
-    [12, "88,000 ₪", "16 ₪", "5,500,000", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪", "124 ₪", "3",
+    [12, "88,000 ₪", "16 ₪", "5.5M", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪", "124 ₪", "3",
      "373 ₪", "28%", "297", "1,436", "425,000 ₪", "8,000 ₪", "340,000 ₪", "85,000 ₪", "25%"],
 ]
+# width tier per column (index-aligned with _FORECAST_COLS): narrow/medium/wide,
+# so long currency values (7-10 chars) get more room than short percentages/small ints.
+_FORECAST_WIDTH_TIERS = [
+    "narrow",  # חודש
+    "wide", "narrow", "wide", "narrow", "medium", "narrow",  # תקציב..ROAS
+    "narrow", "medium", "narrow", "medium", "narrow", "medium",  # יחס המרה..AOV
+    "narrow", "medium", "medium",  # יחס שימור, רכישות חוזרות, סה"כ המרות
+    "wide", "wide", "wide", "wide", "narrow",  # הכנסות..ROI
+]
+_FORECAST_TIER_WEIGHT = {"narrow": 3.2, "medium": 4.8, "wide": 7.05}
+assert len(_FORECAST_WIDTH_TIERS) == len(_FORECAST_COLS)
+_forecast_colgroup = ''.join(
+    f'<col style="width:{_FORECAST_TIER_WEIGHT[tier]}%">' for tier in _FORECAST_WIDTH_TIERS
+)
 _forecast_head_cells = ''.join(
     f'<th class="sec-{grp}">{label}</th>' if grp else f'<th>{label}</th>'
     for label, grp in _FORECAST_COLS
@@ -760,6 +775,7 @@ for _row in _FORECAST_ROWS:
     _forecast_body_rows.append(f'<tr>{_cells}</tr>')
 _FORECAST_TABLE_HTML = (
     '<table class="data-full">'
+    f'<colgroup>{_forecast_colgroup}</colgroup>'
     f'<tr>{_forecast_head_cells}</tr>'
     + ''.join(_forecast_body_rows)
     + '</table>'
