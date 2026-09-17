@@ -242,11 +242,22 @@ table.data th:last-child,table.data td:last-child{text-align:start}
 table.data-full{width:100%;border-collapse:collapse;margin:6px 0;font-family:"Heebo",sans-serif;
  font-size:6.6pt;break-inside:avoid-page;page-break-inside:avoid}
 table.data-full th{text-align:center;font-size:6pt;letter-spacing:.01em;color:var(--gold-deep);
- font-weight:700;padding:0 2px 5px;border-bottom:1px solid var(--rule);white-space:nowrap}
-table.data-full td{padding:4.5px 2px;border-bottom:1px solid var(--rule);text-align:center;
+ font-weight:700;padding:2px 1px 5px;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.data-full td{padding:4.5px 1px;border-bottom:1px solid var(--rule);text-align:center;
  color:#382c1f;white-space:nowrap}
 table.data-full td:first-child{color:var(--ink);font-weight:600}
 table.data-full th:last-child,table.data-full td:last-child{text-align:start}
+table.data-full th.sec-mkt,table.data-full td.sec-mkt{background:rgba(169,130,79,.08)}
+table.data-full th.sec-com,table.data-full td.sec-com{background:rgba(140,106,61,.08)}
+table.data-full th.sec-ret,table.data-full td.sec-ret{background:rgba(125,111,92,.09)}
+table.data-full th.sec-fin,table.data-full td.sec-fin{background:rgba(91,41,134,.06)}
+table.data-full th.sec-mkt{border-top:3px solid var(--gold)}
+table.data-full th.sec-com{border-top:3px solid var(--gold-deep)}
+table.data-full th.sec-ret{border-top:3px solid var(--muted)}
+table.data-full th.sec-fin{border-top:3px solid var(--purple)}
+.tbl-legend{display:flex;gap:16px;margin:2px 0 6px;font-family:"Heebo",sans-serif;
+ font-size:7.4pt;color:var(--muted)}
+.tbl-legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:5px}
 
 /* ---------- INTAKE FORM ---------- */
 .intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
@@ -700,6 +711,61 @@ PAGES.append(f'''<div class="page">
 </div>''')
 
 # ==================================================================
+# 14b — NEW: Illustrative forecast example table (real methodology,
+# section-color-coded: marketing / commerce / returning customers / financial)
+# ==================================================================
+_FORECAST_COLS = [
+    ("חודש", None),
+    ("תקציב", "mkt"), ("CPM", "mkt"), ("חשיפה", "mkt"), ("CTR", "mkt"), ("מבקרים", "mkt"), ("ROAS", "mkt"),
+    ("יחס המרה", "com"), ("המרות", "com"), ("CPA", "com"), ("ערך מוצר", "com"), ("פריטים/עגלה", "com"), ("AOV", "com"),
+    ("יחס שימור", "ret"), ("רכישות חוזרות", "ret"), ('סה"כ המרות', "ret"),
+    ("הכנסות", "fin"), ("הוצ' קבועות", "fin"), ('סה"כ הוצאות', "fin"), ("רווח", "fin"), ("ROI", "fin"),
+]
+_FORECAST_ROWS = [
+    [1, "15,000 ₪", "20 ₪", "750,000", "1.8%", "13,500", "3.00", "1.2%", "162", "93 ₪", "93 ₪", "3",
+     "278 ₪", "–", "–", "162", "45,000 ₪", "4,000 ₪", "51,000 ₪", "-6,000 ₪", "-12%"],
+    [2, "20,000 ₪", "20 ₪", "1,000,000", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪", "98 ₪", "3",
+     "294 ₪", "8%", "13", "251", "70,000 ₪", "4,500 ₪", "74,000 ₪", "-4,000 ₪", "-5%"],
+    [3, "26,000 ₪", "19 ₪", "1,368,000", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪", "102 ₪", "3",
+     "305 ₪", "12%", "29", "357", "100,000 ₪", "5,000 ₪", "93,000 ₪", "7,000 ₪", "8%"],
+    [4, "34,000 ₪", "19 ₪", "1,789,000", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪", "104 ₪", "3",
+     "311 ₪", "16%", "52", "502", "140,000 ₪", "5,500 ₪", "119,000 ₪", "21,000 ₪", "18%"],
+    [5, "42,000 ₪", "18 ₪", "2,333,000", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪", "110 ₪", "3",
+     "330 ₪", "19%", "86", "646", "185,000 ₪", "6,000 ₪", "147,000 ₪", "38,000 ₪", "26%"],
+    [6, "50,000 ₪", "18 ₪", "2,778,000", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪", "111 ₪", "3",
+     "332 ₪", "21%", "118", "811", "230,000 ₪", "6,500 ₪", "174,000 ₪", "56,000 ₪", "32%"],
+    [7, "58,000 ₪", "17 ₪", "3,412,000", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪", "109 ₪", "3",
+     "327 ₪", "23%", "159", "984", "270,000 ₪", "7,000 ₪", "200,000 ₪", "70,000 ₪", "35%"],
+    [8, "65,000 ₪", "17 ₪", "3,824,000", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪", "110 ₪", "3",
+     "330 ₪", "24%", "198", "1,122", "305,000 ₪", "7,000 ₪", "229,000 ₪", "76,000 ₪", "33%"],
+    [9, "70,000 ₪", "17 ₪", "4,118,000", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪", "118 ₪", "3",
+     "353 ₪", "25%", "231", "1,179", "335,000 ₪", "7,500 ₪", "258,000 ₪", "77,000 ₪", "30%"],
+    [10, "76,000 ₪", "16 ₪", "4,750,000", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪", "111 ₪", "3",
+     "334 ₪", "26%", "246", "1,339", "365,000 ₪", "7,500 ₪", "285,000 ₪", "80,000 ₪", "28%"],
+    [11, "82,000 ₪", "16 ₪", "5,125,000", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪", "124 ₪", "3",
+     "373 ₪", "27%", "295", "1,355", "395,000 ₪", "8,000 ₪", "313,000 ₪", "82,000 ₪", "26%"],
+    [12, "88,000 ₪", "16 ₪", "5,500,000", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪", "124 ₪", "3",
+     "373 ₪", "28%", "297", "1,436", "425,000 ₪", "8,000 ₪", "340,000 ₪", "85,000 ₪", "25%"],
+]
+_forecast_head_cells = ''.join(
+    f'<th class="sec-{grp}">{label}</th>' if grp else f'<th>{label}</th>'
+    for label, grp in _FORECAST_COLS
+)
+_forecast_body_rows = []
+for _row in _FORECAST_ROWS:
+    _cells = ''.join(
+        f'<td class="sec-{grp}">{val}</td>' if grp else f'<td>{val}</td>'
+        for (label, grp), val in zip(_FORECAST_COLS, _row)
+    )
+    _forecast_body_rows.append(f'<tr>{_cells}</tr>')
+_FORECAST_TABLE_HTML = (
+    '<table class="data-full">'
+    f'<tr>{_forecast_head_cells}</tr>'
+    + ''.join(_forecast_body_rows)
+    + '</table>'
+)
+
+# ==================================================================
 # 14b — NEW: Illustrative forecast example table
 # ==================================================================
 PAGES.append(f'''<div class="page">
@@ -707,23 +773,15 @@ PAGES.append(f'''<div class="page">
 <div class="eyebrow">להמחשה בלבד — לא תחזית</div>
 <h1 class="sec">כך נראית תוכנית לאורך זמן</h1>
 <div class="secrule" style="margin-bottom:6px"></div>
-<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן היא דוגמה מספרית מומצאת לאורך 12 חודשים, שנועדה להראות איך תוכנית עבודה מלאה נראית בפועל — מרמת התנועה והחשיפה, דרך ההמרה, ועד לתוצאה הפיננסית. היא אינה משקפת פרויקט אמיתי, אינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בה אינם מבוססים על נתוני לקוח כלשהו — הם נבנו כך שיהיו עקביים מתמטית זה עם זה, להמחשה בלבד.</div>
-<table class="data-full">
-  <tr><th>חודש</th><th>תקציב</th><th>CPM</th><th>חשיפה</th><th>CTR</th><th>מבקרים</th><th>המרה%</th><th>המרות</th><th>CPA</th><th>ROAS</th><th>AOV</th><th>הכנסה</th><th>עלות</th><th>תוצאה</th><th>ROI</th><th>ביטחון</th></tr>
-  <tr><td>1</td><td>15,000 ₪</td><td>20 ₪</td><td>750,000</td><td>1.8%</td><td>13,500</td><td>1.2%</td><td>162</td><td>93 ₪</td><td>3.00</td><td>278 ₪</td><td>45,000 ₪</td><td>51,000 ₪</td><td>-6,000 ₪</td><td>-12%</td><td>נמוכה</td></tr>
-  <tr><td>2</td><td>20,000 ₪</td><td>20 ₪</td><td>1,000,000</td><td>1.7%</td><td>17,000</td><td>1.4%</td><td>238</td><td>84 ₪</td><td>3.50</td><td>294 ₪</td><td>70,000 ₪</td><td>74,000 ₪</td><td>-4,000 ₪</td><td>-5%</td><td>נמוכה</td></tr>
-  <tr><td>3</td><td>26,000 ₪</td><td>19 ₪</td><td>1,368,000</td><td>1.5%</td><td>20,500</td><td>1.6%</td><td>328</td><td>79 ₪</td><td>3.85</td><td>305 ₪</td><td>100,000 ₪</td><td>93,000 ₪</td><td>7,000 ₪</td><td>8%</td><td>נמוכה-בינונית</td></tr>
-  <tr><td>4</td><td>34,000 ₪</td><td>19 ₪</td><td>1,789,000</td><td>1.4%</td><td>25,000</td><td>1.8%</td><td>450</td><td>76 ₪</td><td>4.12</td><td>311 ₪</td><td>140,000 ₪</td><td>119,000 ₪</td><td>21,000 ₪</td><td>18%</td><td>נמוכה-בינונית</td></tr>
-  <tr><td>5</td><td>42,000 ₪</td><td>18 ₪</td><td>2,333,000</td><td>1.2%</td><td>28,000</td><td>2.0%</td><td>560</td><td>75 ₪</td><td>4.40</td><td>330 ₪</td><td>185,000 ₪</td><td>147,000 ₪</td><td>38,000 ₪</td><td>26%</td><td>בינונית</td></tr>
-  <tr><td>6</td><td>50,000 ₪</td><td>18 ₪</td><td>2,778,000</td><td>1.2%</td><td>33,000</td><td>2.1%</td><td>693</td><td>72 ₪</td><td>4.60</td><td>332 ₪</td><td>230,000 ₪</td><td>174,000 ₪</td><td>56,000 ₪</td><td>32%</td><td>בינונית</td></tr>
-  <tr><td>7</td><td>58,000 ₪</td><td>17 ₪</td><td>3,412,000</td><td>1.1%</td><td>37,500</td><td>2.2%</td><td>825</td><td>70 ₪</td><td>4.66</td><td>327 ₪</td><td>270,000 ₪</td><td>200,000 ₪</td><td>70,000 ₪</td><td>35%</td><td>בינונית-גבוהה</td></tr>
-  <tr><td>8</td><td>65,000 ₪</td><td>17 ₪</td><td>3,824,000</td><td>1.1%</td><td>42,000</td><td>2.2%</td><td>924</td><td>70 ₪</td><td>4.69</td><td>330 ₪</td><td>305,000 ₪</td><td>229,000 ₪</td><td>76,000 ₪</td><td>33%</td><td>בינונית-גבוהה</td></tr>
-  <tr><td>9</td><td>70,000 ₪</td><td>17 ₪</td><td>4,118,000</td><td>1.0%</td><td>41,200</td><td>2.3%</td><td>948</td><td>74 ₪</td><td>4.79</td><td>353 ₪</td><td>335,000 ₪</td><td>258,000 ₪</td><td>77,000 ₪</td><td>30%</td><td>בינונית-גבוהה</td></tr>
-  <tr><td>10</td><td>76,000 ₪</td><td>16 ₪</td><td>4,750,000</td><td>1.0%</td><td>47,500</td><td>2.3%</td><td>1,093</td><td>70 ₪</td><td>4.80</td><td>334 ₪</td><td>365,000 ₪</td><td>285,000 ₪</td><td>80,000 ₪</td><td>28%</td><td>גבוהה</td></tr>
-  <tr><td>11</td><td>82,000 ₪</td><td>16 ₪</td><td>5,125,000</td><td>0.9%</td><td>46,100</td><td>2.3%</td><td>1,060</td><td>77 ₪</td><td>4.82</td><td>373 ₪</td><td>395,000 ₪</td><td>313,000 ₪</td><td>82,000 ₪</td><td>26%</td><td>גבוהה</td></tr>
-  <tr><td>12</td><td>88,000 ₪</td><td>16 ₪</td><td>5,500,000</td><td>0.9%</td><td>49,500</td><td>2.3%</td><td>1,139</td><td>77 ₪</td><td>4.83</td><td>373 ₪</td><td>425,000 ₪</td><td>340,000 ₪</td><td>85,000 ₪</td><td>25%</td><td>גבוהה</td></tr>
-</table>
-<p class="fine">"ביטחון" (רמת הביטחון בתוצאה) ממחיש עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
+<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן בנויה לפי אותם מדדים, שמות וקטגוריות (שיווק, מסחר, לקוחות חוזרים, פיננסי) שבהם משתמש הארגון בפועל במודל התכנון הפיננסי הפנימי שלו, ומציגה 12 חודשים בצורת עקומה ריאלית — הפסד קל בהתחלה, מעבר לנקודת איזון, שיא, והתייצבות — בדיוק כפי שתוכנית עבודה אמיתית מתפתחת. עם זאת, המספרים עצמם מומצאים להמחשה בלבד: הטבלה אינה משקפת פרויקט או לקוח אמיתי, ואינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם.</div>
+<div class="tbl-legend">
+  <span><span class="dot" style="background:var(--gold)"></span>שיווק</span>
+  <span><span class="dot" style="background:var(--gold-deep)"></span>מסחר</span>
+  <span><span class="dot" style="background:var(--muted)"></span>לקוחות חוזרים</span>
+  <span><span class="dot" style="background:var(--purple)"></span>פיננסי</span>
+</div>
+{_FORECAST_TABLE_HTML}
+<p class="fine">שימו לב לצורת העקומה: הפסד קל בחודשים הראשונים (שלב למידה), מעבר לנקודת איזון, ואז שיפור הדרגתי ב-ROI ככל שמצטבר יותר מידע ונבנית תשתית לקוחות חוזרים — בדיוק העיקרון שהוסבר למעלה. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
 {pagefoot()}
 </div>''')
 
