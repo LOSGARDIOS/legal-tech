@@ -122,6 +122,10 @@ strong{font-weight:700;color:var(--ink)}
 .cardgrid{display:flex;gap:14px;margin:16px 0}
 .cardgrid.stack{flex-direction:column}
 .cardgrid.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cardgrid.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.cardgrid.grid3 .card{padding:13px 14px}
+.cardgrid.grid3 .card-title{font-size:11pt;margin:0 0 6px}
+.cardgrid.grid3 .card p{font-size:8.6pt;line-height:1.75}
 .card{flex:1;background:var(--cream2);border:1px solid var(--rule);border-top:3px solid var(--gold);
  border-radius:2px;padding:16px 18px;break-inside:avoid-page;page-break-inside:avoid}
 .card-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
@@ -333,7 +337,7 @@ PAGES.append(f'''<div class="page">
 <p class="body-copy">כדי לספק שירות ברמה גבוהה ועקבית לכל לקוח, אנחנו משקיעים משאבים משמעותיים עוד לפני תחילת ההתקשרות הספציפית עמכם — בגיוס ובהכשרת אנשי מקצוע, בבניית קשרים עסקיים, בפיתוח ידע ותהליכים פנימיים, ובמערכות טכנולוגיות קנייניות (ראו העמוד הבא). ההגנה על נכסים אלה היא הבסיס שמאפשר לנו להמשיך להשקיע באותה רצינות בכל התקשרות, בלי קשר להיקפה.</p>
 <div class="cardgrid grid2">
   <div class="card"><div class="card-label">הון אנושי</div><p>הארגון מונה 100+ שותפים ברחבי העולם שעוברים איתור, סינון והכשרה מקצועית מתמשכת (הנפרסת על פני כשלוש שנים), ליווי ופיקוח שוטפים של כל נציג ושותף מטעמנו.</p></div>
-  <div class="card"><div class="card-label">רשת קשרים עסקיים</div><p>קשרים עם ספקים, יצרנים, מפיצים ושותפים עסקיים, המבוססים על אמון ומוניטין שנצברים לאורך זמן ולא בבת-אחת.</p></div>
+  <div class="card"><div class="card-label">רשת קשרים עסקיים</div><p>קשרים עם ספקים, יצרנים, מפיצים ושותפים עסקיים, המבוססים על אמון ומוניטין שנצברים לאורך זמן ולא בבת-אחת (ראו גם Atlas Network בהמשך).</p></div>
   <div class="card"><div class="card-label">מידע סודי</div><p>מבנה תמחור, תהליכים פנימיים, ומידע מצטבר על ספקים ולקוחות.</p></div>
   <div class="card"><div class="card-label">הון אינטלקטואלי ותשתית</div><p>מתודולוגיות, מודלים, תבניות עבודה, ומערכות טכנולוגיות — לרבות מערכות ומודלי בינה מלאכותית בפיתוחנו (ראו העמוד הבא).</p></div>
 </div>
@@ -342,7 +346,7 @@ PAGES.append(f'''<div class="page">
 </div>''')
 
 # ==================================================================
-# 1.3 — Proprietary technology (Neuron) + specialist capabilities
+# 1.3 — Proprietary technology (Neuron OS / Neuron Network, 6-neuron grid)
 # ==================================================================
 _neuron_icon_os = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="3.5" y="4.5" width="17" height="12" rx="1.5"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16.5" x2="12" y2="20"/></svg>'
 _neuron_icon_net = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><circle cx="6" cy="6" r="2.3"/><circle cx="18" cy="6" r="2.3"/><circle cx="12" cy="18" r="2.3"/><line x1="7.8" y1="7.5" x2="10.5" y2="16"/><line x1="16.2" y1="7.5" x2="13.5" y2="16"/><line x1="8.3" y1="6" x2="15.7" y2="6"/></svg>'
@@ -351,13 +355,55 @@ PAGES.append(f'''<div class="page">
 <div class="eyebrow">תשתית תפעולית</div>
 <h1 class="sec">טכנולוגיה קניינית ומערכות פנימיים</h1>
 <div class="secrule"></div>
-<p class="body-copy">חלק מהיכולת שלנו לתאם מחקר, ניתוח, אסטרטגיה, הפקה וביצוע בו-זמנית, עבור לקוחות מרובים, נשען על מערכות טכנולוגיה פנימיות שפיתחנו ומחזיקים — מערכות Neuron.</p>
+<p class="body-copy">חלק מהיכולת שלנו לתאם מחקר, ניתוח, אסטרטגיה, הפקה וביצוע בו-זמנית, עבור לקוחות מרובים, נשען על מערכות טכנולוגיה פנימיות שפיתחנו ומחזיקים — <strong>מערכות Neuron</strong>: Neuron OS, מערכת ההפעלה הארגונית; ו-Neuron Network, שכבת הבינה המלאכותית הקניינית הפועלת בתוכה.</p>
 <div class="cardgrid grid2">
-  <div class="card"><div class="card-label">{_neuron_icon_os}</div><div class="card-title">Neuron OS</div><p>מערכת התיעוד, ניהול הפרויקטים והתקשורת הפנימית של הארגון — ובה, בין היתר, הדוחות התקופתיים שתקבלו.</p></div>
-  <div class="card"><div class="card-label">{_neuron_icon_net}</div><div class="card-title">Neuron Network</div><p>שכבת המודלים, האלגוריתמים והאנליטיקה של הארגון, המשמשת לניתוח ולתכנון.</p></div>
+  <div class="card"><div class="card-label">{_neuron_icon_os}</div><div class="card-title">Neuron OS</div><p>מערכת ההפעלה הארגונית: תיעוד, ניהול פרויקטים ותקשורת פנימית — ובה, בין היתר, הדוחות התקופתיים שתקבלו.</p></div>
+  <div class="card"><div class="card-label">{_neuron_icon_net}</div><div class="card-title">Neuron Network</div><p>שכבת הבינה המלאכותית הקניינית הפועלת בתוך Neuron OS — לא מנוע אחד, אלא כמה "נוירונים" ייעודיים המפורטים בהמשך.</p></div>
 </div>
-<div class="callout"><span class="callout-label">מה זה אומר עבורכם:</span> מערכות אלה, לרבות כל שיפור בהן, הן נכס קנייני בלעדי שלנו בכל עת — גם כשהן משמשות לתכנון או לביצוע עבורכם באופן ספציפי. אתם מקבלים רישיון שימוש בתוצרים שהופקו באמצעותן (התוכניות, הניתוחים והחומרים שנמסרים לכם) — לא בעלות או גישה למערכות עצמן. אנחנו לא חושפים כאן פרטים על הארכיטקטורה הטכנית או השיטות הפנימיות — אלה סוד מסחרי שלנו. מה שחשוב שתדעו: התכנון שתקבלו נשען על תשתית תפעולית אמיתית, לא רק על עבודה ידנית של איש מקצוע בודד.</div>
-<h2 class="sub">יכולות מומחים</h2>
+{pagefoot()}
+</div>''')
+
+PAGES.append(f'''<div class="page">
+{pagehead("01", "Neuron Network — הנוירונים")}
+<div class="eyebrow">בינה מלאכותית קניינית</div>
+<h1 class="sec">כמה "נוירונים" ייעודיים, לא מנוע אחד</h1>
+<div class="secrule"></div>
+<p class="body-copy">כל נוירון מאומן בנפרד על ידע קנייני בתחום מסוים, ופועל בתיאום עם האחרים כדי לתמוך בעבודת המומחים האנושיים בפרויקט:</p>
+<div class="cardgrid grid3">
+  <div class="card"><div class="card-title">Campus</div><p>מאגד את הידע הארגוני ואת התובנות מכלל הנוירונים, ומזין כל אחד מהם במידע הרלוונטי לו — בדומה לתפקיד שממלא התת-מודע עבור החשיבה המודעת.</p></div>
+  <div class="card"><div class="card-title">Axon</div><p>הנוירון השיווקי: מנתח ומכייל ביצועי קמפיינים, מותאם לאופי העסק והשוק הספציפיים.</p></div>
+  <div class="card"><div class="card-title">Cortex</div><p>הנוירון הקריאייטיבי: עוקב אחר ביצועי תוכן והופך תובנות להמלצות הפקה, לשמירה על עקביות שפת המותג.</p></div>
+  <div class="card"><div class="card-title">Glio</div><p>נוירון קשרי הלקוחות: מאומן על עקרונות תקשורת ופסיכולוגיה התנהגותית, ומסייע בליווי, במענה ובשימור לקוחות.</p></div>
+  <div class="card"><div class="card-title">Node O1</div><p>הנוירון הטכני-פיתוחי: הופך עיצוב ואסטרטגיה למבנה טכנולוגי ולקוד עבור אתרים, אפליקציות ומערכות.</p></div>
+  <div class="card"><div class="card-title">Dendrites</div><p>הנוירון האנליטי (BI): מנתח נתונים עסקיים והתנהגות צרכנים לזיהוי מגמות וחסמים, ומייצר תובנות תומכות-החלטה.</p></div>
+</div>
+<div class="callout"><span class="callout-label">חשוב שתדעו:</span> המערכת בפיתוח פנימי מתקדם ומשמשת את הארגון פנימית — אינה נמכרת כמוצר תוכנה עצמאי. תפקידה להרחיב את יכולת הצוותים לצפות בדפוסים ולנתח היקפי מידע גדולים (לעיתים במונחי מיליוני עד טריליוני נתונים, כמושג של קנה-מידה — לא כמדד מובטח לכל פרויקט) — לא להחליף שיקול דעת אנושי. מומחי הארגון קובעים, מפקחים ומאשרים את הפעולה בכל שלב; היכולות בפועל תלויות בהיקף הנתונים הזמין ובבשלות המערכת באותו שלב.</div>
+<p class="fine">מערכות אלה, לרבות כל שיפור בהן, הן נכס קנייני בלעדי של הארגון בכל עת (סעיף 10(ב) להסכם) — גם כשהן משמשות לתכנון או לביצוע עבורכם באופן ספציפי. אתם מקבלים רישיון שימוש בתוצרים שהופקו באמצעותן — לא בעלות או גישה למערכות עצמן. הארגון אינו חושף כאן פרטים על הארכיטקטורה הטכנית או השיטות הפנימיות של מערכות אלה — אלה סוד מסחרי שלו (סעיף 9 להסכם).</p>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 1.4 — Atlas Network
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "Atlas Network")}
+<div class="eyebrow">רשת מסחרית בינלאומית</div>
+<h1 class="sec">Atlas Network</h1>
+<div class="secrule"></div>
+<p class="body-copy">בנוסף לצוות הפנימי, מתחזק הארגון את <strong>Atlas Network</strong> — רשת קשרים מסחריים בינלאומית הפרוסה על פני מדינות מרכזיות, ובהן סין, ארצות הברית, דובאי, פקיסטן, ערב הסעודית, אמריקה הלטינית, אירופה ואחרות.</p>
+<p class="body-copy">הרשת כוללת קשרים עם יצרנים, ספקים, מפיצים וגורמי הפצה ומכירה, ומאפשרת לארגון לבחון עבור לקוחותיו אפשרויות במיקור חוץ, הפצה, הרחבה בינלאומית, אופטימיזציית עלויות ואלטרנטיבות בשרשרת אספקה — בהתאם לצרכים הספציפיים של כל פרויקט.</p>
+<div class="fine">לא כל הזדמנות ברשת רלוונטית או זמינה לכל לקוח; ההתאמה נבחנת לפי אופי הפרויקט.</div>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 1.5 — Specialist capabilities
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("01", "יכולות מומחים")}
+<div class="eyebrow">הרכב הצוות לפי צורך</div>
+<h1 class="sec">יכולות מומחים</h1>
+<div class="secrule"></div>
 <p class="body-copy">אנחנו לא בנויים סביב חבילת שירות אחידה. כל התקשרות נבנית סביב הצרכים בפועל של העסק — שילוב שונה של אסטרטגיה, מחקר, שיווק, קריאייטיב, פיתוח ותפעול, בהתאם למה שהפרויקט דורש. הביטוי המובנה ביותר לעיקרון הזה הוא הרכב מעטפת המומחים במחקר Genesis — ראו פרק 3.</p>
 {pagefoot()}
 </div>''')
