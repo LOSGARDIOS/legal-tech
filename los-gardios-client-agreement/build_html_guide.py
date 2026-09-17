@@ -238,24 +238,24 @@ table.data th:last-child,table.data td:last-child{text-align:start}
 .tbl-label{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.08em;
  color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
 
-/* ---------- WIDE DATA TABLE (illustrative 12-month forecast, many columns) ---------- */
-table.data-full{width:100%;table-layout:fixed;border-collapse:collapse;margin:6px 0;
- font-family:"Heebo",sans-serif;font-size:6.6pt;break-inside:avoid-page;page-break-inside:avoid}
-table.data-full th{text-align:center;font-size:6pt;letter-spacing:.01em;color:var(--gold-deep);
- font-weight:700;padding:2px 1px 3px;border-bottom:1px solid var(--rule);line-height:1.1;
- word-break:break-word}
-table.data-full td{padding:3.5px 1px;border-bottom:1px solid var(--rule);text-align:center;
- color:#382c1f;overflow-wrap:break-word}
-table.data-full td:first-child{color:var(--ink);font-weight:600}
-table.data-full th:last-child,table.data-full td:last-child{text-align:start}
-table.data-full th.sec-mkt,table.data-full td.sec-mkt{background:rgba(169,130,79,.08)}
-table.data-full th.sec-com,table.data-full td.sec-com{background:rgba(140,106,61,.08)}
-table.data-full th.sec-ret,table.data-full td.sec-ret{background:rgba(125,111,92,.09)}
-table.data-full th.sec-fin,table.data-full td.sec-fin{background:rgba(91,41,134,.06)}
-table.data-full th.sec-mkt{border-top:3px solid var(--gold)}
-table.data-full th.sec-com{border-top:3px solid var(--gold-deep)}
-table.data-full th.sec-ret{border-top:3px solid var(--muted)}
-table.data-full th.sec-fin{border-top:3px solid var(--purple)}
+/* ---------- FORECAST TABLE (metrics as rows, months as columns) ---------- */
+table.fcast{width:100%;table-layout:fixed;border-collapse:collapse;margin:6px 0;
+ font-family:"Heebo",sans-serif;font-size:7.6pt;break-inside:avoid-page;page-break-inside:avoid}
+table.fcast th{text-align:center;font-size:7.6pt;color:var(--gold-deep);font-weight:700;
+ padding:4px 2px;border-bottom:1px solid var(--rule)}
+table.fcast th:first-child{text-align:start;padding-inline-start:8px}
+table.fcast td{padding:2.6px 2px;border-bottom:1px solid var(--rule);text-align:center;
+ color:#382c1f;white-space:nowrap}
+table.fcast td.row-label{text-align:start;font-weight:600;color:var(--ink);font-size:7.3pt;
+ padding-inline-start:8px;white-space:nowrap}
+table.fcast tr.sec-mkt td{background:rgba(169,130,79,.06)}
+table.fcast tr.sec-com td{background:rgba(140,106,61,.06)}
+table.fcast tr.sec-ret td{background:rgba(125,111,92,.07)}
+table.fcast tr.sec-fin td{background:rgba(91,41,134,.05)}
+table.fcast tr.sec-mkt td.row-label{border-inline-start:3px solid var(--gold)}
+table.fcast tr.sec-com td.row-label{border-inline-start:3px solid var(--gold-deep)}
+table.fcast tr.sec-ret td.row-label{border-inline-start:3px solid var(--muted)}
+table.fcast tr.sec-fin td.row-label{border-inline-start:3px solid var(--purple)}
 .tbl-legend{display:flex;gap:16px;margin:2px 0 6px;font-family:"Heebo",sans-serif;
  font-size:7.4pt;color:var(--muted)}
 .tbl-legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:5px}
@@ -723,58 +723,48 @@ _FORECAST_COLS = [
     ("הכנסות", "fin"), ("הוצ' קבועות", "fin"), ('סה"כ הוצאות', "fin"), ("רווח", "fin"), ("ROI", "fin"),
 ]
 _FORECAST_ROWS = [
-    [1, "15,000 ₪", "20 ₪", "750,000", "1.8%", "13,500", "3.00", "1.2%", "162", "93 ₪", "93 ₪", "3",
-     "278 ₪", "–", "–", "162", "45,000 ₪", "4,000 ₪", "51,000 ₪", "-6,000 ₪", "-12%"],
-    [2, "20,000 ₪", "20 ₪", "1.0M", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪", "98 ₪", "3",
-     "294 ₪", "8%", "13", "251", "70,000 ₪", "4,500 ₪", "74,000 ₪", "-4,000 ₪", "-5%"],
-    [3, "26,000 ₪", "19 ₪", "1.37M", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪", "102 ₪", "3",
-     "305 ₪", "12%", "29", "357", "100,000 ₪", "5,000 ₪", "93,000 ₪", "7,000 ₪", "8%"],
-    [4, "34,000 ₪", "19 ₪", "1.79M", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪", "104 ₪", "3",
-     "311 ₪", "16%", "52", "502", "140,000 ₪", "5,500 ₪", "119,000 ₪", "21,000 ₪", "18%"],
-    [5, "42,000 ₪", "18 ₪", "2.33M", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪", "110 ₪", "3",
-     "330 ₪", "19%", "86", "646", "185,000 ₪", "6,000 ₪", "147,000 ₪", "38,000 ₪", "26%"],
-    [6, "50,000 ₪", "18 ₪", "2.78M", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪", "111 ₪", "3",
-     "332 ₪", "21%", "118", "811", "230,000 ₪", "6,500 ₪", "174,000 ₪", "56,000 ₪", "32%"],
-    [7, "58,000 ₪", "17 ₪", "3.41M", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪", "109 ₪", "3",
-     "327 ₪", "23%", "159", "984", "270,000 ₪", "7,000 ₪", "200,000 ₪", "70,000 ₪", "35%"],
-    [8, "65,000 ₪", "17 ₪", "3.82M", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪", "110 ₪", "3",
-     "330 ₪", "24%", "198", "1,122", "305,000 ₪", "7,000 ₪", "229,000 ₪", "76,000 ₪", "33%"],
-    [9, "70,000 ₪", "17 ₪", "4.12M", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪", "118 ₪", "3",
-     "353 ₪", "25%", "231", "1,179", "335,000 ₪", "7,500 ₪", "258,000 ₪", "77,000 ₪", "30%"],
-    [10, "76,000 ₪", "16 ₪", "4.75M", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪", "111 ₪", "3",
-     "334 ₪", "26%", "246", "1,339", "365,000 ₪", "7,500 ₪", "285,000 ₪", "80,000 ₪", "28%"],
-    [11, "82,000 ₪", "16 ₪", "5.13M", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪", "124 ₪", "3",
-     "373 ₪", "27%", "295", "1,355", "395,000 ₪", "8,000 ₪", "313,000 ₪", "82,000 ₪", "26%"],
-    [12, "88,000 ₪", "16 ₪", "5.5M", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪", "124 ₪", "3",
-     "373 ₪", "28%", "297", "1,436", "425,000 ₪", "8,000 ₪", "340,000 ₪", "85,000 ₪", "25%"],
+    [1, "15K ₪", "20 ₪", "750,000", "1.8%", "13,500", "3.00", "1.2%", "162", "93 ₪", "93 ₪", "3",
+     "278 ₪", "–", "–", "162", "45K ₪", "4K ₪", "51K ₪", "-6K ₪", "-12%"],
+    [2, "20K ₪", "20 ₪", "1.0M", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪", "98 ₪", "3",
+     "294 ₪", "8%", "13", "251", "70K ₪", "4.5K ₪", "74K ₪", "-4K ₪", "-5%"],
+    [3, "26K ₪", "19 ₪", "1.37M", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪", "102 ₪", "3",
+     "305 ₪", "12%", "29", "357", "100K ₪", "5K ₪", "93K ₪", "7K ₪", "8%"],
+    [4, "34K ₪", "19 ₪", "1.79M", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪", "104 ₪", "3",
+     "311 ₪", "16%", "52", "502", "140K ₪", "5.5K ₪", "119K ₪", "21K ₪", "18%"],
+    [5, "42K ₪", "18 ₪", "2.33M", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪", "110 ₪", "3",
+     "330 ₪", "19%", "86", "646", "185K ₪", "6K ₪", "147K ₪", "38K ₪", "26%"],
+    [6, "50K ₪", "18 ₪", "2.78M", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪", "111 ₪", "3",
+     "332 ₪", "21%", "118", "811", "230K ₪", "6.5K ₪", "174K ₪", "56K ₪", "32%"],
+    [7, "58K ₪", "17 ₪", "3.41M", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪", "109 ₪", "3",
+     "327 ₪", "23%", "159", "984", "270K ₪", "7K ₪", "200K ₪", "70K ₪", "35%"],
+    [8, "65K ₪", "17 ₪", "3.82M", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪", "110 ₪", "3",
+     "330 ₪", "24%", "198", "1,122", "305K ₪", "7K ₪", "229K ₪", "76K ₪", "33%"],
+    [9, "70K ₪", "17 ₪", "4.12M", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪", "118 ₪", "3",
+     "353 ₪", "25%", "231", "1,179", "335K ₪", "7.5K ₪", "258K ₪", "77K ₪", "30%"],
+    [10, "76K ₪", "16 ₪", "4.75M", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪", "111 ₪", "3",
+     "334 ₪", "26%", "246", "1,339", "365K ₪", "7.5K ₪", "285K ₪", "80K ₪", "28%"],
+    [11, "82K ₪", "16 ₪", "5.13M", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪", "124 ₪", "3",
+     "373 ₪", "27%", "295", "1,355", "395K ₪", "8K ₪", "313K ₪", "82K ₪", "26%"],
+    [12, "88K ₪", "16 ₪", "5.5M", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪", "124 ₪", "3",
+     "373 ₪", "28%", "297", "1,436", "425K ₪", "8K ₪", "340K ₪", "85K ₪", "25%"],
 ]
-# width tier per column (index-aligned with _FORECAST_COLS): narrow/medium/wide,
-# so long currency values (7-10 chars) get more room than short percentages/small ints.
-_FORECAST_WIDTH_TIERS = [
-    "narrow",  # חודש
-    "wide", "narrow", "wide", "narrow", "medium", "narrow",  # תקציב..ROAS
-    "narrow", "medium", "narrow", "medium", "narrow", "medium",  # יחס המרה..AOV
-    "narrow", "medium", "medium",  # יחס שימור, רכישות חוזרות, סה"כ המרות
-    "wide", "wide", "wide", "wide", "narrow",  # הכנסות..ROI
-]
-_FORECAST_TIER_WEIGHT = {"narrow": 3.2, "medium": 4.8, "wide": 7.05}
-assert len(_FORECAST_WIDTH_TIERS) == len(_FORECAST_COLS)
-_forecast_colgroup = ''.join(
-    f'<col style="width:{_FORECAST_TIER_WEIGHT[tier]}%">' for tier in _FORECAST_WIDTH_TIERS
+# Transposed layout: one row per metric, one column per month. This gives each
+# metric label its own full-width line (no more squeezed 21-column headers) and
+# only 12 equal number-columns, which is far more legible in a portrait page.
+_forecast_label_width = 18.0
+_forecast_month_width = (100.0 - _forecast_label_width) / 12
+_forecast_colgroup = (
+    f'<col style="width:{_forecast_label_width}%">'
+    + f'<col style="width:{_forecast_month_width:.4f}%">' * 12
 )
-_forecast_head_cells = ''.join(
-    f'<th class="sec-{grp}">{label}</th>' if grp else f'<th>{label}</th>'
-    for label, grp in _FORECAST_COLS
-)
+_forecast_head_cells = '<th>מדד</th>' + ''.join(f'<th>{m}</th>' for m in range(1, 13))
 _forecast_body_rows = []
-for _row in _FORECAST_ROWS:
-    _cells = ''.join(
-        f'<td class="sec-{grp}">{val}</td>' if grp else f'<td>{val}</td>'
-        for (label, grp), val in zip(_FORECAST_COLS, _row)
-    )
-    _forecast_body_rows.append(f'<tr>{_cells}</tr>')
+for _col_idx in range(1, len(_FORECAST_COLS)):
+    _label, _grp = _FORECAST_COLS[_col_idx]
+    _values = ''.join(f'<td>{_row[_col_idx]}</td>' for _row in _FORECAST_ROWS)
+    _forecast_body_rows.append(f'<tr class="sec-{_grp}"><td class="row-label">{_label}</td>{_values}</tr>')
 _FORECAST_TABLE_HTML = (
-    '<table class="data-full">'
+    '<table class="fcast">'
     f'<colgroup>{_forecast_colgroup}</colgroup>'
     f'<tr>{_forecast_head_cells}</tr>'
     + ''.join(_forecast_body_rows)
