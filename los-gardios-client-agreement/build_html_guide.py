@@ -228,13 +228,15 @@ table.micro td{padding:10px 0;border-bottom:1px solid var(--rule);vertical-align
 table.micro td:first-child{color:var(--ink);font-weight:600;width:38%}
 
 /* ---------- DATA TABLE (illustrative forecast example) ---------- */
-table.data{width:100%;border-collapse:collapse;margin:14px 0;font-family:"Heebo",sans-serif;
- font-size:8.4pt;break-inside:avoid-page;page-break-inside:avoid}
-table.data th{text-align:center;font-size:7.2pt;letter-spacing:.05em;color:var(--gold-deep);
- font-weight:700;padding:0 5px 8px;border-bottom:1px solid var(--rule)}
-table.data td{padding:9px 5px;border-bottom:1px solid var(--rule);text-align:center;color:#382c1f}
+table.data{width:100%;border-collapse:collapse;margin:3px 0;font-family:"Heebo",sans-serif;
+ font-size:8.2pt;break-inside:avoid-page;page-break-inside:avoid}
+table.data th{text-align:center;font-size:7pt;letter-spacing:.05em;color:var(--gold-deep);
+ font-weight:700;padding:0 5px 6px;border-bottom:1px solid var(--rule)}
+table.data td{padding:6px 5px;border-bottom:1px solid var(--rule);text-align:center;color:#382c1f}
 table.data td:first-child{color:var(--ink);font-weight:600}
 table.data th:last-child,table.data td:last-child{text-align:start}
+.tbl-label{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.08em;
+ color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
 
 /* ---------- INTAKE FORM ---------- */
 .intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
@@ -694,16 +696,33 @@ PAGES.append(f'''<div class="page">
 {pagehead("03", "דוגמה להמחשה: תוכנית לאורך זמן")}
 <div class="eyebrow">להמחשה בלבד — לא תחזית</div>
 <h1 class="sec">כך נראית תוכנית לאורך זמן</h1>
-<div class="secrule"></div>
-<div class="callout"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן היא דוגמה מספרית מומצאת, שנועדה להראות איך תוכנית עבודה נראית בפועל ואיך המושגים שהוסברו בעמוד הקודם (תקציב, תוצאה, נקודת איזון, רמת ביטחון) מתכנסים יחד לאורך זמן. היא אינה משקפת פרויקט אמיתי, אינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בה אינם מבוססים על נתוני לקוח כלשהו.</div>
+<div class="secrule" style="margin-bottom:6px"></div>
+<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלאות שלהלן הן דוגמה מספרית מומצאת, שנועדה להראות איך תוכנית עבודה מלאה נראית בפועל — מרמת התנועה והחשיפה, דרך ההמרה, ועד לתוצאה הפיננסית. הן אינן משקפות פרויקט אמיתי, אינן מהוות הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בהן אינם מבוססים על נתוני לקוח כלשהו — הם נבנו כך שיהיו עקביים מתמטית זה עם זה, להמחשה בלבד.</div>
+<p class="tbl-label">תנועה וחשיפה</p>
 <table class="data">
-  <tr><th>חודש</th><th>פריסת תקציב מתוכננת</th><th>הכנסה צפויה</th><th>עלויות צפויות</th><th>תוצאה צפויה</th><th>רמת ביטחון</th></tr>
-  <tr><td>1</td><td>50,000 ₪</td><td>95,000 ₪</td><td>65,000 ₪</td><td>30,000 ₪</td><td>נמוכה — שלב למידה ראשוני</td></tr>
-  <tr><td>2</td><td>55,000 ₪</td><td>115,000 ₪</td><td>70,000 ₪</td><td>45,000 ₪</td><td>נמוכה-בינונית</td></tr>
-  <tr><td>3</td><td>60,000 ₪</td><td>140,000 ₪</td><td>75,000 ₪</td><td>65,000 ₪</td><td>בינונית</td></tr>
-  <tr><td>4</td><td>65,000 ₪</td><td>165,000 ₪</td><td>80,000 ₪</td><td>85,000 ₪</td><td>בינונית-גבוהה — ככל שמצטבר יותר נתונים</td></tr>
+  <tr><th>חודש</th><th>תקציב פרסומי</th><th>CPM</th><th>חשיפה (Reach)</th><th>CTR</th><th>מבקרים</th></tr>
+  <tr><td>1</td><td>50,000 ₪</td><td>18 ₪</td><td>350,000</td><td>2.5%</td><td>8,750</td></tr>
+  <tr><td>2</td><td>55,000 ₪</td><td>17 ₪</td><td>410,000</td><td>2.6%</td><td>10,660</td></tr>
+  <tr><td>3</td><td>60,000 ₪</td><td>16 ₪</td><td>480,000</td><td>2.8%</td><td>13,440</td></tr>
+  <tr><td>4</td><td>65,000 ₪</td><td>15 ₪</td><td>560,000</td><td>3.0%</td><td>16,800</td></tr>
 </table>
-<p class="fine">"רמת הביטחון" בטבלה ממחישה עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
+<p class="tbl-label">המרה ותוצאה תפעולית</p>
+<table class="data">
+  <tr><th>חודש</th><th>יחס המרה</th><th>המרות</th><th>עלות להמרה (CPA)</th><th>ROAS</th><th>ערך עסקה ממוצע (AOV)</th></tr>
+  <tr><td>1</td><td>2.0%</td><td>175</td><td>285 ₪</td><td>1.9</td><td>543 ₪</td></tr>
+  <tr><td>2</td><td>2.1%</td><td>224</td><td>246 ₪</td><td>2.09</td><td>513 ₪</td></tr>
+  <tr><td>3</td><td>2.3%</td><td>309</td><td>194 ₪</td><td>2.33</td><td>453 ₪</td></tr>
+  <tr><td>4</td><td>2.5%</td><td>420</td><td>155 ₪</td><td>2.54</td><td>393 ₪</td></tr>
+</table>
+<p class="tbl-label">תוצאה פיננסית</p>
+<table class="data">
+  <tr><th>חודש</th><th>הכנסה צפויה</th><th>עלויות צפויות</th><th>תוצאה צפויה</th><th>ROI</th><th>רמת ביטחון</th></tr>
+  <tr><td>1</td><td>95,000 ₪</td><td>65,000 ₪</td><td>30,000 ₪</td><td>46%</td><td>נמוכה — שלב למידה ראשוני</td></tr>
+  <tr><td>2</td><td>115,000 ₪</td><td>70,000 ₪</td><td>45,000 ₪</td><td>64%</td><td>נמוכה-בינונית</td></tr>
+  <tr><td>3</td><td>140,000 ₪</td><td>75,000 ₪</td><td>65,000 ₪</td><td>87%</td><td>בינונית</td></tr>
+  <tr><td>4</td><td>165,000 ₪</td><td>80,000 ₪</td><td>85,000 ₪</td><td>106%</td><td>בינונית-גבוהה — ככל שמצטבר יותר נתונים</td></tr>
+</table>
+<p class="fine">"רמת הביטחון" ממחישה עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
 {pagefoot()}
 </div>''')
 
