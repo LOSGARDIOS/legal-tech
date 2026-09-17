@@ -227,6 +227,15 @@ table.micro th{text-align:start;font-size:7.6pt;letter-spacing:.1em;color:var(--
 table.micro td{padding:10px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:#382c1f}
 table.micro td:first-child{color:var(--ink);font-weight:600;width:38%}
 
+/* ---------- DATA TABLE (illustrative forecast example) ---------- */
+table.data{width:100%;border-collapse:collapse;margin:14px 0;font-family:"Heebo",sans-serif;
+ font-size:8.4pt;break-inside:avoid-page;page-break-inside:avoid}
+table.data th{text-align:center;font-size:7.2pt;letter-spacing:.05em;color:var(--gold-deep);
+ font-weight:700;padding:0 5px 8px;border-bottom:1px solid var(--rule)}
+table.data td{padding:9px 5px;border-bottom:1px solid var(--rule);text-align:center;color:#382c1f}
+table.data td:first-child{color:var(--ink);font-weight:600}
+table.data th:last-child,table.data td:last-child{text-align:start}
+
 /* ---------- INTAKE FORM ---------- */
 .intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
  line-height:1.9;max-width:560px;margin-bottom:6px}
@@ -675,6 +684,26 @@ PAGES.append(f'''<div class="page">
 <div class="prompt"><div class="prompt-label">ספרו לנו, אם ידוע לכם</div>
 <div class="prompt-q">מהו שיעור הרווח הגולמי שלכם?<br>מהו שווי העסקה הממוצע שלכם, או שנסתמך על מחקר Genesis?</div></div>
 <p class="fine">נקודת האיזון היא רצפה, לא תקרה — אפשר וכדאי להגדיר גם יעדי רווחיות נוספים מעליה. ככל שנקודת האיזון וההגדרות הפיננסיות רשומות בהסכם ובטבלת התנאים המסחריים — הן אלה שיחייבו, לא ההסברים הכלליים כאן.</p>
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# 14b — NEW: Illustrative forecast example table
+# ==================================================================
+PAGES.append(f'''<div class="page">
+{pagehead("03", "דוגמה להמחשה: תוכנית לאורך זמן")}
+<div class="eyebrow">להמחשה בלבד — לא תחזית</div>
+<h1 class="sec">כך נראית תוכנית לאורך זמן</h1>
+<div class="secrule"></div>
+<div class="callout"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן היא דוגמה מספרית מומצאת, שנועדה להראות איך תוכנית עבודה נראית בפועל ואיך המושגים שהוסברו בעמוד הקודם (תקציב, תוצאה, נקודת איזון, רמת ביטחון) מתכנסים יחד לאורך זמן. היא אינה משקפת פרויקט אמיתי, אינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בה אינם מבוססים על נתוני לקוח כלשהו.</div>
+<table class="data">
+  <tr><th>חודש</th><th>פריסת תקציב מתוכננת</th><th>הכנסה צפויה</th><th>עלויות צפויות</th><th>תוצאה צפויה</th><th>רמת ביטחון</th></tr>
+  <tr><td>1</td><td>50,000 ₪</td><td>95,000 ₪</td><td>65,000 ₪</td><td>30,000 ₪</td><td>נמוכה — שלב למידה ראשוני</td></tr>
+  <tr><td>2</td><td>55,000 ₪</td><td>115,000 ₪</td><td>70,000 ₪</td><td>45,000 ₪</td><td>נמוכה-בינונית</td></tr>
+  <tr><td>3</td><td>60,000 ₪</td><td>140,000 ₪</td><td>75,000 ₪</td><td>65,000 ₪</td><td>בינונית</td></tr>
+  <tr><td>4</td><td>65,000 ₪</td><td>165,000 ₪</td><td>80,000 ₪</td><td>85,000 ₪</td><td>בינונית-גבוהה — ככל שמצטבר יותר נתונים</td></tr>
+</table>
+<p class="fine">"רמת הביטחון" בטבלה ממחישה עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
 {pagefoot()}
 </div>''')
 
