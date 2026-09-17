@@ -238,6 +238,16 @@ table.data th:last-child,table.data td:last-child{text-align:start}
 .tbl-label{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.08em;
  color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
 
+/* ---------- WIDE DATA TABLE (illustrative 12-month forecast, many columns) ---------- */
+table.data-full{width:100%;border-collapse:collapse;margin:6px 0;font-family:"Heebo",sans-serif;
+ font-size:6.6pt;break-inside:avoid-page;page-break-inside:avoid}
+table.data-full th{text-align:center;font-size:6pt;letter-spacing:.01em;color:var(--gold-deep);
+ font-weight:700;padding:0 2px 5px;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.data-full td{padding:4.5px 2px;border-bottom:1px solid var(--rule);text-align:center;
+ color:#382c1f;white-space:nowrap}
+table.data-full td:first-child{color:var(--ink);font-weight:600}
+table.data-full th:last-child,table.data-full td:last-child{text-align:start}
+
 /* ---------- INTAKE FORM ---------- */
 .intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
  line-height:1.9;max-width:560px;margin-bottom:6px}
@@ -697,32 +707,23 @@ PAGES.append(f'''<div class="page">
 <div class="eyebrow">להמחשה בלבד — לא תחזית</div>
 <h1 class="sec">כך נראית תוכנית לאורך זמן</h1>
 <div class="secrule" style="margin-bottom:6px"></div>
-<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלאות שלהלן הן דוגמה מספרית מומצאת, שנועדה להראות איך תוכנית עבודה מלאה נראית בפועל — מרמת התנועה והחשיפה, דרך ההמרה, ועד לתוצאה הפיננסית. הן אינן משקפות פרויקט אמיתי, אינן מהוות הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בהן אינם מבוססים על נתוני לקוח כלשהו — הם נבנו כך שיהיו עקביים מתמטית זה עם זה, להמחשה בלבד.</div>
-<p class="tbl-label">תנועה וחשיפה</p>
-<table class="data">
-  <tr><th>חודש</th><th>תקציב פרסומי</th><th>CPM</th><th>חשיפה (Reach)</th><th>CTR</th><th>מבקרים</th></tr>
-  <tr><td>1</td><td>50,000 ₪</td><td>18 ₪</td><td>350,000</td><td>2.5%</td><td>8,750</td></tr>
-  <tr><td>2</td><td>55,000 ₪</td><td>17 ₪</td><td>410,000</td><td>2.6%</td><td>10,660</td></tr>
-  <tr><td>3</td><td>60,000 ₪</td><td>16 ₪</td><td>480,000</td><td>2.8%</td><td>13,440</td></tr>
-  <tr><td>4</td><td>65,000 ₪</td><td>15 ₪</td><td>560,000</td><td>3.0%</td><td>16,800</td></tr>
+<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן היא דוגמה מספרית מומצאת לאורך 12 חודשים, שנועדה להראות איך תוכנית עבודה מלאה נראית בפועל — מרמת התנועה והחשיפה, דרך ההמרה, ועד לתוצאה הפיננסית. היא אינה משקפת פרויקט אמיתי, אינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם, והמספרים בה אינם מבוססים על נתוני לקוח כלשהו — הם נבנו כך שיהיו עקביים מתמטית זה עם זה, להמחשה בלבד.</div>
+<table class="data-full">
+  <tr><th>חודש</th><th>תקציב</th><th>CPM</th><th>חשיפה</th><th>CTR</th><th>מבקרים</th><th>המרה%</th><th>המרות</th><th>CPA</th><th>ROAS</th><th>AOV</th><th>הכנסה</th><th>עלות</th><th>תוצאה</th><th>ROI</th><th>ביטחון</th></tr>
+  <tr><td>1</td><td>50,000 ₪</td><td>18 ₪</td><td>350,000</td><td>2.5%</td><td>8,750</td><td>2.0%</td><td>175</td><td>286 ₪</td><td>1.90</td><td>543 ₪</td><td>95,000 ₪</td><td>65,000 ₪</td><td>30,000 ₪</td><td>46%</td><td>נמוכה</td></tr>
+  <tr><td>2</td><td>55,000 ₪</td><td>17 ₪</td><td>410,000</td><td>2.6%</td><td>10,660</td><td>2.1%</td><td>224</td><td>246 ₪</td><td>2.09</td><td>513 ₪</td><td>115,000 ₪</td><td>70,000 ₪</td><td>45,000 ₪</td><td>64%</td><td>נמוכה</td></tr>
+  <tr><td>3</td><td>60,000 ₪</td><td>16 ₪</td><td>480,000</td><td>2.8%</td><td>13,440</td><td>2.3%</td><td>309</td><td>194 ₪</td><td>2.33</td><td>453 ₪</td><td>140,000 ₪</td><td>75,000 ₪</td><td>65,000 ₪</td><td>87%</td><td>נמוכה-בינונית</td></tr>
+  <tr><td>4</td><td>65,000 ₪</td><td>15 ₪</td><td>560,000</td><td>3.0%</td><td>16,800</td><td>2.5%</td><td>420</td><td>155 ₪</td><td>2.54</td><td>393 ₪</td><td>165,000 ₪</td><td>80,000 ₪</td><td>85,000 ₪</td><td>106%</td><td>נמוכה-בינונית</td></tr>
+  <tr><td>5</td><td>70,000 ₪</td><td>15 ₪</td><td>640,000</td><td>3.1%</td><td>19,840</td><td>2.6%</td><td>516</td><td>136 ₪</td><td>2.71</td><td>368 ₪</td><td>190,000 ₪</td><td>85,000 ₪</td><td>105,000 ₪</td><td>124%</td><td>בינונית</td></tr>
+  <tr><td>6</td><td>75,000 ₪</td><td>14 ₪</td><td>720,000</td><td>3.2%</td><td>23,040</td><td>2.7%</td><td>622</td><td>121 ₪</td><td>2.87</td><td>346 ₪</td><td>215,000 ₪</td><td>90,000 ₪</td><td>125,000 ₪</td><td>139%</td><td>בינונית</td></tr>
+  <tr><td>7</td><td>80,000 ₪</td><td>14 ₪</td><td>800,000</td><td>3.3%</td><td>26,400</td><td>2.8%</td><td>739</td><td>108 ₪</td><td>3.00</td><td>325 ₪</td><td>240,000 ₪</td><td>95,000 ₪</td><td>145,000 ₪</td><td>153%</td><td>בינונית-גבוהה</td></tr>
+  <tr><td>8</td><td>85,000 ₪</td><td>13 ₪</td><td>880,000</td><td>3.4%</td><td>29,920</td><td>2.9%</td><td>868</td><td>98 ₪</td><td>3.12</td><td>305 ₪</td><td>265,000 ₪</td><td>100,000 ₪</td><td>165,000 ₪</td><td>165%</td><td>בינונית-גבוהה</td></tr>
+  <tr><td>9</td><td>90,000 ₪</td><td>13 ₪</td><td>960,000</td><td>3.5%</td><td>33,600</td><td>3.0%</td><td>1,008</td><td>89 ₪</td><td>3.22</td><td>288 ₪</td><td>290,000 ₪</td><td>105,000 ₪</td><td>185,000 ₪</td><td>176%</td><td>בינונית-גבוהה</td></tr>
+  <tr><td>10</td><td>95,000 ₪</td><td>12 ₪</td><td>1,040,000</td><td>3.6%</td><td>37,440</td><td>3.1%</td><td>1,161</td><td>82 ₪</td><td>3.32</td><td>271 ₪</td><td>315,000 ₪</td><td>110,000 ₪</td><td>205,000 ₪</td><td>186%</td><td>גבוהה</td></tr>
+  <tr><td>11</td><td>100,000 ₪</td><td>12 ₪</td><td>1,120,000</td><td>3.7%</td><td>41,440</td><td>3.2%</td><td>1,326</td><td>75 ₪</td><td>3.40</td><td>256 ₪</td><td>340,000 ₪</td><td>115,000 ₪</td><td>225,000 ₪</td><td>196%</td><td>גבוהה</td></tr>
+  <tr><td>12</td><td>105,000 ₪</td><td>12 ₪</td><td>1,200,000</td><td>3.8%</td><td>45,600</td><td>3.3%</td><td>1,505</td><td>70 ₪</td><td>3.48</td><td>243 ₪</td><td>365,000 ₪</td><td>120,000 ₪</td><td>245,000 ₪</td><td>204%</td><td>גבוהה</td></tr>
 </table>
-<p class="tbl-label">המרה ותוצאה תפעולית</p>
-<table class="data">
-  <tr><th>חודש</th><th>יחס המרה</th><th>המרות</th><th>עלות להמרה (CPA)</th><th>ROAS</th><th>ערך עסקה ממוצע (AOV)</th></tr>
-  <tr><td>1</td><td>2.0%</td><td>175</td><td>285 ₪</td><td>1.9</td><td>543 ₪</td></tr>
-  <tr><td>2</td><td>2.1%</td><td>224</td><td>246 ₪</td><td>2.09</td><td>513 ₪</td></tr>
-  <tr><td>3</td><td>2.3%</td><td>309</td><td>194 ₪</td><td>2.33</td><td>453 ₪</td></tr>
-  <tr><td>4</td><td>2.5%</td><td>420</td><td>155 ₪</td><td>2.54</td><td>393 ₪</td></tr>
-</table>
-<p class="tbl-label">תוצאה פיננסית</p>
-<table class="data">
-  <tr><th>חודש</th><th>הכנסה צפויה</th><th>עלויות צפויות</th><th>תוצאה צפויה</th><th>ROI</th><th>רמת ביטחון</th></tr>
-  <tr><td>1</td><td>95,000 ₪</td><td>65,000 ₪</td><td>30,000 ₪</td><td>46%</td><td>נמוכה — שלב למידה ראשוני</td></tr>
-  <tr><td>2</td><td>115,000 ₪</td><td>70,000 ₪</td><td>45,000 ₪</td><td>64%</td><td>נמוכה-בינונית</td></tr>
-  <tr><td>3</td><td>140,000 ₪</td><td>75,000 ₪</td><td>65,000 ₪</td><td>87%</td><td>בינונית</td></tr>
-  <tr><td>4</td><td>165,000 ₪</td><td>80,000 ₪</td><td>85,000 ₪</td><td>106%</td><td>בינונית-גבוהה — ככל שמצטבר יותר נתונים</td></tr>
-</table>
-<p class="fine">"רמת הביטחון" ממחישה עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
+<p class="fine">"ביטחון" (רמת הביטחון בתוצאה) ממחיש עיקרון שכבר הוסבר: ביטחון הביצוע גדל בהדרגה ככל שמצטבר יותר מידע — הוא לא נתון קבוע מהיום הראשון. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
 {pagefoot()}
 </div>''')
 
