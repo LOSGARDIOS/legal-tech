@@ -238,12 +238,18 @@ table.data th:last-child,table.data td:last-child{text-align:start}
 .tbl-label{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.08em;
  color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
 
-/* ---------- FORECAST TABLE (months as rows, metrics as columns) ---------- */
-table.fcast{width:100%;table-layout:fixed;border-collapse:collapse;margin:6px 0;
- font-family:"Heebo",sans-serif;font-size:7.4pt;break-inside:avoid-page;page-break-inside:avoid}
-table.fcast th{text-align:center;font-size:7pt;letter-spacing:.01em;color:var(--gold-deep);
- font-weight:700;padding:3px 1px 4px;border-bottom:1px solid var(--rule);line-height:1.15;
- word-break:break-word}
+/* ---------- FORECAST TABLE (months as rows, metrics as columns) ----------
+   Breaks out of the normal text margins (20mm page padding) into most of
+   that margin on both sides, leaving only ~2.7mm from the true page edge, to
+   gain extra width so column headers never need to wrap. Column widths
+   (see _FORECAST_COL_WIDTHS below) are sized per-column from measured
+   header/data text widths, not equal tiers, so every header fits on one
+   line without overflowing into its neighbor. */
+table.fcast{width:calc(100% + 131px);margin:6px -65.5px;table-layout:fixed;
+ border-collapse:collapse;font-family:"Heebo",sans-serif;font-size:7.6pt;
+ break-inside:avoid-page;page-break-inside:avoid}
+table.fcast th{text-align:center;font-size:7.2pt;letter-spacing:.01em;color:var(--gold-deep);
+ font-weight:700;padding:3px 2px 4px;border-bottom:1px solid var(--rule);white-space:nowrap}
 table.fcast td{padding:3.6px 2px;border-bottom:1px solid var(--rule);text-align:center;
  color:#382c1f;white-space:nowrap}
 table.fcast td:first-child{color:var(--ink);font-weight:600}
@@ -747,21 +753,22 @@ _FORECAST_ROWS = [
     [12, "88K ₪", "16 ₪", "5.5M", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪",
      "373 ₪", "28%", "297", "1,436", "425K ₪", "8K ₪", "340K ₪", "85K ₪", "25%"],
 ]
-# Months as rows, metrics as columns (original orientation). Columns get
-# weighted widths (not equal) based on each metric's actual value length, so
-# short percentages/small ints stay compact while currency/count values that
-# need more room get it — this is what prevents mid-number wrapping.
-_FORECAST_WIDTH_TIERS = [
-    "narrow",  # חודש
-    "wide", "narrow", "medium", "narrow", "medium", "narrow",  # תקציב..ROAS
-    "narrow", "medium", "narrow", "medium",  # יחס המרה, המרות, CPA, AOV
-    "narrow", "narrow", "medium",  # יחס שימור, רכישות חוזרות, סה"כ המרות
-    "wide", "wide", "wide", "wide", "narrow",  # הכנסות..ROI
+# Months as rows, metrics as columns (original orientation). Each column's
+# width is sized individually (percent of the table's own 800px rendered
+# width, not equal tiers) from actual Playwright-measured header-text and
+# data-text widths, so every header renders on one line without wrapping OR
+# overflowing into its neighbor — equal/tiered widths left several headers
+# (e.g. "רכישות חוזרות") narrower than their own label.
+_FORECAST_COL_WIDTHS = [
+    3.625,  # חודש
+    4.375, 3.625, 4.5, 3.625, 5.125, 4.25,  # תקציב..ROAS
+    6.375, 4.375, 3.625, 4.25,  # יחס המרה, המרות, CPA, AOV
+    6.375, 9.5, 7.625,  # יחס שימור, רכישות חוזרות, סה"כ המרות
+    5.125, 7.25, 8.0, 4.375, 3.75,  # הכנסות..ROI
 ]
-_FORECAST_TIER_WEIGHT = {"narrow": 4.0, "medium": 5.6, "wide": 7.2}
-assert len(_FORECAST_WIDTH_TIERS) == len(_FORECAST_COLS)
+assert len(_FORECAST_COL_WIDTHS) == len(_FORECAST_COLS)
 _forecast_colgroup = ''.join(
-    f'<col style="width:{_FORECAST_TIER_WEIGHT[tier]}%">' for tier in _FORECAST_WIDTH_TIERS
+    f'<col style="width:{w}%">' for w in _FORECAST_COL_WIDTHS
 )
 _forecast_head_cells = ''.join(
     f'<th class="sec-{grp}">{label}</th>' if grp else f'<th>{label}</th>'
