@@ -332,7 +332,7 @@ PAGES.append(f'''<div class="page dark cover">
   <div class="cover-title">מדריך הלקוח</div>
   <div class="cover-rule"></div>
   <div class="cover-sub">תקציב · מסגרת השקעה · טווח זמן<br>קריאה לפני תחילת הדרך המשותפת</div>
-  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסת מדריך 2</span></div>
+  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסה 2.0 · 23.09.2026</span></div>
   <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS GROUP</div>
 </div>''')
 
