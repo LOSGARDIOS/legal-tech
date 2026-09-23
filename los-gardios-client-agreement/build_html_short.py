@@ -105,11 +105,13 @@ body = body.replace('<h1>LOS GARDIOS</h1>\n<h2>הסכם התקשרות עם לק
 # white background, a per-annex accent color (sampled from the source file), a small
 # top masthead line with a colored circular letter badge, a colored "annex X" tag, the
 # title and body in black/gray, and a giant, pale-tinted oversized letter bottom-left.
+# Same 4-color categorical palette as the Guide's forecast-table section
+# groups (gold/gold-deep/muted/purple) — not an independent color system.
 ANNEX_COLORS = {
-    "A": ("#5B2986", "#F4F0F6"),  # Genesis — purple (also the brand's primary accent)
-    "B": ("#1A836E", "#EEF6F4"),  # Commercial terms — teal
-    "C": ("#B3531D", "#F9F3EF"),  # Data & privacy — burnt orange
-    "D": ("#2C5AA0", "#EEF3FA"),  # Personal-data DPA — blue (no original page to sample; new annex)
+    "A": ("#A9824F", "#F4EEE4"),  # Genesis — gold
+    "B": ("#8C6A3D", "#F2EAE0"),  # Commercial terms — gold-deep
+    "C": ("#7D6F5C", "#F0EEE9"),  # Data & privacy — muted
+    "D": ("#5B2986", "#F4F0F6"),  # Personal-data DPA — purple
 }
 _DEFAULT_AC_FOOT = "מהווה חלק בלתי-נפרד מההסכם (סעיף 15(א)) · נכנס לתוקף עם החתימה בסוף מסמך זה"
 for L, title, sub, foot in [
@@ -174,12 +176,25 @@ body = body.replace(
 # bold heading (the heading itself stays outside/above it, on the white page). Every
 # <h2> here is either "סעיף N — ..." (gets the card) or a signature sub-heading like
 # "אישורי קריאה"/"חתימות" (left alone, matching the original's plain signature pages).
+#
+# Four clauses carry materially more weight for the signer than the rest of the
+# document — the non-solicit/non-circumvent restriction, the liquidated-damages
+# table, the liability cap, and the Buyout/independent-implementation restriction
+# — and get a visually distinct card (purple accent instead of gold) so a reader
+# skimming under signing pressure gets a cue that these are not routine clauses.
+_KEY_CLAUSES = (
+    "סעיף 8 — הגנה על הקשרים המקצועיים",
+    "סעיף 11 — סעדים, השבת ההשקעה",
+    "סעיף 12 — הגבלת אחריות",
+    "סעיף 3 — אופציית רכישה",
+)
 _parts = re.split(r'(<h[12][^>]*>.*?</h[12]>)', body)
-_out2, _pending, _in_clause = [], [], False
+_out2, _pending, _in_clause, _key_clause = [], [], False, False
 def _flush():
-    global _pending, _in_clause
+    global _pending, _in_clause, _key_clause
     if _in_clause and _pending:
-        _out2.append('<div class="clausebox">' + "".join(_pending) + '</div>')
+        _cls = "clausebox clausebox-key" if _key_clause else "clausebox"
+        _out2.append(f'<div class="{_cls}">' + "".join(_pending) + '</div>')
     else:
         _out2.extend(_pending)
     _pending = []
@@ -187,7 +202,9 @@ for _tok in _parts:
     _m = re.match(r'<h([12])[^>]*>(.*?)</h\1>', _tok, re.S)
     if _m:
         _flush()
-        _in_clause = _m.group(1) == "2" and _m.group(2).strip().startswith("סעיף ")
+        _htxt = _m.group(2).strip()
+        _in_clause = _m.group(1) == "2" and _htxt.startswith("סעיף ")
+        _key_clause = any(_htxt.startswith(k) for k in _KEY_CLAUSES)
         _out2.append(_tok)
     else:
         _pending.append(_tok)
@@ -195,35 +212,52 @@ _flush()
 body = "".join(_out2)
 
 CSS = """
-:root{--ink:#14181f;--muted:#5b6472;--rule:#d9dee6;--accent:#5B2986;--soft:#f7f8fa;--band:#101418;--card:#FAFAFD}
+/* Design language deliberately lighter than CLIENT_GUIDE_HE.md's build: the
+   Guide is a physical, printed, editorial piece meant to impress on arrival;
+   this Agreement is a digital document signed digitally — it borrows the
+   Guide's palette tokens and Heebo/Frank Ruhl Libre font pairing so the two
+   read as one brand family, but stays plain and functional (white page, no
+   dark cover band, no photographic/editorial treatment) rather than matching
+   the Guide's own level of production. The Agreement keeps its own flowing-
+   document architecture (native @page pagination, not the Guide's per-page
+   divs): this is a light re-theme, not a re-architecture. */
+:root{
+ --ink:#2A2118; --muted:#7D6F5C; --rule:#E3D8C3; --soft:#FAF7F1;
+ --gold:#A9824F; --gold-deep:#8C6A3D;
+ --purple:#5B2986; --accent:#5B2986
+}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
- font-family:"Frank Ruhl Libre","David Libre","Times New Roman",Georgia,serif;
- font-size:10.4pt;line-height:1.72}
-.sheet{max-width:820px;margin:0 auto;background:#fff;padding:34px 46px 46px;
- box-shadow:0 1px 3px rgba(0,0,0,.10)}
-.masthead{border-bottom:2.5px solid var(--band);padding-bottom:14px;margin-bottom:26px;
+body{margin:0;background:#eeeae1;color:var(--ink);direction:rtl;
+ font-family:"Heebo","Frank Ruhl Libre",Georgia,serif;
+ font-size:10.4pt;line-height:1.78}
+.sheet{max-width:820px;margin:0 auto;background:#fff;padding:34px 46px 46px}
+.masthead{border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:26px;
  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
-.mh-brand{font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:19pt;
- letter-spacing:.30em;color:var(--band);display:flex;align-items:center;gap:10px}
-.mh-mark{height:34px;width:auto;flex:none}
-.mh-meta{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.16em;
+.mh-brand{font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:17pt;
+ letter-spacing:.28em;color:var(--ink);display:flex;align-items:center;gap:10px}
+.mh-mark{height:30px;width:auto;flex:none}
+.mh-meta{font-family:"Heebo",sans-serif;font-size:7.4pt;letter-spacing:.16em;
  color:var(--muted);text-align:left;line-height:1.9;direction:ltr}
-.conf{display:inline-block;border:1px solid var(--accent);color:var(--accent);
- font-family:Helvetica,Arial,sans-serif;font-size:7pt;letter-spacing:.24em;
+.conf{display:inline-block;border:1px solid var(--purple);color:var(--purple);
+ font-family:"Heebo",sans-serif;font-size:7pt;letter-spacing:.24em;
  padding:2px 9px;border-radius:2px}
-h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid var(--accent);
- letter-spacing:.01em}
-h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band);break-after:avoid;page-break-after:avoid}
-.clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px;
- break-inside:avoid;page-break-inside:avoid}
+h1{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:17pt;margin:26px 0 12px;
+ padding-bottom:8px;border-bottom:3px solid var(--gold);letter-spacing:.01em;color:var(--ink)}
+h2{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:12.8pt;margin:22px 0 8px;
+ color:var(--ink);break-after:avoid;page-break-after:avoid}
+.clausebox{background:var(--soft);border-inline-start:3px solid var(--gold);
+ padding:14px 17px;margin:0 0 10px;break-inside:avoid;page-break-inside:avoid}
+.clausebox-key{border-inline-start:5px solid var(--purple);position:relative;padding-top:28px}
+.clausebox-key::before{content:"מנגנון הגנה מרכזי — קראו בעיון";position:absolute;
+ top:10px;inset-inline-start:17px;font-family:"Heebo",sans-serif;font-weight:700;
+ font-size:7.4pt;letter-spacing:.14em;color:var(--purple)}
 .keepgroup{break-inside:avoid;page-break-inside:avoid}
 .clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
-h3{font-size:10.9pt;margin:16px 0 6px;color:#2a3444}
+h3{font-family:"Frank Ruhl Libre",serif;font-size:11.2pt;margin:16px 0 6px;color:var(--gold-deep)}
 h4{font-size:10pt;margin:13px 0 5px;color:var(--muted)}
 p{margin:0 0 9px;text-align:justify}
-strong{font-weight:700}
+strong{font-weight:700;color:var(--ink)}
 code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.87em;background:var(--soft);
  border:1px solid var(--rule);border-radius:3px;padding:.5px 4px;direction:ltr;
  display:inline-block;unicode-bidi:embed}
@@ -231,62 +265,38 @@ ul,ol{margin:0 0 10px;padding-inline-start:22px}
 li{margin:0 0 4px;text-align:justify}
 table{width:100%;border-collapse:collapse;margin:12px 0 16px;font-size:9.2pt;
  display:block;overflow-x:auto}
-thead th{background:var(--band);color:#fff;font-weight:600;padding:7px 9px;
- border:1px solid var(--band);font-family:Helvetica,Arial,sans-serif;font-size:8.6pt}
-tbody td{border:1px solid var(--rule);padding:7px 9px;vertical-align:top}
-tbody tr:nth-child(even){background:var(--soft)}
-.note{background:var(--soft);border-inline-start:3px solid var(--accent);
- padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#333c4a}
+thead th{background:transparent;color:var(--gold-deep);font-weight:700;padding:7px 9px;
+ border-bottom:2px solid var(--gold);font-family:"Heebo",sans-serif;font-size:8.6pt;letter-spacing:.02em}
+tbody td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+.note{background:var(--soft);border-inline-start:3px solid var(--gold-deep);
+ padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#382c1f}
 hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 .pagebreak{border-top:1px solid var(--rule);margin:26px 0}
-/* Compact per-section banner for the short contract — a colored badge letter and a
-   one-line description above the heading, instead of a full divider page. Keeps the
-   per-annex brand color without costing a page per annex. */
-.mini-divider{display:flex;align-items:center;gap:12px;margin:26px 0 -6px;padding-top:14px;
+/* Compact per-section banner — a colored badge letter and a one-line
+   description above the heading, in the same eyebrow language as the
+   Guide's chapter dividers, sized to cost no extra page per section. */
+.mini-divider{display:flex;align-items:center;gap:12px;margin:30px 0 -4px;padding-top:16px;
  border-top:2px solid var(--ax)}
-.mini-badge{width:22px;height:22px;border-radius:50%;background:var(--ax);color:#fff;
- font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:9.5pt;flex:none;
+.mini-badge{width:26px;height:26px;border-radius:50%;background:var(--ax);color:#fff;
+ font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:11pt;flex:none;
  display:flex;align-items:center;justify-content:center}
-.mini-sub{font-family:Helvetica,Arial,sans-serif;font-size:8.6pt;color:var(--muted);line-height:1.5}
-.annex-cover{page-break-before:always;break-before:page;margin:36px -46px 0;padding:0 46px 56px;
- background:#fff;color:var(--ink);min-height:620px;position:relative;overflow:hidden}
-.ac-mast{display:flex;justify-content:space-between;align-items:center;padding-top:36px}
-.ac-mast-text{font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.20em;
- color:var(--muted)}
-.ac-badge{width:30px;height:30px;border-radius:50%;background:var(--ax);color:#fff;
- font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:11pt;
- display:flex;align-items:center;justify-content:center;flex:none}
-.ac-rule{height:2px;background:var(--ax);margin:14px 0 0}
-.ac-body{padding-top:150px;position:relative;z-index:1}
-.ac-tag{font-family:Helvetica,Arial,sans-serif;font-size:8.6pt;font-weight:700;
- letter-spacing:.22em;color:var(--ax);margin-bottom:12px;
- display:flex;align-items:center;gap:12px;justify-content:flex-end}
-.ac-tag-dash{display:inline-block;width:34px;height:2px;background:var(--ax)}
-.ac-title{font-size:24pt;font-weight:700;margin-bottom:16px;color:var(--ink);text-align:right}
-.ac-sub{max-width:560px;margin-inline-start:auto;color:var(--muted);font-size:9.8pt;
- line-height:1.85;text-align:right}
-.ac-letter{position:absolute;left:-18px;bottom:-40px;
- font-family:Georgia,"Times New Roman",serif;font-size:280pt;font-weight:700;
- color:var(--ax-tint);line-height:1;z-index:0;user-select:none}
-.ac-footrule{border-top:1px solid var(--rule);margin-inline-start:34%;margin-top:200px;
- position:relative;z-index:1}
-.ac-foot{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.06em;
- color:var(--muted);text-align:right;margin-top:8px;position:relative;z-index:1}
+.mini-sub{font-family:"Heebo",sans-serif;font-size:8.8pt;color:var(--muted);line-height:1.6}
 .stampcell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .stampimg{width:92px;height:92px;object-fit:contain;opacity:.9}
 .stampline{width:100%;border-top:1px solid var(--ink);margin-top:2px}
-.stampcaption{font-family:Helvetica,Arial,sans-serif;font-size:6.6pt;color:var(--muted);
+.stampcaption{font-family:"Heebo",sans-serif;font-size:6.6pt;color:var(--muted);
  letter-spacing:.03em;text-align:center}
-.doctitle{font-size:23pt;font-weight:700;margin:6px 0 4px;letter-spacing:.01em}
+.doctitle{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:23pt;margin:6px 0 4px;letter-spacing:.01em}
 .docfoot{margin-top:34px;padding-top:12px;border-top:1px solid var(--rule);
- font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.10em;
+ font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.10em;
  color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-@page{size:A4;margin:17mm 15mm}
+@page{size:A4;margin:22mm 15mm 17mm}
 @media print{
  body{background:#fff}
- .sheet{max-width:none;box-shadow:none;padding:0}
- .annex-cover{margin:0;padding:66px 20mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .sheet{max-width:none;padding:0}
+ .masthead{margin:0 0 26px}
  thead th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .clausebox,.mini-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  h1,h2{break-after:avoid}
  table,.note{break-inside:avoid}
 }
@@ -298,7 +308,7 @@ doc = f"""<!doctype html>
 <title>Los Gardios — הסכם התקשרות עם לקוח</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=David+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head>
 <body><div class="sheet">
 <div class="masthead">

@@ -4,37 +4,54 @@
 <title>Los Gardios — הסכם התקשרות עם לקוח</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=David+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#14181f;--muted:#5b6472;--rule:#d9dee6;--accent:#5B2986;--soft:#f7f8fa;--band:#101418;--card:#FAFAFD}
+/* Design language deliberately lighter than CLIENT_GUIDE_HE.md's build: the
+   Guide is a physical, printed, editorial piece meant to impress on arrival;
+   this Agreement is a digital document signed digitally — it borrows the
+   Guide's palette tokens and Heebo/Frank Ruhl Libre font pairing so the two
+   read as one brand family, but stays plain and functional (white page, no
+   dark cover band, no photographic/editorial treatment) rather than matching
+   the Guide's own level of production. The Agreement keeps its own flowing-
+   document architecture (native @page pagination, not the Guide's per-page
+   divs): this is a light re-theme, not a re-architecture. */
+:root{
+ --ink:#2A2118; --muted:#7D6F5C; --rule:#E3D8C3; --soft:#FAF7F1;
+ --gold:#A9824F; --gold-deep:#8C6A3D;
+ --purple:#5B2986; --accent:#5B2986
+}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:#e9ebef;color:var(--ink);direction:rtl;
- font-family:"Frank Ruhl Libre","David Libre","Times New Roman",Georgia,serif;
- font-size:10.4pt;line-height:1.72}
-.sheet{max-width:820px;margin:0 auto;background:#fff;padding:34px 46px 46px;
- box-shadow:0 1px 3px rgba(0,0,0,.10)}
-.masthead{border-bottom:2.5px solid var(--band);padding-bottom:14px;margin-bottom:26px;
+body{margin:0;background:#eeeae1;color:var(--ink);direction:rtl;
+ font-family:"Heebo","Frank Ruhl Libre",Georgia,serif;
+ font-size:10.4pt;line-height:1.78}
+.sheet{max-width:820px;margin:0 auto;background:#fff;padding:34px 46px 46px}
+.masthead{border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:26px;
  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
-.mh-brand{font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:19pt;
- letter-spacing:.30em;color:var(--band);display:flex;align-items:center;gap:10px}
-.mh-mark{height:34px;width:auto;flex:none}
-.mh-meta{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.16em;
+.mh-brand{font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:17pt;
+ letter-spacing:.28em;color:var(--ink);display:flex;align-items:center;gap:10px}
+.mh-mark{height:30px;width:auto;flex:none}
+.mh-meta{font-family:"Heebo",sans-serif;font-size:7.4pt;letter-spacing:.16em;
  color:var(--muted);text-align:left;line-height:1.9;direction:ltr}
-.conf{display:inline-block;border:1px solid var(--accent);color:var(--accent);
- font-family:Helvetica,Arial,sans-serif;font-size:7pt;letter-spacing:.24em;
+.conf{display:inline-block;border:1px solid var(--purple);color:var(--purple);
+ font-family:"Heebo",sans-serif;font-size:7pt;letter-spacing:.24em;
  padding:2px 9px;border-radius:2px}
-h1{font-size:16pt;margin:26px 0 12px;padding-bottom:8px;border-bottom:3px solid var(--accent);
- letter-spacing:.01em}
-h2{font-size:12.4pt;margin:22px 0 8px;color:var(--band);break-after:avoid;page-break-after:avoid}
-.clausebox{background:var(--card);border-radius:5px;padding:14px 17px;margin:0 0 10px;
- break-inside:avoid;page-break-inside:avoid}
+h1{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:17pt;margin:26px 0 12px;
+ padding-bottom:8px;border-bottom:3px solid var(--gold);letter-spacing:.01em;color:var(--ink)}
+h2{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:12.8pt;margin:22px 0 8px;
+ color:var(--ink);break-after:avoid;page-break-after:avoid}
+.clausebox{background:var(--soft);border-inline-start:3px solid var(--gold);
+ padding:14px 17px;margin:0 0 10px;break-inside:avoid;page-break-inside:avoid}
+.clausebox-key{border-inline-start:5px solid var(--purple);position:relative;padding-top:28px}
+.clausebox-key::before{content:"מנגנון הגנה מרכזי — קראו בעיון";position:absolute;
+ top:10px;inset-inline-start:17px;font-family:"Heebo",sans-serif;font-weight:700;
+ font-size:7.4pt;letter-spacing:.14em;color:var(--purple)}
 .keepgroup{break-inside:avoid;page-break-inside:avoid}
 .clausebox>p:last-child,.clausebox>ul:last-child,.clausebox>ol:last-child,.clausebox>table:last-child{margin-bottom:0}
-h3{font-size:10.9pt;margin:16px 0 6px;color:#2a3444}
+h3{font-family:"Frank Ruhl Libre",serif;font-size:11.2pt;margin:16px 0 6px;color:var(--gold-deep)}
 h4{font-size:10pt;margin:13px 0 5px;color:var(--muted)}
 p{margin:0 0 9px;text-align:justify}
-strong{font-weight:700}
+strong{font-weight:700;color:var(--ink)}
 code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.87em;background:var(--soft);
  border:1px solid var(--rule);border-radius:3px;padding:.5px 4px;direction:ltr;
  display:inline-block;unicode-bidi:embed}
@@ -42,62 +59,38 @@ ul,ol{margin:0 0 10px;padding-inline-start:22px}
 li{margin:0 0 4px;text-align:justify}
 table{width:100%;border-collapse:collapse;margin:12px 0 16px;font-size:9.2pt;
  display:block;overflow-x:auto}
-thead th{background:var(--band);color:#fff;font-weight:600;padding:7px 9px;
- border:1px solid var(--band);font-family:Helvetica,Arial,sans-serif;font-size:8.6pt}
-tbody td{border:1px solid var(--rule);padding:7px 9px;vertical-align:top}
-tbody tr:nth-child(even){background:var(--soft)}
-.note{background:var(--soft);border-inline-start:3px solid var(--accent);
- padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#333c4a}
+thead th{background:transparent;color:var(--gold-deep);font-weight:700;padding:7px 9px;
+ border-bottom:2px solid var(--gold);font-family:"Heebo",sans-serif;font-size:8.6pt;letter-spacing:.02em}
+tbody td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+.note{background:var(--soft);border-inline-start:3px solid var(--gold-deep);
+ padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#382c1f}
 hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 .pagebreak{border-top:1px solid var(--rule);margin:26px 0}
-/* Compact per-section banner for the short contract — a colored badge letter and a
-   one-line description above the heading, instead of a full divider page. Keeps the
-   per-annex brand color without costing a page per annex. */
-.mini-divider{display:flex;align-items:center;gap:12px;margin:26px 0 -6px;padding-top:14px;
+/* Compact per-section banner — a colored badge letter and a one-line
+   description above the heading, in the same eyebrow language as the
+   Guide's chapter dividers, sized to cost no extra page per section. */
+.mini-divider{display:flex;align-items:center;gap:12px;margin:30px 0 -4px;padding-top:16px;
  border-top:2px solid var(--ax)}
-.mini-badge{width:22px;height:22px;border-radius:50%;background:var(--ax);color:#fff;
- font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:9.5pt;flex:none;
+.mini-badge{width:26px;height:26px;border-radius:50%;background:var(--ax);color:#fff;
+ font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:11pt;flex:none;
  display:flex;align-items:center;justify-content:center}
-.mini-sub{font-family:Helvetica,Arial,sans-serif;font-size:8.6pt;color:var(--muted);line-height:1.5}
-.annex-cover{page-break-before:always;break-before:page;margin:36px -46px 0;padding:0 46px 56px;
- background:#fff;color:var(--ink);min-height:620px;position:relative;overflow:hidden}
-.ac-mast{display:flex;justify-content:space-between;align-items:center;padding-top:36px}
-.ac-mast-text{font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.20em;
- color:var(--muted)}
-.ac-badge{width:30px;height:30px;border-radius:50%;background:var(--ax);color:#fff;
- font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:11pt;
- display:flex;align-items:center;justify-content:center;flex:none}
-.ac-rule{height:2px;background:var(--ax);margin:14px 0 0}
-.ac-body{padding-top:150px;position:relative;z-index:1}
-.ac-tag{font-family:Helvetica,Arial,sans-serif;font-size:8.6pt;font-weight:700;
- letter-spacing:.22em;color:var(--ax);margin-bottom:12px;
- display:flex;align-items:center;gap:12px;justify-content:flex-end}
-.ac-tag-dash{display:inline-block;width:34px;height:2px;background:var(--ax)}
-.ac-title{font-size:24pt;font-weight:700;margin-bottom:16px;color:var(--ink);text-align:right}
-.ac-sub{max-width:560px;margin-inline-start:auto;color:var(--muted);font-size:9.8pt;
- line-height:1.85;text-align:right}
-.ac-letter{position:absolute;left:-18px;bottom:-40px;
- font-family:Georgia,"Times New Roman",serif;font-size:280pt;font-weight:700;
- color:var(--ax-tint);line-height:1;z-index:0;user-select:none}
-.ac-footrule{border-top:1px solid var(--rule);margin-inline-start:34%;margin-top:200px;
- position:relative;z-index:1}
-.ac-foot{font-family:Helvetica,Arial,sans-serif;font-size:7.4pt;letter-spacing:.06em;
- color:var(--muted);text-align:right;margin-top:8px;position:relative;z-index:1}
+.mini-sub{font-family:"Heebo",sans-serif;font-size:8.8pt;color:var(--muted);line-height:1.6}
 .stampcell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .stampimg{width:92px;height:92px;object-fit:contain;opacity:.9}
 .stampline{width:100%;border-top:1px solid var(--ink);margin-top:2px}
-.stampcaption{font-family:Helvetica,Arial,sans-serif;font-size:6.6pt;color:var(--muted);
+.stampcaption{font-family:"Heebo",sans-serif;font-size:6.6pt;color:var(--muted);
  letter-spacing:.03em;text-align:center}
-.doctitle{font-size:23pt;font-weight:700;margin:6px 0 4px;letter-spacing:.01em}
+.doctitle{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:23pt;margin:6px 0 4px;letter-spacing:.01em}
 .docfoot{margin-top:34px;padding-top:12px;border-top:1px solid var(--rule);
- font-family:Helvetica,Arial,sans-serif;font-size:7.6pt;letter-spacing:.10em;
+ font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.10em;
  color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-@page{size:A4;margin:17mm 15mm}
+@page{size:A4;margin:22mm 15mm 17mm}
 @media print{
  body{background:#fff}
- .sheet{max-width:none;box-shadow:none;padding:0}
- .annex-cover{margin:0;padding:66px 20mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .sheet{max-width:none;padding:0}
+ .masthead{margin:0 0 26px}
  thead th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .clausebox,.mini-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  h1,h2{break-after:avoid}
  table,.note{break-inside:avoid}
 }
@@ -118,13 +111,25 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <div class="pagebreak"></div>
 <h1>עמוד פתיחה</h1>
 <p>הסכם התקשרות זה, הכולל את הסכם המסגרת שלהלן (פרקים א&#x27;–ד&#x27;) ואת נספחיו A–D (&quot;<strong>ההסכם</strong>&quot;), נכרת ביום ______ בחודש ________ שנת ______ (&quot;<strong>מועד החתימה</strong>&quot;),</p>
-<p><strong>בין:</strong> לוס גרדיוס בע&quot;מ, ח.פ./מס&#x27; עוסק 516819257, מרחוב השדרה המרכזית 15, מודיעין (&quot;<strong>הארגון</strong>&quot;), וכל אישויותיו;</p>
+<p><strong>בין:</strong> לוס גרדיוס בע&quot;מ, ח.פ./מס&#x27; עוסק 516819257, מרחוב השדרה המרכזית 15, מודיעין (&quot;<strong>הארגון</strong>&quot;), וכל ישויותיו;</p>
 <p><strong>לבין:</strong> _________________________, ח.פ./מס&#x27; עוסק _____________, מרחוב _________________________ (&quot;<strong>הלקוח</strong>&quot;).</p>
 <p><strong>מדינת הלקוח:</strong> _________________ (קובעת, בין היתר, את הפורום ליישוב מחלוקות לפי סעיף 14 להלן.)</p>
 <p><strong>נציג מוסמך ראשי של הלקוח:</strong> שם _______________ · תפקיד _______________ · דוא&quot;ל _______________</p>
 <p><strong>נציג מוסמך חלופי של הלקוח:</strong> שם _______________ · תפקיד _______________ · דוא&quot;ל _______________</p>
 <p><strong>נציג מוסמך של הארגון:</strong> שם _______________ · תפקיד _______________ · דוא&quot;ל _______________</p>
-<div class="note">חזון הלקוח, מטרותיו, התקציב, גבולות הגזרה ומודל העבודה הנבחר נקבעים בטופס הקליטה שבסוף מדריך הלקוח, ומועתקים ומאושרים בטבלת התנאים המסחריים שבנספח B. התמורה הכלכלית הסופית (ריטיינר, אחוזים, לוח נסיגה וכיו&quot;ב) נקבעת בהצעת ההתקשרות הנפרדת, הנחתמת לאחר השלמת מחקר Genesis.</div>
+<div class="note">חזון הלקוח, מטרותיו, התקציב וגבולות הגזרה נקבעים בטופס הקליטה שבסוף מדריך הלקוח, ומועתקים ומאושרים בטבלת התנאים המסחריים שבנספח B; מודל העבודה נקבע באותו שלב אם ידוע, ואם לא — בהצעת ההתקשרות עצמה, לפי המלצת הארגון. התמורה הכלכלית הסופית (ריטיינר, אחוזים, לוח נסיגה וכיו&quot;ב) נקבעת בהצעת ההתקשרות הנפרדת, הנחתמת לאחר השלמת מחקר Genesis.</div>
+<div class="pagebreak"></div>
+<h1>מפת ההסכם — סקירה כללית</h1>
+<p>מסמך זה בנוי מארבעה חלקים משלימים, ונספח נוסף המצטרף רק כאשר רלוונטי, המהווים יחד הסכם אחד מחייב (סעיף 15(א) להלן). הסקירה שלהלן נועדה לתת תמונה כללית וברורה לפני הכניסה לפרטים — מה יש בכל חלק, מתי הוא חל, ומה בדיוק מפעיל אותו.</p>
+<table><thead><tr><th style="text-align:right">חלק</th><th style="text-align:right">תוכן</th><th style="text-align:right">מתי חל</th><th style="text-align:right">מה מפעיל אותו</th></tr></thead><tbody>
+<tr><td style="text-align:right"><strong>הסכם המסגרת</strong> (פרקים א&#x27;–ד&#x27;)</td><td style="text-align:right">הגדרות · תשלום · הגנת נכסים · סודיות · קניין רוחני · פיצוי מוסכם · הגבלת אחריות · סיום · יישוב סכסוכים</td><td style="text-align:right">תמיד, לכל לקוח וכל התקשרות</td><td style="text-align:right">חתימה בעמוד החתימות</td></tr>
+<tr><td style="text-align:right"><strong>נספח A</strong> — Genesis</td><td style="text-align:right">מחקר, Buyout, איסור יישום עצמאי</td><td style="text-align:right">תמיד — אלא אם נבחר מסלול 0, ואז סעיף 2 לנספח A חל במקומו</td><td style="text-align:right">הצעת ההתקשרות + סימון מסלול בטבלת נספח B</td></tr>
+<tr><td style="text-align:right"><strong>נספח B</strong> — תנאים מסחריים</td><td style="text-align:right">תקציב, גבולות גזרה, Stop-Loss, טבלת פרמטרים</td><td style="text-align:right">חל על מסלולים A/B/C בלבד</td><td style="text-align:right">מילוי הטבלה + הצעה חתומה</td></tr>
+<tr><td style="text-align:right"><strong>נספח C</strong> — נתונים ופרטיות</td><td style="text-align:right">שלוש שכבות מידע, אבטחה, הקלטות</td><td style="text-align:right">תמיד, ללא תנאי</td><td style="text-align:right">אוטומטי עם החתימה</td></tr>
+<tr><td style="text-align:right"><strong>נספח D</strong> — הגנת מידע אישי (DPA)</td><td style="text-align:right">הסכם עיבוד נתונים אישיים</td><td style="text-align:right">רק אם הלקוח כפוף לדין הגנת מידע המחייב זאת</td><td style="text-align:right">תיבת ☐ בטבלת נספח B</td></tr>
+<tr><td style="text-align:right"><strong>נספח הבנות משלימות</strong></td><td style="text-align:right">תוספות/סיכומים נקודתיים</td><td style="text-align:right">רק אם קיימת הבנה שנרשמה ואושרה</td><td style="text-align:right">מילוי + חתימה נפרדת על אותו נספח</td></tr>
+</tbody></table>
+<p>מפה זו נועדה לנוחות הקריאה בלבד ואינה יוצרת, משנה או גורעת מתחולת אף חלק מההסכם; חתימה אחת בעמוד החתימות מחייבת את כל חלקי ההסכם החלים על ההתקשרות הספציפית, כאמור בסעיף 15(א), בהתאם לתנאי ההפעלה שלעיל.</p>
 <div class="pagebreak"></div>
 <h1>מבוא</h1>
 <p><strong>הואיל</strong> והארגון הוא קבוצת שירותים מקצועית בתחומי המיתוג, השיווק, הפיתוח והמסחר, ומעמידה ללקוחותיה החיצוניים צוותים, מתודולוגיות ומערכות קנייניות, כמפורט במדריך הלקוח שלה;</p>
@@ -132,7 +137,7 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>הואיל</strong> ועם החתימה על הסכם זה ותשלום דמי ההשתתפות העצמית לפי נספח A, מבצע הארגון על חשבונו ובאחריותו את מחקר Genesis, ובסיומו מגיש ללקוח תוכנית עסקית, שיווקית ופיננסית, לצד הצעת התקשרות מסחרית; וההתקשרות בפועל, על מלוא תנאיה הכלכליים, תחל אך ורק עם אישור הלקוח בכתב לאותה הצעה;</p>
 <p><strong>לפיכך הוצהר, הותנה והוסכם בין הצדדים כדלקמן:</strong></p>
 <div class="pagebreak"></div>
-<div class="mini-divider" style="--ax:#5B2986;--ax-tint:#F4F0F6"><span class="mini-badge">§</span><span class="mini-sub">יסודות ההתקשרות וחובות הצדדים, הגנה על נכסי הארגון וקניין רוחני, פיצוי מוסכם והגבלת אחריות, תקופה, סיום ויישוב סכסוכים.</span></div><h1 class="annex-h" style="border-bottom-color:#5B2986">פרק א׳ — יסודות ההתקשרות</h1>
+<div class="mini-divider" style="--ax:#A9824F;--ax-tint:#F4EEE4"><span class="mini-badge">§</span><span class="mini-sub">יסודות ההתקשרות וחובות הצדדים, הגנה על נכסי הארגון וקניין רוחני, פיצוי מוסכם והגבלת אחריות, תקופה, סיום ויישוב סכסוכים.</span></div><h1 class="annex-h" style="border-bottom-color:#A9824F">פרק א׳ — יסודות ההתקשרות</h1>
 <h2>סעיף 1 — הגדרות</h2><div class="clausebox">
 <p><strong>&quot;ההסכם&quot;</strong> — הסכם המסגרת (פרקים א&#x27;–ד&#x27;), נספחים A, B ו-C, כל הצעה חתומה (ביחס להתקשרות הספציפית שמכוחה נחתמה), נספח D (ככל שסומן כחל בטבלת התנאים המסחריים), מדריך הלקוח (בגרסתו שאושרה לפי סעיף 15(א1)) ונספח ההבנות המשלימות (ככל שמולא ואושר) — יחד.</p>
 <p><strong>&quot;ההצעה&quot;</strong> — הצעת התקשרות מסחרית ספציפית, חתומה בידי הנציגים המוסמכים, הקובעת את התמורה, מודל ההתקשרות, התקופה, מועד התגובה, לוח הנסיגה (Exit Schedule), מחיר ה-Buyout ויתר התנאים הכלכליים; &quot;<strong>התקשרות ספציפית</strong>&quot; — הפעילות המבוצעת מכוח הצעה חתומה אחת.</p>
@@ -142,7 +147,7 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>&quot;מידע סודי&quot;</strong> — כמשמעותו בסעיף 9(א). <strong>&quot;סוד מסחרי&quot;</strong> — מידע סודי העונה להגדרה בחוק עוולות מסחריות, התשנ&quot;ט-1999. <strong>&quot;קשרים מוגנים&quot;</strong> — כמשמעותם בסעיף 8(א). <strong>&quot;מחקר Genesis&quot;</strong> — כמשמעותו בנספח A.</p>
 <p><strong>&quot;נציג מוסמך&quot;</strong> — הנציג הראשי או החלופי של צד, כנקוב בעמוד הפתיחה או כפי שעודכן בכתב. <strong>&quot;בכתב&quot;</strong> — לרבות כאמור בסעיף 4(ג). <strong>&quot;ימי עסקים&quot;</strong> — ימי א&#x27;–ה&#x27;, למעט שבתון, חג ומועד בישראל.</p>
 </div><h2>סעיף 2 — תחולה, תום-לב ומעמד הצדדים</h2><div class="clausebox">
-<p><strong>(א) תחולה.</strong> הסכם זה מהווה את המסגרת המשפטית הכללית להתקשרות עם לקוח חיצוני במסגרת פרויקט מסחרי בתשלום, לכל סוגי השירותים שהארגון עשוי לספק. השירותים, ההיקף והתוצרים הספציפיים להתקשרות ייקבעו בהצעת ההתקשרות המסחרית/SOW החתומה הרלוונטית; הוראות הסכם זה יחולו על ההתקשרות רק במידה שהן רלוונטיות לשירותים שנבחרו ואושרו בפועל באותה הצעה. אין באמור כדי להטיל על הארגון חובה לספק שירות שלא נבחר ואושר כאמור, ואין בהסכם זה כשלעצמו כדי להקים התחייבות למתן שירות כלשהו. למען הסר ספק, מגבלת הרלוונטיות שבסעיף-קטן זה חלה על היקף השירותים בלבד; הוראות סעיפים 7–11 (הגנה על נכסים, קניין רוחני, סודיות וסעדים) חלות על ההתקשרות במלואן, ללא תלות בהיקף השירותים הספציפי שנבחר. האמור לעיל חל, בשינויים המחויבים, גם על נספחים A–C: הוראותיהם המטילות חובת-הגנה כללית (ובכלל זה סודיות, האיסור על יישום עצמאי ומנגנון ה-Buyout שבנספח A סעיף 3, וזכויות קניין רוחני) חלות במלואן ללא תלות במסלול או בשירות שנבחר, ואילו הוראותיהם האופרטיביות-הספציפיות (ובכלל זה תקציב, מסלול ומנגנון ה-Stop-Loss שבנספח B, ותחולת נספח D) חלות רק במידה שהשירות הרלוונטי נבחר ואושר בהצעה חתומה — לרבות הצעה נוספת שתיחתם בהמשך תקופת הסכם זה לפי סעיף 13(א), הרשאית להפעיל לראשונה מנגנון כאמור, לרבות עדכון טבלת התנאים המסחריים שבנספח B (לרבות תיבת נספח D), ביחס לאותה התקשרות ספציפית בלבד — מבלי לשנות, לגרוע מ- או לחול למפרע על תנאי התקשרות ספציפית אחרת שנקבעו בהצעה חתומה שונה.</p>
+<p><strong>(א) תחולה.</strong> הסכם זה מהווה את המסגרת המשפטית הכללית להתקשרות עם לקוח חיצוני במסגרת פרויקט מסחרי בתשלום, לכל סוגי השירותים שהארגון עשוי לספק. השירותים, ההיקף והתוצרים הספציפיים להתקשרות ייקבעו בהצעת ההתקשרות המסחרית/SOW החתומה הרלוונטית; הוראות הסכם זה יחולו על ההתקשרות רק במידה שהן רלוונטיות לשירותים שנבחרו ואושרו בפועל באותה הצעה. אין באמור כדי להטיל על הארגון חובה לספק שירות שלא נבחר ואושר כאמור, ואין בהסכם זה כשלעצמו כדי להקים התחייבות למתן שירות כלשהו. למען הסר ספק, מגבלת הרלוונטיות שבסעיף-קטן זה חלה על היקף השירותים בלבד; הוראות סעיפים 7–11 (הגנה על נכסים, קניין רוחני, סודיות וסעדים) חלות על ההתקשרות במלואן, ללא תלות בהיקף השירותים הספציפי שנבחר. האמור לעיל חל, בשינויים המחויבים, גם על נספחים A–C: הוראותיהם המטילות חובת-הגנה כללית (ובכלל זה סודיות, האיסור על יישום עצמאי ומנגנון ה-Buyout שבנספח A סעיף 3, וזכויות קניין רוחני) חלות במלואן ללא תלות במסלול או בשירות שנבחר. לעומת זאת, הוראותיהם האופרטיביות-הספציפיות (ובכלל זה תקציב, מסלול ומנגנון ה-Stop-Loss שבנספח B, ותחולת נספח D) חלות רק במידה שהשירות הרלוונטי נבחר ואושר בהצעה חתומה — לרבות הצעה נוספת שתיחתם בהמשך תקופת הסכם זה לפי סעיף 13(א). הצעה כאמור רשאית להפעיל לראשונה מנגנון כזה, לרבות עדכון טבלת התנאים המסחריים שבנספח B (לרבות תיבת נספח D), ביחס לאותה התקשרות ספציפית בלבד — מבלי לשנות, לגרוע מ- או לחול למפרע על תנאי התקשרות ספציפית אחרת שנקבעו בהצעה חתומה שונה.</p>
 <p><strong>(ב) עסקה בין ישויות עסקיות ותום-לב.</strong> הצדדים מצהירים כי ההתקשרות היא עסקה מסחרית בין שתי ישויות עסקיות (B2B); כי כל צד קיבל הזדמנות סבירה לעיין בהסכם ובמדריך הלקוח, להיוועץ ולנהל משא ומתן על תנאיהם טרם החתימה; וכי יפעל בתום-לב ובאופן סביר בקיום הסכם זה.</p>
 <p><strong>(ג) אופן העבודה ומעמד הצדדים.</strong> העבודה מתנהלת לפי מסגרת זמן משוערת, אלא אם נקבע בהצעה מועד מחייב; הארגון רשאי לבצע את השירותים באמצעות נציגיו, עובדיו, שותפיו וקבלני משנה, ונושא באחריות לביצועם. הצדדים הם קבלנים עצמאיים; אין בהסכם זה כדי ליצור יחסי עובד-מעביד, שליחות, שותפות או מיזם משותף, וכל צד אחראי במלואו לתנאי העסקתם ומיסויים של מי מטעמו.</p>
 <div class="pagebreak"></div>
@@ -154,17 +159,17 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(ד) שינוי תוצרים בידי הלקוח.</strong> שינוי תוצרי הארגון בידי הלקוח ייעשה באחריותו; הארגון אחראי לתוצריו כפי שנמסרו.</p>
 </div><h2>סעיף 4 — אישורים, מועד תגובה, תקשורת מחייבת והסלמת עיכוב</h2><div class="clausebox">
 <p><strong>(א) מועד תגובה.</strong> יבחן הלקוח כל תוצר ויחזיר לארגון תשובה מוגדרת וסופית בכתב עד למועד התגובה שנקבע בהצעה; באין מועד נקוב — שלושה (3) ימי עסקים ממועד מסירת התוצר.</p>
-<p><strong>(ב) עיכוב מצד הלקוח.</strong> חרגה היענות הלקוח מהסביר באופן היוצר עיכוב בפרויקט, יתריע הארגון בכתב ויתאים את לוח הזמנים והתחזיות לעיכוב בפועל — באופן המשחרר את הארגון מאחריות לעמידה בלוחות הזמנים והיעדים המקוריים, שהתבססו על שיתוף הפעולה שלא ניתן. נמשך העיכוב חרף ההתראה מעבר לעשרה (10) ימי עסקים נוספים, זכאי הארגון לסיים את ההתקשרות הרלוונטית בתום-לב, בהודעה בכתב, מבלי שיהא בכך הפרה מצדו. בסיום כאמור ישא הלקוח בעלויות שהארגון הוציא בפועל בהתאם לתכולת ההתקשרות עד למועד הסיום בפועל, באופן המשחרר את הארגון ממחויבויותיו הנותרות; אין בכך כדי לגרוע מהתשלומים שנצברו. אין באמור כדי למנוע מהצדדים לנהל משא-ומתן ולהסכים על תנאים מותאמים בכתב בכל עת, ואין בו כדי להקנות זכות לשנות באופן חד-צדדי את התמורה או תנאי הסכם זה, בכפוף לסעיף 15(ב).</p>
-<p><strong>(ג) צורת תקשורת מחייבת.</strong> אישור תוצר, הנחיה מקצועית או שינוי בתנאי ההתקשרות, יינתנו באופן הניתן להצגה בכתב (הודעת דוא&quot;ל, רישום ב-Neuron OS, שיחה או פגישה מוקלטת לפי נספח C, או פגישה שסוכמה בכתב ואושרה בידי נציגי שני הצדדים) — ויחייבו רק כך.</p>
+<p><strong>(ב) עיכוב מצד הלקוח.</strong> חרגה היענות הלקוח מהסביר באופן היוצר עיכוב בהתקשרות, יתריע הארגון בכתב ויתאים את לוח הזמנים והתחזיות לעיכוב בפועל — באופן המשחרר את הארגון מאחריות לעמידה בלוחות הזמנים והיעדים המקוריים, שהתבססו על מידת שיתוף הפעולה שנצפתה בפועל. נמשך העיכוב חרף ההתראה מעבר לעשרה (10) ימי עסקים נוספים, זכאי הארגון לסיים את ההתקשרות הרלוונטית בתום-לב, בהודעה בכתב, מבלי שיהא בכך הפרה מצדו. בסיום כאמור ישא הלקוח בעלויות שהארגון הוציא בפועל בהתאם לתכולת ההתקשרות עד למועד הסיום בפועל, באופן המשחרר את הארגון ממחויבויותיו הנותרות; אין בכך כדי לגרוע מהתשלומים שנצברו. אין באמור כדי למנוע מהצדדים לנהל משא-ומתן ולהסכים על תנאים מותאמים בכתב בכל עת, ואין בו כדי להקנות זכות לשנות באופן חד-צדדי את התמורה או תנאי הסכם זה, בכפוף לסעיף 15(ב).</p>
+<p><strong>(ג) צורת תקשורת מחייבת.</strong> אישור תוצר, הנחיה מקצועית או שינוי בתנאי ההתקשרות, יינתנו באופן הניתן להצגה בכתב (הודעת דוא&quot;ל, רישום במערכת Neuron, שיחה או פגישה מוקלטת לפי נספח C, או פגישה שסוכמה בכתב ואושרה בידי נציגי שני הצדדים) — ויחייבו רק כך.</p>
 </div><h2>סעיף 5 — תנאים פיננסיים</h2><div class="clausebox">
 <p><strong>(א) שכר טרחה ותשלום.</strong> התמורה משולמת כנגד חשבונית כדין, במלואה ובמועד שנקבע בהצעה; עמד תשלום בפיגור, יישא ריבית לפי השיעור שבהצעה, ובאין שיעור כאמור — לפי חוק פסיקת ריבית והצמדה, התשכ&quot;א-1961. תשלומי הלקוח יבוצעו במלואם; מחלוקת על פריט מסוים אינה עילה לעיכוב יתר התשלומים, ובלבד שהלקוח הודיע בכתב על הפריט השנוי במחלוקת תוך שבעה (7) ימי עסקים מקבלת החשבונית. הלקוח יישא בכל מס עקיף או ניכוי החל על התמורה (לרבות מע&quot;מ), למעט מס הכנסה החל על הארגון.</p>
 <p><strong>(ב) הפרדת תקציב מדיה מתמורת הארגון.</strong> תקציב הפרסום מועבר במישרין לפלטפורמות; התמורה המגיעה לארגון נגבית בנפרד ואינה כלולה בתקציב המדיה.</p>
-<p><strong>(ג) אי-תשלום.</strong> לא שולם סכום שאינו במחלוקת בתוך שבעה (7) ימי עסקים ממועד התראה בכתב, רשאי הארגון להשהות את השירותים ולגבות את החוב כדין, בכפוף למנגנון יישוב הסכסוכים — מבלי לגרוע מגישת הלקוח לחשבונותיו שלו, ומזכות הסיום המיידי לפי סעיף 13(ג) (לרבות בשל חדלות פירעון).</p>
+<p><strong>(ג) אי-תשלום.</strong> לא שולם סכום שאינו במחלוקת בתוך שבעה (7) ימי עסקים ממועד התראה בכתב, רשאי הארגון להשהות את השירותים ולגבות את החוב כדין, בכפוף למנגנון יישוב הסכסוכים — מבלי לגרוע מגישת הלקוח לחשבונותיו שלו, ומזכות הסיום המיידי לפי סעיף 13(ג) (לרבות בשל חדלות-פירעון).</p>
 <p><strong>(ד) מטבע והמרה.</strong> סכום הנקוב במטבע חוץ ישולם בשקלים לפי שער החליפין היציג של בנק ישראל ביום העסקים שקדם לתשלום, אלא אם הוסכם אחרת בהצעה; תנודה בשער החליפין כשלעצמה אינה עילה לשינוי הסכום.</p>
 </div><h2>סעיף 6 — תוכן הלקוח, ציות ושיפוי הדדי</h2><div class="clausebox">
 <p><strong>(א) הצהרות הלקוח.</strong> הלקוח מצהיר כי הוא בעל מלוא הזכויות בכל חומר שהוא מוסר לארגון; כי הוא אחראי לחוקיות מוצריו, עסקו ומצגיו השיווקיים ולאמיתותם; וכי הוא אחראי לקבלת כל ההסכמות הנדרשות בדין ביחס למידע ולנתונים שהוא מוסר או מבקש שייעשה בהם שימוש.</p>
 <p><strong>(ב) שיפוי הלקוח.</strong> הלקוח ישפה ויגן על הארגון מפני כל תביעה, דרישה, הפסד או הוצאה של צד שלישי (לרבות שכר טרחת עו&quot;ד סביר) הנובעים מחומרים או תכנים שסיפק, ממוצריו, מעסקו או מפעילותו, ממצגיו השיווקיים, ממידע או נתונים שמסר, מהפרת דין מצדו או מפגיעה בזכות צד שלישי; וכן מסיכון שהארגון התריע עליו בכתב, ובלבד שנתקיימו כל אלה: ההתראה ניתנה טרם ההחלטה, ההנחיה, האישור, המחדל או ההתנהלות של הלקוח שגרמו לנזק או תרמו לו באופן מהותי; ההתראה הייתה ספציפית ומזהה את הסיכון ואת תוצאתו המהותית הצפויה; הלקוח, חרף ההתראה, הורה, אישר או המשיך ביודעין בפעולה הנדונה; והתביעה או הנזק קשורים באופן מהותי לאותו סיכון — בגבולות תחום הסיכון שאליו התייחסה ההתראה בלבד.</p>
-<p><strong>(ג) שיפוי הארגון בגין קניין רוחני.</strong> הארגון מצהיר כי התוצרים כפי שנמסרו, בנפרד מחומרי הלקוח ומשינוי שנעשה בהם, אינם מפרים ביודעין זכות קניין רוחני של צד שלישי; הארגון ישפה את הלקוח מפני תביעת הפרה כאמור, בכפוף לסעיף 12(ד).</p>
+<p><strong>(ג) שיפוי הארגון בגין קניין רוחני.</strong> הארגון מצהיר כי כל תוצר שנמסר ללקוח, לרבות תוצר שטרם שולמה תמורתו במלואה, כפי שנמסר, בנפרד מחומרי הלקוח ומשינוי שנעשה בו, אינו מפר ביודעין זכות קניין רוחני של צד שלישי; הארגון ישפה את הלקוח מפני תביעת הפרה כאמור, בכפוף לסעיף 12(ד).</p>
 <p><strong>(ד) הליך השיפוי.</strong> הצד המשופה יודיע בכתב על התביעה ללא דיחוי בלתי-סביר; הצד המשפה ינהל את ההגנה באמצעות עו&quot;ד מטעמו ולא יתפשר בפשרה המטילה חבות על המשופה ללא הסכמתו בכתב; המשופה רשאי להשתתף בהגנה על חשבונו.</p>
 <div class="pagebreak"></div>
 </div><h1>פרק ג&#x27; — הגנה על נכסים, קניין רוחני והגבלת אחריות הדדית</h1>
@@ -173,7 +178,7 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(ב) הכרה בהשקעת הארגון.</strong> הצדדים מכירים בכך שהארגון משקיע משאבים משמעותיים בהון אנושי, ברשת קשרים עסקיים, במידע סודי, ובהון אינטלקטואלי ותשתית ארגונית (לרבות מערכות Neuron), וכי פגיעה בהם עלולה לגרום נזק הקשה לכימות מראש. הפיצוי המוסכם בגין פגיעה בכל אחד מהם, ואופן חישובו, קבועים באופן ממצה בסעיף 11.</p>
 <p><strong>(ג) שימוש הלקוח בנכסים.</strong> הלקוח רשאי להיחשף לנכסים ולהפיק מהם תועלת במסגרת ההתקשרות בלבד; אין באמור כדי להקנות לו זכות, בעלות או עניין בהם.</p>
 <p><strong>(ד) פיצוי בגין פגיעה.</strong> נגרמה פגיעה בנכס מהנכסים, זכאי הארגון לפיצוי בגין השקעתו בו ללא הוכחת נזק; סכום הפיצוי ואופן חישובו קבועים באופן ממצה בסעיף 11.</p>
-</div><h2>סעיף 8 — הגנה על הקשרים המקצועיים והעסקיים (אי-שידול ואי-עקיפה)</h2><div class="clausebox">
+</div><h2>סעיף 8 — הגנה על הקשרים המקצועיים והעסקיים (אי-שידול ואי-עקיפה)</h2><div class="clausebox clausebox-key">
 <p><strong>(א) קשרים מוגנים.</strong> נציג, עובד, שותף, קבלן משנה, נותן שירות, מומחה או יועץ של הארגון; וכל ספק, יצרן, מפיץ, שותף עסקי או גורם עסקי אחר שהארגון חשף אליו את הלקוח או תיווך ביניהם לצורך הפצה, מכירה, רכש, ייצור, שירות או הזדמנות עסקית.</p>
 <p><strong>(ב) אי-שידול.</strong> הלקוח לא ישדל, יפתה או יתקשר, במישרין או בעקיפין, עם קשר מוגן מהסוג הראשון, לצורך שירות או עבודה מחוץ למסגרת הארגון.</p>
 <p><strong>(ג) אי-עקיפה.</strong> הלקוח לא יפנה לקשר מוגן מהסוג השני להתקשרות ישירה תוך עקיפת הארגון, ולא ייענה להצעה כאמור — אלא בתיאום מראש ובכתב עם הארגון.</p>
@@ -193,7 +198,7 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(ב) מה נשאר של הארגון; רישיון לשימוש בתוצר.</strong> בעלות הלקוח בתוצרים אינה חלה על נכסי הארגון — לרבות המחקר, המודלים, המתודולוגיות ומערכות Neuron — ועל כל תובנה או נתון נגזר הנלווה להם (נספח C סעיף 2(ב)); אלה קניינו הבלעדי של הארגון בכל עת. הארגון מעניק ללקוח רישיון עולמי, בלתי-ייחודי, בלתי-הדיר, לצמיתות וללא תמורה נוספת, לשימוש בקניין הרוחני כפי שהוא משוקע בתוצר, לצורך שימושו הרגיל של הלקוח בעסקו; הרישיון אינו מתיר חילוץ, הפרדה, פענוח-הנדסי-לאחור או שימוש עצמאי מחוץ לתוצר, ואינו מעביר בעלות.</p>
 <p><strong>(ג) רכיבי צד שלישי ותיק עבודות.</strong> רכיבים המוגנים ברישיון צד שלישי כפופים לתנאי אותו רישיון, והארגון יודיע על רכיב המטיל מגבלה מהותית על שימוש הלקוח. הארגון רשאי להציג את התוצרים בתיק עבודותיו ובחומרי שיווקו, לרבות ציון שם הלקוח, אלא אם ביקש הלקוח בכתב אחרת.</p>
 <p><strong>(ד) ידע כללי ושרשרת הזכויות.</strong> הארגון רשאי להשתמש, עבור לקוחות אחרים, בידע מקצועי כללי שאינו ספציפי לזהות הלקוח או לתוצריו, ובלבד שאין בכך שימוש במידע סודי או שכפול תוצרים ספציפיים. הארגון מצהיר כי נקט, וינקוט, את הפעולות הנדרשות להבטחת זכויותיו הקנייניות בתוצרים וליכולתו להעביר את הזכויות ללקוח כאמור בסעיף-קטן (א).</p>
-</div><h2>סעיף 11 — סעדים, השבת ההשקעה ומניעת כפל פיצוי</h2><div class="clausebox">
+</div><h2>סעיף 11 — סעדים, השבת ההשקעה ומניעת כפל פיצוי</h2><div class="clausebox clausebox-key">
 <p><strong>(א) פיצוי מוסכם — הסכומים.</strong> הפרה של סעיפים 8–10, שהייתה ניתנת לתיקון ולא תוקנה תוך שבעה (7) ימי עסקים מהודעת הצד הנפגע בכתב (או התוך הקבוע בסעיף 8(ו) לעניין הפרת סעיף 8), או שלא הייתה ניתנת לתיקון כלל, תזכה את הצד הנפגע בפיצוי המוסכם הבא בגין ההשקעה שנפגעה, ללא הוכחת נזק — מבלי לגרוע מזכות כל צד לפנות בכל עת לסעד זמני או דחוף לפי סעיף 14(ד):</p>
 <table><thead><tr><th style="text-align:right">ההפרה</th><th style="text-align:right">הסכום המוסכם לכל אירוע</th></tr></thead><tbody>
 <tr><td style="text-align:right">אי-שידול (הון אנושי) — סעיף 8(ב)</td><td style="text-align:right">הגבוה מבין: 150,000 ₪ או 6× התמורה החודשית הממוצעת — ולא יותר מ-400,000 ₪</td></tr>
@@ -201,21 +206,21 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <tr><td style="text-align:right">סודיות — סעיף 9</td><td style="text-align:right">הגבוה מבין: 100,000 ₪ או 4× התמורה החודשית הממוצעת — ולא יותר מ-200,000 ₪</td></tr>
 <tr><td style="text-align:right">קניין רוחני — סעיף 10(ב)</td><td style="text-align:right">הגבוה מבין: 150,000 ₪ או 6× התמורה החודשית הממוצעת — ולא יותר מ-350,000 ₪</td></tr>
 </tbody></table>
-<p>הסכומים משקפים אומדן אמיתי ובתום-לב של המשאבים שהארגון השקיע בנכס הנפגע, נקבעים ביחס מידתי להיקף הכלכלי של ההתקשרות, ואינם קנס; מטרת הטבלה לתת לשני הצדדים ודאות מראש לגבי החשיפה המרבית האפשרית מכל אירוע. הרצפות הקבועות משקפות את העלות הקבועה של הקמת הנכס המוגן (גיוס, הכשרה, פיתוח ידע ורשת קשרים), שאינה תלויה בהיקפה הכלכלי של ההתקשרות הספציפית. פיצוי בגין הפרת סעיף 9 (סודיות) מגיע לצד הנפגע — לקוח או ארגון כאחד — בהתאם לחובת הסודיות ההדדית שם; פיצוי בגין הפרת סעיפים 8 ו-10(ב) מגיע לארגון בלבד, בהתאם לכך שההתחייבויות שבאותם סעיפים חלות על הלקוח בלבד. &quot;אירוע&quot; — כל קשר מוגן, פריט מידע סודי או נכס נפרד שנפגע; מסכת מעשים הנוגעת לאותו קשר, פריט או נכס — לרבות מעשים חוזרים — מהווה אירוע אחד, המזכה בפיצוי המוסכם הגבוה מבין השורות החלות עליו בלבד, ולא בצירופן.</p>
+<p>הסכומים משקפים אומדן אמיתי ובתום-לב של המשאבים שהארגון השקיע בנכס הנפגע, נקבעים ביחס מידתי להיקף הכלכלי של ההתקשרות, ואינם קנס; מטרת הטבלה לתת לשני הצדדים ודאות מראש לגבי החשיפה המרבית האפשרית מכל אירוע. הרצפות הקבועות משקפות את העלות הקבועה של הקמת הנכס המוגן ותחזוקתו — איתור, סינון, גיוס, הכשרה, פיתוח ידע ומתודולוגיות, ואופטימיזציה מתמשכת שלהם — שאינה תלויה בהיקפה הכלכלי של ההתקשרות הספציפית. מדריך הלקוח, פרק 1, תחת הכותרת &quot;יסודות עלות ההגנה על נכסי הארגון&quot;, מתאר להמחשה את קטגוריות העלות וסדרי הגודל שעל בסיסם נקבעו הסכומים שבטבלה זו; אין באמור כדי ליצור נוסחת חישוב המופעלת מחדש במועד ההפרה, ואין בו כדי לגרוע מסופיות הסכומים הקבועים בטבלה זו או מהעיקרון שלפיו אין צורך בהוכחת נזק בפועל. תקופת התיקון של שבעה (7) ימי העסקים שבסעיף-קטן (א) נועדה לקביעת הזכאות לפיצוי המוסכם בלבד, ונפרדת מתקופת חמישה-עשר (15) ימי העסקים לצורך זכות הסיום שבסעיף 13(ג); תיקון הפרה בתוך התקופה שבסעיף 13(ג) עשוי למנוע סיום ההסכם, אך אינו גורע מפיצוי מוסכם שכבר קם לפי סעיף-קטן זה אם ההפרה לא תוקנה בתוך התקופה הקצרה יותר. פיצוי בגין הפרת סעיף 9 (סודיות) מגיע לצד הנפגע — לקוח או ארגון כאחד — בהתאם לחובת הסודיות ההדדית שם; פיצוי בגין הפרת סעיפים 8 ו-10(ב) מגיע לארגון בלבד, בהתאם לכך שההתחייבויות שבאותם סעיפים חלות על הלקוח בלבד. &quot;אירוע&quot;, לעניין סעיף-קטן זה בלבד — כל קשר מוגן, פריט מידע סודי או נכס נפרד שנפגע; מסכת מעשים הנוגעת לאותו קשר, פריט או נכס — לרבות מעשים חוזרים — מהווה אירוע אחד, המזכה בפיצוי המוסכם הגבוה מבין השורות החלות עליו בלבד, ולא בצירופן.</p>
 <p><strong>(ב) בחירת סעד ומניעת כפל פיצוי.</strong> ביחס לאותה הפרה ואותו נזק, זכאי הצד הנפגע לגבוה מבין: הפיצוי המוסכם לפי סעיף-קטן (א); פיצוי בגין נזק ממשי שהוכח (לרבות אובדן הערך העתידי של הנכס); או השבת רווח שהופק מההפרה — ולא לצירופם; סכום ששולם ייזקף על חשבון כל סכום נוסף שייפסק בגין אותו נזק. אין באמור כדי לגרוע, במצטבר, מסעד שאינו כספי (צו מניעה, השבת נכס, מחיקת מידע, סיום ההסכם) או מפיצוי בגין נזק נפרד ומובחן שאינו הנזק שבגינו שולם הפיצוי המוסכם.</p>
 <p><strong>(ג) תקרה מצטברת והוראות משלימות.</strong> סך הפיצוי המוסכם המגיע לכל צד לפי סעיף-קטן (א), לאורך כל תקופת ההסכם, לא יעלה על הגבוה מבין 600,000 ₪ או 18× התמורה החודשית הממוצעת. כל צד יפעל באופן סביר להקטנת נזקו; נמצא סכום או מנגנון בלתי-אכיף או בלתי-מידתי כנוסחו, יותאם במידה המזערית הנדרשת בלבד ולא יבוטל. סעיף זה הוא המנגנון היחיד הקובע פיצוי מוסכם, למעט תשלום ההשלמה לפי נספח A סעיף 1(ג).</p>
-</div><h2>סעיף 12 — הגבלת אחריות (הדדית)</h2><div class="clausebox">
+</div><h2>סעיף 12 — הגבלת אחריות (הדדית)</h2><div class="clausebox clausebox-key">
 <p><strong>(א) התקרה הכללית.</strong> אחריותו המצטברת של כל צד למשנהו, מכל עילה, לא תעלה על סך התמורה ששולמה ב-12 החודשים שקדמו לאירוע (או תקופת הפעילות בפועל אם קצרה מכך); תקציב המדיה אינו נכלל. אין בכך כדי להגביל: סכום המגיע לפי סעיף 11(א) או (ב) (העומד לפירעון בנוסף על התקרה ובאופן עצמאי ממנה, בכפוף לתקרה המצטברת שבסעיף 11(ג)); את התחייבויות השיפוי של הלקוח לפי סעיף 6(ב); או חוב שהגיע ולא שולם, העומד לפירעון במלואו כחוב.</p>
 <p><strong>(ב) אחריות בלתי-מוגבלת.</strong> אין בסעיף-קטן (א) כדי להגביל אחריות בגין מרמה, זדון, הטעיה מכוונת, רשלנות רבתי (Gross Negligence), או נזק גוף/מוות שנגרמו ברשלנות.</p>
 <p><strong>(ג) נזק עקיף.</strong> אף צד לא יישא בנזק עקיף, תוצאתי או אובדן רווח שאינו נובע במישרין מההפרה; הפיצוי המוסכם ורכיב הנזק הממשי לפי סעיף 11(ב) נחשבים, לצורך הסכם זה, נזק ישיר.</p>
 <p><strong>(ד) שיפוי הארגון בגין קניין רוחני.</strong> אחריות הארגון לפי סעיף 6(ג) לא תעלה על פי שלושה (3) התקרה שבסעיף-קטן (א); הארגון רשאי, לבחירתו ועל חשבונו, להחליף את הרכיב הפוגע ברכיב חלופי או להשיג ללקוח רישיון חלופי.</p>
-<p><strong>(ה) אין הגבלה על אחריות מקצועית בסיסית</strong>, כאמור בנספח B סעיף 1(ג).</p>
+<p><strong>(ה) אין הגבלה על אחריות מקצועית בסיסית.</strong> אין בסעיף זה כדי להגביל את אחריות הארגון לאי-עמידה ברמה המקצועית המקובלת בענף הנדרשת ממנו לפי נספח B סעיף 1(ג) — להבדיל מאי-השגת תוצאה עסקית כשלעצמה, שאינה מהווה הפרה לפי אותו סעיף.</p>
 <div class="pagebreak"></div>
 </div><h1>פרק ד&#x27; — תקופה, סיום ויישוב סכסוכים</h1>
 <h2>סעיף 13 — תקופה, סיום, מעבר מסודר והוראות שנותרות בתוקף</h2><div class="clausebox">
 <p><strong>(א) תקופה.</strong> הסכם זה עומד בתוקפו כל עוד קיימת בין הצדדים התקשרות מכוח הצעה חתומה אחת או יותר.</p>
 <p><strong>(ב) סיום ללא עילה.</strong> כל צד רשאי לסיים הסכם זה, או התקשרות ספציפית, ללא עילה, בהודעה מוקדמת בכתב — לפי התקופה שבהצעה, ובאין הצעה קובעת — שלושים (30) יום.</p>
-<p><strong>(ג) סיום בשל הפרה או חדלות פירעון.</strong> צד רשאי לסיים אם הצד האחר הפר הפרה מהותית ולא תיקן תוך חמישה-עשר (15) ימי עסקים ממועד הודעה בכתב; הפרת סעיפים 8–10 שאינה ניתנת לתיקון, אירוע חדלות-פירעון, או אי-תשלום תוך שלושים (30) יום ממועד פירעונו — מזכים בסיום לאלתר.</p>
+<p><strong>(ג) סיום בשל הפרה או חדלות-פירעון.</strong> צד רשאי לסיים אם הצד האחר הפר הפרה מהותית ולא תיקן תוך חמישה-עשר (15) ימי עסקים ממועד הודעה בכתב; הפרת סעיפים 8–10 שאינה ניתנת לתיקון, אירוע חדלות-פירעון, או אי-תשלום תוך שלושים (30) יום ממועד פירעונו — מזכים בסיום לאלתר.</p>
 <p><strong>(ד) תוצאות הסיום ומעבר מסודר.</strong> כל צד ממשיך לחוב בתשלומים שנצברו עד מועד הסיום בפועל; תוצרים שאושרו וטרם שולמו יטופלו לפי סעיף 10. נכסי הלקוח (חשבונות ותשתיות בבעלותו) נשארים אצלו, וגישת הארגון אליהם תוסר תוך שבעה (7) ימי עסקים; גישת הלקוח למערכות Neuron ולנכסי הארגון תבוטל ביחס להתקשרות הספציפית שהסתיימה, ובלבד שאין בכך כדי לפגוע בגישה הנדרשת להתקשרות ספציפית אחרת שנותרה בתוקף מכוח הצעה חתומה נפרדת, מבלי לגרוע מרישיונו בתוצרים לפי סעיף 10(ב); הארגון רשאי לעכב תוצרים שתמורתם לא שולמה.</p>
 <p><strong>(ה) לוח נסיגה (Exit Schedule).</strong> תכלול ההצעה לוח נסיגה מדורג-ויורד, הקובע את הסכום שישלם הלקוח אם יזם את הסיום לפי סעיף-קטן (ב), בטרם הושבה לארגון השקעתו. <strong>לא נקבע לוח נסיגה בהצעה — לא יחול כל חיוב נסיגה.</strong> אינו חל בסיום ביוזמת הארגון, בסיום מכוח סעיף-קטן (ג), כוח עליון (סעיף 15(ד)), או סעיף 4(ב) (עיכוב מצד הלקוח).</p>
 <p><strong>(ו) הוראות שנותרות בתוקף.</strong> ימשיכו לחול אחרי הסיום: סעיפים 6, 7 (לפרשנות), 8(ב)–(ג) (לתקופת סעיף 8(ה)), 9, 10, 11, 12, 14, 15, נספח A סעיף 3, ונספח C סעיף 2(ב) וסעיף 3 — כל אחד למשך הזמן הנדרש למימוש תכליתו.</p>
@@ -226,33 +231,33 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(ג) בוררות.</strong> בפני בורר יחיד, מוסכם, ניטרלי; לא הוסכם — ימונה בידי המוסד הישראלי לבוררות עסקית. בתל אביב, בחיסיון מלא, לפי הדין המהותי, בפסק מנומק.</p>
 <p><strong>(ד) סעד זמני ודחוף — חריג מפורש.</strong> אין בסעיפים-קטנים (א)–(ג) כדי למנוע פנייה בכל עת, ובלי מיצוי השלבים המקדמיים, לבית המשפט המוסמך בתל אביב-יפו לקבלת סעד זמני או דחוף (צו מניעה, עיקול, שמירת מסמכים וכיו&quot;ב); בתי המשפט שם מוסמכים גם לאכיפת פסק בוררות או ביטולו.</p>
 </div><h2>סעיף 15 — הוראות כלליות</h2><div class="clausebox">
-<p><strong>(א) שלמות ההסכם וסדר עדיפויות.</strong> הסכם המסגרת, נספחים A–D (ככל שחלים), כל הצעה חתומה (ביחס להתקשרות הספציפית שמכוחה נחתמה), מדריך הלקוח (בגרסתו המאושרת), ונספח ההבנות המשלימות — מהווים ביחד את מלוא ההסכמות. נמצאה סתירה, יגברו לפי הסדר: (1) נספח D, ככל שחל, בענייני מידע אישי; (2) הבנה משלימה, בעניינה הספציפי; (3) הצעה חתומה, בעניינים כלכליים (תמורה, תמחור, תקציב, KPI ולוחות זמנים מסחריים — למעט זכות, חובה, סעד או מנגנון הקבועים בסעיפים 8–14 או בנספח A סעיף 3, כאמור בסעיף-קטן (ב) להלן); (4) נספחים A–C; (5) מדריך הלקוח, בעניינים המוסדרים בו במפורש ובלבד שאינם מוסדרים במפורש בהסכם המסגרת או בנספחיו, כאמור בסעיף-קטן (א1); (6) הוראות הסכם המסגרת, בכל יתר העניינים.</p>
+<p><strong>(א) שלמות ההסכם וסדר עדיפויות.</strong> הסכם המסגרת, נספחים A–D (ככל שחלים), כל הצעה חתומה (ביחס להתקשרות הספציפית שמכוחה נחתמה), מדריך הלקוח (בגרסתו המאושרת), ונספח ההבנות המשלימות — מהווים ביחד את מלוא ההסכמות. נמצאה סתירה, יגברו לפי הסדר: (1) נספח D, ככל שחל, בענייני מידע אישי; (2) הבנה משלימה, בעניינה הספציפי; (3) הצעה חתומה, בעניינים כלכליים (תמורה, תמחור, תקציב, KPI ולוחות זמנים מסחריים, לרבות מחיר Buyout שנרשם בה מכוח נספח A סעיף 3(ב) ואינו עולה על התקרה הקבועה שם — למעט זכות, חובה, סעד או מנגנון הקבועים בסעיפים 8–14 או בנספח A סעיף 3, כאמור בסעיף-קטן (ב) להלן); (4) נספחים A–C; (5) מדריך הלקוח, בעניינים המוסדרים בו במפורש ובלבד שאינם מוסדרים במפורש בהסכם המסגרת או בנספחיו, כאמור בסעיף-קטן (א1); (6) הוראות הסכם המסגרת, בכל יתר העניינים.</p>
 <p><strong>(א1) אישור מדריך הלקוח ובחירת מודל עבודה.</strong> הלקוח מצהיר כי קיבל, קרא והבין את מדריך הלקוח של הארגון; כי ניתנה לו הזדמנות סבירה לעיין בו, להיוועץ ולשאול שאלות טרם החתימה על הסכם זה; וכי בחר לפעול במסגרת מודל העבודה הנקוב בעמוד החתימות, כמתואר במדריך. הלקוח מתחייב לפעול בהתאם לתנאים ולעקרונות התפעוליים המתוארים במדריך. עודכן מדריך הלקוח לאחר מועד החתימה על הסכם זה — הגרסה המחייבת בין הצדדים היא הגרסה שאושרה כאמור, אלא אם הצדדים הסכימו אחרת בכתב על אימוץ גרסה מעודכנת. אין באמור כדי להסמיך את מדריך הלקוח לשנות זכות, חובה, סכום או מנגנון הקבועים בגוף הסכם המסגרת או בנספחיו A–D; מדריך הלקוח מסביר ומפרט, ואינו גובר על הוראה מפורשת בהסכם המסגרת או בנספחיו. לעניין זה, &quot;הוראה מפורשת&quot; משמעה קביעת כלל אופרטיבי, מספרי או מהותי ספציפי בגוף הסכם המסגרת או בנספחיו — להבדיל מאזכור כללי של נושא, או הפניה לפירוט במדריך הלקוח.</p>
 <p><strong>(ב) שינויים, תוספות ומגן הסעיפים המהותיים.</strong> שינוי, תוספת או ויתור לא יהיו בעלי תוקף אלא בכתב ובחתימת הנציג המוסמך של כל צד. הבנה משלימה, הצעה, או עדכון למדריך הלקוח לא ישנו הוראה מסעיפים 8–14 או נספח A סעיף 3, אלא אם מזהים במפורש את הסעיף המשתנה ואת השינוי; שינוי מרומז — חסר תוקף.</p>
 <p><strong>(ג) ויתור והמחאה.</strong> ויתור על זכות ייעשה במפורש ובכתב בלבד. המחאת זכויות/חובות טעונה הסכמה מראש ובכתב, למעט המחאה לתאגיד בשליטת הצד או הרוכש את עיקר פעילותו, הנוטל על עצמו את מלוא ההתחייבויות.</p>
 <p><strong>(ד) כוח עליון; תוקף חלקי.</strong> עיכוב או מניעה מנסיבות שאינן בשליטה סבירה ולא ניתן היה לצפותן — אינם הפרה; לא חלף האירוע בזמן סביר, רשאי כל צד לסיים את ההתקשרות הנוגעת בדבר בהודעה בכתב, מבלי לגרוע מתשלומים שנצברו. הוראה בלתי-תקפה לא תפגע ביתר ההוראות; הפורום המוסמך יתאימה במידה המזערית הנדרשת, בכפוף למנגנון ההפרדה שבסעיף 11(ג).</p>
-<p><strong>(ה) הודעות; שפת ההסכם.</strong> הודעה תימסר בכתב לכתובת הנציג המוסמך כנקוב בעמוד הפתיחה, ותיחשב כנמסרת במועד המשלוח (בדוא&quot;ל/אישית, באין הודעת שגיאה) או בתום שלושה (3) ימי עסקים (בדואר רשום). הסכם זה נערך בעברית, המחייבת בכל מקרה של סתירה; תרגום לכל שפה אחרת לצורכי נוחות בלבד.</p>
+<p><strong>(ה) הודעות; שפת ההסכם.</strong> הודעה תימסר בכתב לכתובת הנציג המוסמך כנקוב בעמוד הפתיחה, ותיחשב כנמסרת במועד המשלוח (בדוא&quot;ל/אישית, באין הודעת שגיאה) או בתום שלושה (3) ימי עסקים (בדואר רשום). לעניין מניין התקופות הקבועות בהסכם זה ובנספחיו המותנות במסירת הודעה בכתב (ובכלל זה סעיפים 4, 5, 8, 11, 13 ו-14) — המניין יחל ממועד המסירה הנקבע בסעיף-קטן זה, גם כאשר ההודעה ניתנה גם באחד האפנים הנוספים המנויים בהגדרת &quot;בכתב&quot; שבסעיף 1. הסכם זה נערך בעברית, המחייבת בכל מקרה של סתירה; תרגום לכל שפה אחרת לצורכי נוחות בלבד.</p>
 <p><strong>(ו) חתימה אלקטרונית וכותרות.</strong> ההסכם רשאי להיחתם אלקטרונית ו/או במספר עותקים, כולם ייחשבו הסכם מחייב אחד. כותרות, טבלאות ותיבות הסבר — לנוחות הקריאה בלבד.</p>
 <div class="pagebreak"></div>
 <div class="pagebreak"></div>
-<div class="mini-divider" style="--ax:#5B2986;--ax-tint:#F4F0F6"><span class="mini-badge">A</span><span class="mini-sub">שווי מחקר Genesis וחלוקת העלות, דמי ההשתתפות העצמית, מה קורה אם בסוף המחקר מחליטים שלא להמשיך, ואופציית הרכישה (Buyout). תיאור מלא של תהליך המחקר עצמו — במדריך הלקוח.</span></div></div><h1 class="annex-h" style="border-bottom-color:#5B2986">נספח A — Genesis: תנאים כספיים</h1>
+<div class="mini-divider" style="--ax:#A9824F;--ax-tint:#F4EEE4"><span class="mini-badge">A</span><span class="mini-sub">שווי מחקר Genesis וחלוקת העלות, דמי ההשתתפות העצמית, מה קורה אם בסוף המחקר מחליטים שלא להמשיך, ואופציית הרכישה (Buyout). תיאור מלא של תהליך המחקר עצמו — במדריך הלקוח.</span></div></div><h1 class="annex-h" style="border-bottom-color:#A9824F">נספח A — Genesis: תנאים כספיים</h1>
 <div class="note">נספח זה מהווה חלק בלתי-נפרד מההסכם, ונכנס לתוקף עם החתימה בעמוד החתימות שלהלן. הפניות ל&quot;הסכם המסגרת&quot; מתייחסות למספור הסעיפים שבפרקים א&#x27;–ד&#x27; לעיל. תיאור מלא של תהליך מחקר Genesis, מסגרות העבודה ומתי נדרש מחקר נפרד — במדריך הלקוח.</div>
 <h2>סעיף 1 — שווי המחקר, חלוקת העלות ותוצאותיו</h2><div class="clausebox">
-<p><strong>(א) שווי, חלוקת עלות והחזר.</strong> שוויו הריאלי של מחקר Genesis, ומחירו, הוא <strong>10,000 דולר ארה&quot;ב</strong>; הארגון נושא מראש ב-95% ממנו (<strong>9,500$</strong>), והלקוח משלם עם החתימה את יתרת 5% (<strong>500$</strong>, &quot;<strong>דמי ההשתתפות העצמית</strong>&quot;) — בתוספת מע&quot;מ, לפי מנגנון ההמרה שבסעיף 5(ד) להסכם המסגרת. דמי ההשתתפות העצמית אינם מוחזרים, למעט בתוך 14 יום אם: הארגון לא מסר תוצרים תוך 90 יום מהתשלום (למעט עיכוב מצד הלקוח/כוח עליון); הארגון קבע כי אינו מסוגל לייצר ערך אמיתי ומדיד לפרויקט; או הצדדים הסכימו בכתב.</p>
+<p><strong>(א) שווי, חלוקת עלות והחזר.</strong> שוויו הריאלי של מחקר Genesis, ומחירו, הוא <strong>10,000 דולר ארה&quot;ב</strong>; הארגון נושא מראש ב-95% ממנו (<strong>9,500$</strong>), והלקוח משלם עם החתימה את יתרת 5% (<strong>500$</strong>, &quot;<strong>דמי ההשתתפות העצמית</strong>&quot;) — בתוספת מע&quot;מ, לפי מנגנון ההמרה שבסעיף 5(ד) להסכם המסגרת. דמי ההשתתפות העצמית אינם מוחזרים, למעט בתוך ארבעה-עשר (14) יום אם: הארגון לא מסר תוצרים תוך תשעים (90) יום מהתשלום (למעט עיכוב מצד הלקוח/כוח עליון); הארגון קבע כי אינו מסוגל לייצר ערך אמיתי ומדיד לפרויקט; או הצדדים הסכימו בכתב.</p>
 <p><strong>(ב) הפסקת התהליך; חופש הלקוח שלא להמשיך.</strong> קבע הארגון כי התקציב נמוך מהנדרש, ינוהל משא-ומתן בתום-לב טרם הפסקת התהליך; הופסק — נושא הארגון ביתרת העלות שטרם כוסתה, ללא חיוב נוסף על הלקוח. הלקוח רשאי שלא להמשיך לאחר המחקר ללא כל חיוב נוסף, לרבות אם ההצעה חורגת מהתקציב/גבולות הגזרה שקבע, לא נמצאה התאמה עסקית, או לא הושגה הסכמה מסחרית.</p>
-<p><strong>(ג) תשלום השלמה — מקרים חריגים ומוגדרים.</strong> על אף האמור בסעיף-קטן (ב), ישלים הלקוח לארגון, תוך 7 ימים מדרישה בכתב, תשלום נוסף של <strong>9,500$</strong> (המשלים לשווי המלא) אם, ובאופן שניתן להוכיחו בראיות אובייקטיביות: מסר מידע מטעה שהשפיע מהותית על המחקר; העביר את המחקר או תוצריו לצד שלישי בניגוד לסעיף 9 להסכם המסגרת; או פעל בניגוד לסעיף 3(א) להלן (איסור יישום עצמאי). תשלום זה הוא הפיצוי המוסכם הכספי היחיד בגין אותו מעשה, אינו כפוף לתקרה המצטברת שבסעיף 11(ג) להסכם המסגרת, ובכפוף לעקרון מניעת כפל הפיצוי שבסעיף 11(ב) להסכם המסגרת.</p>
+<p><strong>(ג) תשלום השלמה — מקרים חריגים ומוגדרים.</strong> על אף האמור בסעיף-קטן (ב), ישלים הלקוח לארגון, תוך שבעה (7) ימי עסקים מדרישה בכתב, תשלום נוסף של <strong>9,500$</strong> (המשלים לשווי המלא) אם, ובאופן שניתן להוכיחו בראיות אובייקטיביות: מסר מידע מטעה שהשפיע מהותית על המחקר; העביר את המחקר או תוצריו לצד שלישי בניגוד לסעיף 9 להסכם המסגרת; או פעל בניגוד לסעיף 3(א) להלן (איסור יישום עצמאי). תשלום זה הוא הפיצוי המוסכם הכספי היחיד בגין אותו מעשה, אינו כפוף לתקרה המצטברת שבסעיף 11(ג) להסכם המסגרת, ובכפוף לעקרון מניעת כפל הפיצוי שבסעיף 11(ב) להסכם המסגרת.</p>
 <p><strong>(ד) גבול החיוב.</strong> אין בסעיף זה כדי להטיל חיוב מעבר לאמור בו ובסעיף 3 להלן, עד לאישור בכתב של הצעת ההתקשרות.</p>
 <p><strong>(ה) מחקר אינדיבידואלי; ריבוי מחקרים.</strong> נדרש מחקר נפרד לכל פרויקט/מותג/יחידה עסקית הדורש מיצוב, קהל יעד, אסטרטגיה שיווקית או מודל הכנסה נפרד, או שוק גיאוגרפי/רגולטורי נפרד; לא לגיוון פנימי באותו מותג. מספר המחקרים וזהותם ייקבעו מראש בתום-לב ויירשמו בטבלת התנאים המסחריים (נספח B); מחקר נוסף שהתברר תוך כדי עבודה ייערך ויחויב אך ורק לאחר אישור הלקוח בכתב. כל מחקר — יחידה נפרדת לעניין תשלום ההשלמה, האיסור שבסעיף 3(א), וה-Buyout שבסעיף 3(ב).</p>
 </div><h2>סעיף 2 — מסלול חלופי: רכישת מחקר ואסטרטגיה ללא הקצאת תקציב</h2><div class="clausebox">
-<p><strong>(א) המחיר.</strong> לקוח שבחר שלא להקצות תקציב וגבולות גזרה (נספח B), רשאי לרכוש בתשלום חד-פעמי את שירותי המחקר והאסטרטגיה, במחיר בסיס של <strong>10,000 דולר ארה&quot;ב</strong> בתוספת מע&quot;מ — אותו מחקר ובאותו שווי שבמסלול Genesis; ההבדל הוא באופן המימון בלבד. הסכום עשוי לעלות לפי היקף הפרויקט ומורכבות השוק, וייקבע ויירשם בהצעה.</p>
+<p><strong>(א) המחיר.</strong> לקוח שבחר שלא להקצות תקציב וגבולות גזרה (נספח B), רשאי לרכוש בתשלום חד-פעמי את שירותי המחקר והאסטרטגיה, במחיר קבוע של <strong>10,000 דולר ארה&quot;ב</strong> בתוספת מע&quot;מ לכל מחקר — אותו מחקר ובאותו שווי שבמסלול Genesis; ההבדל הוא באופן המימון בלבד, לפי מנגנון ההמרה שבסעיף 5(ד) להסכם המסגרת. נדרש יותר ממחקר אחד — יחול סעיף 1(ה) לעיל, כאמור בסעיף-קטן (ב) להלן, ויתווסף מחיר קבוע נוסף של 10,000$ לכל מחקר נפרד; הסכום הכולל ייקבע ויירשם בהצעה.</p>
 <p><strong>(ב) מחקר אינדיבידואלי; המשך לביצוע.</strong> חל סעיף 1(ה) לעיל, בשינויים המחויבים. לאחר תשלום מלא, רשאי הלקוח להמשיך לביצוע בפועל כנגד הצעת מחיר אינדיבידואלית.</p>
-</div><h2>סעיף 3 — אופציית רכישה (Buyout) ובלעדיות אופרטיבית בתקופת הביניים</h2><div class="clausebox">
+</div><h2>סעיף 3 — אופציית רכישה (Buyout) ובלעדיות אופרטיבית בתקופת הביניים</h2><div class="clausebox clausebox-key">
 <p><strong>(א) איסור יישום עצמאי.</strong> בחר הלקוח שלא להמשיך לביצוע בפועל מול הארגון, לא יישם בעצמו, באמצעות חברה קשורה, או באמצעות צד שלישי, את מחקר Genesis, האסטרטגיה או ההצעה שהוכנו עבורו, ללא אישור מוקדם ובכתב של הארגון או ללא מימוש ה-Buyout — מכוח בעלות הארגון בהם (סעיף 10 להסכם המסגרת) וחובות הסודיות (סעיף 9). איסור זה יעמוד בתוקפו עשרים וארבעה (24) חודשים ממועד מסירת המחקר, לכל מחקר בנפרד; אינו חל על יישום המבוסס על ידע כללי, מגמות שוק פומביות, מידע שהיה בידי הלקוח כדין קודם לכן, או פיתוח עצמאי שאינו מסתמך על התוצרים הספציפיים.</p>
 <p><strong>(ב) אופציית רכישה (Buyout).</strong> הלקוח רשאי, בכל עת, לרכוש רישיון שימוש עולמי, בלתי-ייחודי, בלתי-הדיר ולצמיתות ליישום עצמאי של תוצרי מחקר מסוים, כנגד מחיר ה-Buyout; מתומחר לכל מחקר בנפרד. עם השלמת התשלום: פוקע האיסור וזכות הפיצוי המוסכם ביחס לאותם תוצרים; בעלות הארגון במודלים, באלגוריתמים ובמערכות Neuron נותרת בידיו בכל מקרה, ואינה נמכרת. מחיר ה-Buyout ייקבע ויירשם בהצעה או בטבלת התנאים המסחריים; באין מחיר נקוב — שוויו המלא של המחקר (10,000$) בניכוי דמי ההשתתפות העצמית וכל תמורה ששולמה בגין אותו פרויקט (ולפיכך, למי שביצע Genesis בלבד — 9,500$); לגבי המסלול החלופי — סכום התמורה ששולם בפועל, ללא חיוב נוסף. מחיר ה-Buyout לא יעלה על שווי המחקר המלא. לקוח שבחר במסלול החלופי ושילם את מלוא התמורה לפי סעיף 2(א) — רואים אותו כמי שמימש את ה-Buyout באופן אוטומטי עם השלמת אותו תשלום, ללא צורך בפעולה נוספת; האיסור שבסעיף-קטן (א) אינו חל עליו מאותו מועד.</p>
 <p><strong>(ג) סעדים.</strong> הפרת סעיף-קטן (א) מזכה את הארגון בגבוה מבין: תשלום ההשלמה לפי סעיף 1(ג) לעיל; או נזק ממשי שהוכח (לרבות השבת רווח שהפיק הלקוח מההפרה) — ולא בשניהם במצטבר. אין באמור כדי לגרוע מזכות הארגון לסעד זמני או דחוף לפי סעיף 14(ד) להסכם המסגרת.</p>
 <div class="pagebreak"></div>
 <div class="pagebreak"></div>
-<div class="mini-divider" style="--ax:#1A836E;--ax-tint:#EEF6F4"><span class="mini-badge">B</span><span class="mini-sub">התקציב החודשי, גבולות הגזרה ורמת הסובלנות שהלקוח קובע, מנגנון עצירת ההפסד (Stop-Loss), וטבלת מילוי אחת שמרכזת את כל הפרמטרים המסחריים.</span></div></div><h1 class="annex-h" style="border-bottom-color:#1A836E">נספח B — תנאים מסחריים ותשומות</h1>
+<div class="mini-divider" style="--ax:#8C6A3D;--ax-tint:#F2EAE0"><span class="mini-badge">B</span><span class="mini-sub">התקציב החודשי, גבולות הגזרה ורמת הסובלנות שהלקוח קובע, מנגנון עצירת ההפסד (Stop-Loss), וטבלת מילוי אחת שמרכזת את כל הפרמטרים המסחריים.</span></div></div><h1 class="annex-h" style="border-bottom-color:#8C6A3D">נספח B — תנאים מסחריים ותשומות</h1>
 <div class="note">נספח זה מהווה חלק בלתי-נפרד מההסכם, ונכנס לתוקף עם החתימה. קובע את <strong>פרמטרי הקלט</strong> (תקציב, גבולות גזרה, סובלנות ו-Stop-Loss); <strong>התמורה הכלכלית הסופית</strong> נקבעת בהצעה הנפרדת. חזון הלקוח, תקציבו וגבולות הגזרה נאספים תחילה בטופס הקליטה שבסוף מדריך הלקוח, ומועתקים ומאושרים בטבלה שבסוף נספח זה. מנגנוני התקציב, גבולות הגזרה וה-Stop-Loss שלהלן (סעיפים 1–3) חלים רק אם נבחרה התקשרות מבוססת-תקציב (מסלול A/B/C בטבלה); לקוח שבחר במסלול 0 (נספח A סעיף 2) אינו כפוף להם ואינו נדרש למלא את השדות הנוגעים להם בטבלה (ראו גם סעיף 2(א) להסכם המסגרת). קיימת יותר מהתקשרות ספציפית אחת פעילה במקביל מכוח הסכם זה — תירשם ותנוהל טבלת תנאים מסחריים נפרדת ומזוהה עבור כל אחת מהן; עדכון הטבלה עבור התקשרות אחת אינו משנה את הרשום בטבלה של התקשרות ספציפית אחרת.</div>
 <h2>סעיף 1 — תקציב חודשי, שינויו והגנה על תוצאות</h2><div class="clausebox">
 <p><strong>(א) התחייבות ורישום.</strong> הלקוח יקצה תקציב חודשי קבוע וסיסטמטי, בר-קיימא לשלושה (3) חודשים לפחות, שיירשם בטבלת התנאים המסחריים ויהווה בסיס למחקר, לתוכנית ולהצעה.</p>
@@ -265,9 +270,9 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(ד) רמת ותקופת סובלנות; תנודתיות טבעית.</strong> הלקוח רשאי לקבוע בטבלה תקופת ורמת סובלנות לביצועים, המבטאת נכונות לפעול ברווחיות מופחתת כחלק מאסטרטגיית צמיחה; במשכה, יימדדו היעדים לפי אותה רמה, לא כסטייה. ירידה או תנודה זמנית בפרק זמן נתון, כשלעצמה, אינה הפרה — כל עוד הארגון פועל במקצועיות ובתום-לב, ובכפוף לרמת הסובלנות ולמנגנון Stop-Loss שבסעיף 3.</p>
 <p><strong>(ה) הגדרת נקודת האיזון — ברירת מחדל.</strong> נקבעה בטבלה הגדרה אחרת ומפורשת — היא שתחול. לא נקבעה: הפעילות עומדת בנקודת האיזון כל עוד עלות הרכישה בפועל (CPA) אינה עולה על מכפלת שווי העסקה הממוצע (AOV) בשיעור הרווח הגולמי שקבע הלקוח בטבלה; לא נקבע שיעור רווח גולמי — לא יופעל מנגנון זה, וחלה רק המגבלה שבסעיף-קטן (ב); לא נקבע AOV — ישמש שווי העסקה הממוצע בשוק כפי שנקבע במחקר Genesis.</p>
 </div><h2>סעיף 3 — מנגנון עצירת הפסד (Stop-Loss)</h2><div class="clausebox">
-<p><strong>(א) רף ותקופת מדידה.</strong> הלקוח יקבע בטבלה רף Stop-Loss (הפסד/הוצאה מצטברים) ותקופת מדידה; באין רף — הפסד תפעולי בגובה התקציב החודשי, על פני 30 יום. מנגנון זה נועד למנוע הפסד מצטבר או מהותי, ויביא בחשבון תנודתיות יומית ו/או אלגוריתמית סבירה המתרחשת במהלך הרגיל של אופטימיזציה שוטפת; חציית הרף תיבחן ביחס למגמה המצטברת בתקופת המדידה, לא ביחס לתנודה חד-יומית בודדת כשלעצמה. הוסכם גירעון תפעולי זמני עבור התקשרות ספציפית, במפורש ובכתב לפי הצעה חתומה — לא יחול רף ברירת המחדל שבסעיף-קטן זה; רף ה-Stop-Loss ותקופת המדידה עבור אותה התקשרות ייקבעו במפורש בהצעה ובטבלה, ולא יפחתו ממסגרת הגירעון המוסכם וממשך התקופה שהוסכמה לו. גירעון זמני כאמור אינו מנגנון משפטי נפרד מרף ה-Stop-Loss — הוא קובע את גובהו ותקופתו עבור אותה התקשרות בלבד.</p>
+<p><strong>(א) רף ותקופת מדידה.</strong> הלקוח יקבע בטבלה רף Stop-Loss (הפסד/הוצאה מצטברים) ותקופת מדידה; באין רף — הפסד תפעולי בגובה התקציב החודשי, על פני שלושים (30) יום. מנגנון זה נועד למנוע הפסד מצטבר או מהותי, ויביא בחשבון תנודתיות יומית ו/או אלגוריתמית סבירה המתרחשת במהלך הרגיל של אופטימיזציה שוטפת; חציית הרף תיבחן ביחס למגמה המצטברת בתקופת המדידה, לא ביחס לתנודה חד-יומית בודדת כשלעצמה. הוסכם גירעון תפעולי זמני עבור התקשרות ספציפית, במפורש ובכתב לפי הצעה חתומה — לא יחול רף ברירת המחדל שבסעיף-קטן זה; רף ה-Stop-Loss ותקופת המדידה עבור אותה התקשרות ייקבעו במפורש בהצעה ובטבלה, ולא יפחתו ממסגרת הגירעון המוסכם וממשך התקופה שהוסכמה לו. גירעון זמני כאמור אינו מנגנון משפטי נפרד מרף ה-Stop-Loss — הוא קובע את גובהו ותקופתו עבור אותה התקשרות בלבד.</p>
 <p><strong>(ב) הפעלה.</strong> נחצה הרף, יעצור או יצמצם הארגון את הפעילות בתוך יום עסקים אחד (מיידית אם עצירה מיידית תמנע נזק גדול יותר), לרבות באמצעות מערכות אוטומטיות הפועלות מחוץ לשעות הפעילות הרגילות ככל שסביר הדבר למניעת הפסד מהותי או מצטבר; וימסור ללקוח הודעה בכתב תוך אותו פרק זמן, המתארת את הגורם להפעלה וחלופות אפשריות להמשך; תיערך פגישת בחינה תוך שלושה (3) ימי עסקים ממועד ההודעה, לפי דרישת מי מהצדדים. הפעילות תחודש עם אישור הלקוח בכתב או תוכנית מעודכנת מוסכמת; תקופת העצירה נחשבת מושהית לעניין רמת הסובלנות.</p>
-<p><strong>(ג) עצירה יזומה של הלקוח.</strong> בכל עת ובהודעה בכתב, ביצוע תוך יום עסקים אחד; עד 5 ימי עסקים בחודש אינה הפחתת תקציב או הפרה.</p>
+<p><strong>(ג) עצירה יזומה של הלקוח.</strong> בכל עת ובהודעה בכתב, ביצוע תוך יום עסקים אחד; עד חמישה (5) ימי עסקים בחודש אינה הפחתת תקציב או הפרה.</p>
 <p><strong>(ד) עצירה אינה הפרה</strong>, ואינה גורעת מהתמורה שנצברה עד למועד העצירה.</p>
 <div class="keepgroup">
 </div><h2>טבלת התנאים המסחריים</h2>
@@ -307,11 +312,11 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 </div>
 <div class="pagebreak"></div>
 <div class="pagebreak"></div>
-<div class="mini-divider" style="--ax:#B3531D;--ax-tint:#F9F3EF"><span class="mini-badge">C</span><span class="mini-sub">שלוש שכבות המידע ומה נעשה בכל שכבה, איך שומרים על פרטיות הלקוח, ואיך ומתי מוקלטות שיחות ופגישות.</span></div><h1 class="annex-h" style="border-bottom-color:#B3531D">נספח C — נתונים, פרטיות ותקשורת מוקלטת</h1>
+<div class="mini-divider" style="--ax:#7D6F5C;--ax-tint:#F0EEE9"><span class="mini-badge">C</span><span class="mini-sub">שלוש שכבות המידע ומה נעשה בכל שכבה, איך שומרים על פרטיות הלקוח, ואיך ומתי מוקלטות שיחות ופגישות.</span></div><h1 class="annex-h" style="border-bottom-color:#7D6F5C">נספח C — נתונים, פרטיות ותקשורת מוקלטת</h1>
 <div class="note">נספח זה מהווה חלק בלתי-נפרד מההסכם, ונכנס לתוקף עם החתימה.</div>
 <h2>סעיף 1 — הקלטת תקשורת; הודעה והסכמה</h2><div class="clausebox">
 <p><strong>(א) הבסיס וההסכמה.</strong> רשאי הארגון להקליט אינטראקציות עם הלקוח ונציגיו (פגישות וידאו/פרונטליות, שיחות טלפון) לצורכי איכות שירות, תיעוד אישורים והנחיות (סעיף 4(ג) להסכם המסגרת), יישוב מחלוקות, ושיפור מערכות Neuron. הארגון ימסור הודעה על ההקלטה בתחילת כל אינטראקציה מוקלטת; חתימת הלקוח מהווה הסכמה מקדמית וכללית להקלטה, בכפוף למתן ההודעה כאמור. הארגון הוא צד לשיחות המוקלטות, בהתאם לחוק האזנת סתר, התשל&quot;ט-1979. חל על ההקלטה דין המחייב הסכמת כל המשתתפים בשיחה — לא תבוצע ההקלטה ביחס לאותה אינטראקציה אלא אם ניתנה הסכמתם המפורשת, נוסף על ההודעה כאמור.</p>
-<p><strong>(ב) זכות התנגדות וייידוע.</strong> משתתף רשאי, בכל עת, להתנגד להקלטה ולבקש חלופה בלתי-מוקלטת, ללא תניית מתן השירותים בכך; הלקוח ייידע את נציגיו על ההקלטה ועל זכות ההתנגדות.</p>
+<p><strong>(ב) זכות התנגדות ויידוע.</strong> משתתף רשאי, בכל עת, להתנגד להקלטה ולבקש חלופה בלתי-מוקלטת, ללא תניית מתן השירותים בכך; הלקוח יידע את נציגיו על ההקלטה ועל זכות ההתנגדות.</p>
 <p><strong>(ג) סיווג ההקלטה.</strong> הקלטה, תמליל וכל נתון נגזר ממנה מסווגים ומטופלים לפי שכבות המידע שבסעיף 2.</p>
 </div><h2>סעיף 2 — שלוש שכבות המידע</h2><div class="clausebox">
 <table><thead><tr><th style="text-align:right">השכבה</th><th style="text-align:right">מה היא כוללת</th><th style="text-align:right">מה מותר לעשות בה</th></tr></thead><tbody>
@@ -326,12 +331,12 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 <p><strong>(א) אבטחת מידע ודיווח.</strong> הארגון ינקוט אמצעי אבטחה סבירים ומקובלים בענף; גילה אירוע אבטחה החייב דיווח — יודיע ללקוח ללא דיחוי בלתי-סביר וידווח כנדרש בדין.</p>
 <p><strong>(ב) גורמים מטעם הארגון.</strong> רשאי לחשוף נתונים לחברות קשורות ולנותני שירות (אירוח, מודלים, אנליטיקה) המחויבים בסודיות ואבטחה מקבילות; לפי דרישה, ימסור רשימת סוגי הגורמים ומקומות העיבוד.</p>
 <p><strong>(ג) ציות לדין ונספח D.</strong> כל צד יעמוד בדין הגנת המידע והפרטיות החל עליו (חוק הגנת הפרטיות, התשמ&quot;א-1981, ותיקוניו; GDPR ככל שחל). כפוף הלקוח לדין המחייב הסכם עיבוד נתונים נפרד — יסומן נספח D כחל בטבלת התנאים המסחריים ויחול, גובר על נספח זה בענייני מידע אישי בלבד; עד לסימונו, שימוש במידע אישי כאמור לשיפור מודלים ייעשה על בסיס שכבה C בלבד.</p>
-<p><strong>(ד) שמירה ומחיקה.</strong> שכבות A/B יישמרו לתקופת ההתקשרות ולאחריה כנדרש בדין; הקלטות ותמלילים — 24 חודשים; בסיום, לפי דרישת הלקוח, ישיב או ימחק הארגון את נתוני הלקוח המזהים תוך 30 יום, בכפוף לחובות שמירה ולעותקי-גיבוי שגרתיים.</p>
+<p><strong>(ד) שמירה ומחיקה.</strong> שכבות A/B יישמרו לתקופת ההתקשרות ולאחריה כנדרש בדין; הקלטות ותמלילים — עשרים וארבעה (24) חודשים; בסיום, לפי דרישת הלקוח, ישיב או ימחק הארגון את נתוני הלקוח המזהים תוך שלושים (30) יום, בכפוף לחובות שמירה ולעותקי-גיבוי שגרתיים.</p>
 <p><strong>(ה) הישרדות.</strong> הזכויות במידע מצרפי ולא-מזהה (שכבה C) ובנתונים הנגזרים שורדות את הסיום; אינן טעונות מחיקה.</p>
-<p><strong>(ו) תפקידי הצדדים לפי דין הפרטיות.</strong> ביחס לשכבות A/B, הארגון פועל כמחזיק מטעם הלקוח; ביחס לשכבה C — כבעל שליטה עצמאי. פנה נושא מידע בבקשת עיון/תיקון/מחיקה — יסייע הארגון ללקוח במענה בזמן סביר.</p>
+<p><strong>(ו) תפקידי הצדדים לפי דין הפרטיות.</strong> ביחס לשכבות A/B, הארגון פועל כמחזיק מטעם הלקוח; ביחס לשכבה C — כבעל שליטה עצמאי (&quot;מחזיק&quot; ו&quot;בעל שליטה&quot; — כמשמעותם בחוק הגנת הפרטיות, התשמ&quot;א-1981, כהגדרתם בנספח D סעיף 1, החלה לעניין מונחים אלה בלבד גם כשנספח D עצמו אינו חל על ההתקשרות). פנה נושא מידע בבקשת עיון/תיקון/מחיקה — יסייע הארגון ללקוח במענה בזמן סביר.</p>
 <div class="pagebreak"></div>
 <div class="pagebreak"></div>
-<div class="mini-divider" style="--ax:#2C5AA0;--ax-tint:#EEF3FA"><span class="mini-badge">D</span><span class="mini-sub">מטרות ואופן עיבוד המידע האישי, סוגי המידע ונושאיו, מעבדי משנה, העברות בין-לאומיות, דיווח על אירועי אבטחה, וזכות ביקורת.</span></div></div><h1 class="annex-h" style="border-bottom-color:#2C5AA0">נספח D — הגנת מידע אישי (הסכם עיבוד נתונים אישיים)</h1>
+<div class="mini-divider" style="--ax:#5B2986;--ax-tint:#F4F0F6"><span class="mini-badge">D</span><span class="mini-sub">מטרות ואופן עיבוד המידע האישי, סוגי המידע ונושאיו, מעבדי משנה, העברות בין-לאומיות, דיווח על אירועי אבטחה, וזכות ביקורת.</span></div></div><h1 class="annex-h" style="border-bottom-color:#5B2986">נספח D — הגנת מידע אישי (הסכם עיבוד נתונים אישיים)</h1>
 <div class="note">נספח זה חל על ההתקשרות <strong>רק אם סומן ככזה בטבלת התנאים המסחריים שבנספח B</strong>, או צורף במפורש בדרך אחרת. סומן או צורף — נספח זה חלק בלתי-נפרד מההסכם, וגובר על נספח C בענייני מידע אישי בלבד. לא סומן — אינו חל.</div>
 <h2>סעיף 1 — הגדרות ותחולה</h2><div class="clausebox">
 <p><strong>&quot;מידע אישי&quot;</strong>, <strong>&quot;נושא מידע&quot;</strong>, <strong>&quot;בעל שליטה&quot;</strong> ו-<strong>&quot;מחזיק&quot;</strong> — כמשמעותם בחוק הגנת הפרטיות, התשמ&quot;א-1981 (על תיקוניו); <strong>&quot;Controller&quot;</strong>, <strong>&quot;Processor&quot;</strong> ו-<strong>&quot;Data Subject&quot;</strong> — כמשמעותם ב-GDPR, ככל שחל. <strong>&quot;מעבד משנה&quot;</strong> — כאמור בסעיף 6 להלן. נספח זה מפרט ומשלים את נספח C ביחס למידע אישי; בכל עניין שאינו מוסדר בו במפורש, ימשיך לחול נספח C.</p>
@@ -347,22 +352,22 @@ hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 </div><h2>סעיף 6 — מעבדי משנה</h2><div class="clausebox">
 <p><strong>(א)</strong> הלקוח מסמיך את הארגון להיעזר במעבדי משנה מהסוגים המתוארים בנספח C סעיף 3(ב), הכפופים בכתב לחובות שאינן נופלות מאלה שבנספח זה. <strong>(ב)</strong> לפי דרישה, ימסור הארגון את רשימת מעבדי המשנה; הוסיף מעבד מהותי חדש — יודיע מראש בזמן סביר.</p>
 </div><h2>סעיף 7 — העברות בין-לאומיות</h2><div class="clausebox">
-<p>הועבר מידע אישי מחוץ לישראל (או מחוץ לאיחוד האירופי, ביחס למידע הכפוף ל-GDPR), יבטיח הארגון אמצעי הולם (סעיפים חוזיים סטנדרטיים, החלטת נאותות או מנגנון שקול), ויידע את הלקוח לפי דרישתו.</p>
+<p>הועבר מידע אישי מחוץ לישראל, יבטיח הארגון עמידה בתנאי תקנות הגנת הפרטיות (העברת מידע אל מאגרי מידע שמחוץ לגבולות המדינה), התשס&quot;א-2001, לרבות כתב התחייבות מקבל המידע ככל שנדרש; הועבר מידע הכפוף ל-GDPR מחוץ לאיחוד האירופי, יבטיח הארגון גם אמצעי הולם לפי אותו דין (סעיפים חוזיים סטנדרטיים, החלטת נאותות או מנגנון שקול). הארגון יידע את הלקוח על אמצעי ההעברה לפי דרישתו.</p>
 </div><h2>סעיף 8 — סיוע ללקוח ומימוש זכויות נושאי מידע</h2><div class="clausebox">
 <p>פנה נושא מידע בבקשת עיון/תיקון/מחיקה/התנגדות/ניידות — יפנה אותו הארגון ללקוח ויסייע במענה בזמן סביר, לא יאוחר משבעה (7) ימי עסקים.</p>
 </div><h2>סעיף 9 — אירוע אבטחה ודיווח</h2><div class="clausebox">
 <p>גילה הארגון אירוע פגיעה, או חשש לפגיעה, באבטחת מידע אישי — יודיע ללקוח בכתב ללא דיחוי בלתי-סביר ולא יאוחר מ-48 שעות, ויסייע ללקוח בקיום חובות הדיווח שלו, מבלי לפנות בעצמו לרשות/לנפגעים בשם הלקוח ללא תיאום, אלא אם נדרש בדין.</p>
 </div><h2>סעיף 10 — מחיקה והשבה בסיום</h2><div class="clausebox">
-<p>לפי בחירת הלקוח בכתב, ישיב או ימחק הארגון את המידע האישי, בכפוף לחובות שמירה שבדין ולעותקי-גיבוי שגרתיים (נספח C סעיף 3(ד)); לא בחר הלקוח תוך 30 יום מהסיום — ימחק הארגון.</p>
+<p>לפי בחירת הלקוח בכתב, ישיב או ימחק הארגון את המידע האישי, בכפוף לחובות שמירה שבדין ולעותקי-גיבוי שגרתיים (נספח C סעיף 3(ד)); לא בחר הלקוח תוך שלושים (30) יום מהסיום — ימחק הארגון.</p>
 </div><h2>סעיף 11 — ביקורת ובקרה</h2><div class="clausebox">
 <p>לפי דרישה בכתב והודעה מוקדמת סבירה, ימסור הארגון תיעוד סביר להוכחת עמידתו בנספח זה; בחשד סביר להפרה מהותית או ביקורת רגולטורית — ביקורת נוספת בתיאום מראש, לא יותר מפעם בשנה בנסיבות רגילות.</p>
 </div><h2>סעיף 12 — אחריות</h2><div class="clausebox">
-<p>אחריות הצדדים בגין הפרת נספח זה כפופה במלואה למנגנוני סעיפים 6, 11 ו-12 להסכם המסגרת; אין בנספח זה כדי ליצור מסלול אחריות נפרד או בלתי-מוגבל, למעט ככל שהדין הקוגנטי מחייב אחרת.</p>
+<p>אחריות הצדדים בגין הפרת נספח זה כפופה במלואה למנגנוני סעיפים 6 ו-12 להסכם המסגרת; הפרת נספח זה המהווה גם הפרה של סעיפים 8–10 להסכם המסגרת (למשל, הפרת סודיות) תזכה בנוסף בפיצוי המוסכם לפי סעיף 11, לפי תנאיו. אין בנספח זה כדי ליצור מסלול אחריות נפרד או בלתי-מוגבל, למעט ככל שהדין הקוגנטי מחייב אחרת.</p>
 <div class="pagebreak"></div>
 <div class="pagebreak"></div>
 </div><h1>אישורים וחתימות</h1>
 <h2>חתימות</h2>
-<p>ולראיה באו הצדדים על החתום; חתימה זו מהווה חתימה מחייבת אחת על הסכם המסגרת ונספחיו A–D שלעיל (ככל שחלים):</p>
+<p>הגעתם לרגע החתימה על ההתקשרות שתוארה במדריך הלקוח — משלב המגע הראשוני, דרך מחקר Genesis, ועד לתוכנית ולהצעה שקיבלתם. ולראיה באו הצדדים על החתום; חתימה זו מהווה חתימה מחייבת אחת על הסכם המסגרת ונספחיו A–D שלעיל (ככל שחלים):</p>
 <p><strong>מודל העבודה שנבחר</strong> (כמתואר במדריך הלקוח): _________________________</p>
 <table><thead><tr><th style="text-align:right"></th><th style="text-align:right">הלקוח</th><th style="text-align:right">הארגון</th></tr></thead><tbody>
 <tr><td style="text-align:right">שם הישות</td><td style="text-align:right">______________________</td><td style="text-align:right">לוס גרדיוס בע&quot;מ</td></tr>
