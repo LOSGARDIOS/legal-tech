@@ -15,8 +15,7 @@ Conventions handled (this file's actual usage, confirmed by inspection):
     before the first `##`)
   - `> ...` blockquote (front-matter notice; exposed but not required by
     any page today)
-  - `## פרק N — Title` chapter headings, and one non-numbered chapter
-    (`## טופס קליטה`)
+  - `## פרק N — Title` chapter headings
   - `### Subtitle` section headings
   - `---` horizontal rules (ignored; sections/chapters are delimited by
     heading level already)
@@ -24,6 +23,9 @@ Conventions handled (this file's actual usage, confirmed by inspection):
     inline `**bold**` spans (kept as <strong>), or a whole paragraph
     wrapped in single `*italic*`
   - bullet lists: consecutive lines starting with `- `
+  - field lists: consecutive lines starting with `- [ ] ` — a fill-in
+    field the reader is meant to answer, rendered as a dotted-line field
+    row wherever it appears (see FLIST convention below render_flist)
   - numbered lists: consecutive lines starting with `N. `
   - GFM pipe tables: a header row, a `|---|---|` separator row, and data
     rows, all consecutive `|`-led lines
@@ -56,9 +58,14 @@ def inline_to_html(text):
     return BOLD_RE.sub(r'<strong>\1</strong>', text)
 
 
+FIELD_ITEM_RE = re.compile(r'^-\s*\[\s*\]\s+')
+
+
 def _line_kind(line):
     if line.lstrip().startswith('|'):
         return 'table'
+    if FIELD_ITEM_RE.match(line):
+        return 'flist'
     if re.match(r'^-\s+', line):
         return 'ul'
     if re.match(r'^\d+\.\s+', line):
@@ -116,6 +123,13 @@ def _parse_homogeneous_block(lines, kind):
         items_raw = [re.sub(r'^\d+\.\s+', '', l) for l in lines]
         return {
             "type": "olist",
+            "items": [inline_to_html(it) for it in items_raw],
+            "items_raw": items_raw,
+        }
+    if kind == 'flist':
+        items_raw = [FIELD_ITEM_RE.sub('', l) for l in lines]
+        return {
+            "type": "flist",
             "items": [inline_to_html(it) for it in items_raw],
             "items_raw": items_raw,
         }
@@ -177,7 +191,7 @@ class Section:
         for b in self.blocks:
             if b["type"] == "para":
                 n += len(b["text"].split())
-            elif b["type"] in ("ulist", "olist"):
+            elif b["type"] in ("ulist", "olist", "flist"):
                 n += sum(len(it.split()) for it in b["items_raw"])
             elif b["type"] == "table":
                 n += sum(len(c.split()) for row in b["rows"] for c in row)
@@ -434,6 +448,54 @@ def render_olist(block):
     return f'<ol class="md-list">{items}</ol>'
 
 
+# ---------------------------------------------------------------------
+# FLIST — inline fill-in field groups (content-architecture pass, v3.0).
+#
+# Before this pass, every piece of client-supplied data lived in one
+# consolidated "## טופס קליטה" chapter at the end of the document, and
+# the ONLY thing that made that chapter's bullet lists render as
+# dotted-line fill-in fields (the .ifields/.igroup CSS treatment) was
+# build_html_guide.py reaching for that one specific chapter by name and
+# hand-building the field rows for it. There was no markdown-level
+# signal distinguishing "this bullet is a field to fill in" from "this
+# bullet is a normal list item" — the distinction existed only in
+# presentation code, tied to one heading.
+#
+# Per the client's request, each field now lives next to the prose that
+# explains it, in whichever chapter that is — so the signal can no
+# longer be "which chapter is this." Mirroring the ASIDE_CLASS design
+# just above (a small, explicit, auditable markdown-level convention,
+# not a structural/heading-based hook): a bullet list item written as
+#   - [ ] label text
+# instead of the normal
+#   - label text
+# is parsed as its own block type, "flist" (see _line_kind/FIELD_ITEM_RE
+# and _parse_homogeneous_block above), and rendered here as one dotted-
+# line field row per item — the exact same .ifields/.f/.flabel/.fline
+# visual treatment the old end-of-document Intake Form used, just
+# without that form's numbered .igroup wrapper (this is inline content
+# now, sitting inside a chapter/section that already has its own
+# heading, so it doesn't need a second, nested title of its own).
+#
+# The `[ ]` sigil was chosen (over, say, a special heading or an HTML
+# comment) because it is visually self-explanatory in the raw .md too —
+# it reads as "a blank to fill in" even before rendering — and because
+# it works at the single-list-item granularity a field group needs
+# (some sections mix a couple of field bullets into an otherwise normal
+# explanatory list; a heading-level signal couldn't do that). A future
+# author marks any new bullet as a field, in any chapter, by writing it
+# as `- [ ] ...` — no code change needed unless the visual treatment
+# itself should change, in which case this is the one place to change it.
+# ---------------------------------------------------------------------
+
+def render_flist(block):
+    rows = ''.join(
+        f'<div class="f"><span class="flabel">{it}</span><span class="fline"></span></div>'
+        for it in block["items"]
+    )
+    return f'<div class="ifields">{rows}</div>'
+
+
 def render_block(block):
     t = block["type"]
     if t == "para":
@@ -444,6 +506,8 @@ def render_block(block):
         return render_ulist(block)
     if t == "olist":
         return render_olist(block)
+    if t == "flist":
+        return render_flist(block)
     raise ValueError(f"unknown block type {t!r}")
 
 

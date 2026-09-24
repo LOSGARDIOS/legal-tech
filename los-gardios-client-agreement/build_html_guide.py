@@ -23,13 +23,22 @@ contract (which bold lead-ins render as .callout / .callout.warn / .fine
 vs plain .body-copy).
 
 Chapter map (content-architecture refinement pass, v3.0): 10 numbered
-chapters + the Intake Form. Two chapter numbers are LOAD-BEARING beyond
-this file — AGREEMENT_SHORT_HE.md §1 hardcodes "מדריך הלקוח, פרק 2" for
-the Track A/B/C/0 definitions, and §11(a) hardcodes "מדריך הלקוח, פרק 1"
-for the heading "יסודות עלות ההגנה על נכסי הארגון" — so chapter 1 (who we
-are + the org's protected assets) and chapter 2 (commercial models) keep
-those exact numbers even though this is otherwise a full narrative
-reorder. See CLIENT_GUIDE_HE.md's own chapter order for the rest.
+chapters. Two chapter numbers are LOAD-BEARING beyond this file —
+AGREEMENT_SHORT_HE.md §1 hardcodes "מדריך הלקוח, פרק 2" for the Track
+A/B/C/0 definitions, and §11(a) hardcodes "מדריך הלקוח, פרק 1" for the
+heading "יסודות עלות ההגנה על נכסי הארגון" — so chapter 1 (who we are +
+the org's protected assets) and chapter 2 (commercial models) keep those
+exact numbers even though this is otherwise a full narrative reorder.
+See CLIENT_GUIDE_HE.md's own chapter order for the rest.
+
+Content-architecture pass, v3.1: the standalone end-of-document "Intake
+Form" chapter is gone. Every field it used to collect now lives inline,
+right after the explanatory paragraph it belongs to, in whichever
+chapter that is (1, 3, 4, 7 or 8) — see md_guide_parser.py's render_flist
+for the markdown-level convention (`- [ ] label`) and CSS section for
+the shared dotted-line field-row look this produces wherever it's used.
+Chapter 10 closes with a short "where to find each field" index instead
+of the old form.
 """
 import io, os, re, base64
 
@@ -281,19 +290,20 @@ table.fcast th.sec-fin{border-top:3px solid var(--purple)}
  font-size:7.4pt;color:var(--muted)}
 .tbl-legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:5px}
 
-/* ---------- INTAKE FORM ---------- */
-.intake-intro{font-family:"Heebo",sans-serif;font-size:9.6pt;color:var(--muted);
- line-height:1.9;max-width:560px;margin-bottom:6px}
-.igroup{margin:20px 0;break-inside:avoid-page;page-break-inside:avoid}
-.igroup-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.igroup-num{font-family:"Frank Ruhl Libre",serif;background:var(--espresso);color:var(--gold);
- width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
- font-weight:700;font-size:10pt;flex:none;unicode-bidi:isolate}
-.igroup-title{font-family:"Frank Ruhl Libre",serif;font-size:12pt;font-weight:600}
-.igroup-note{font-family:"Heebo",sans-serif;font-size:8.2pt;color:var(--gold-deep);
- margin-bottom:6px;margin-inline-start:38px}
-.ifields{margin-inline-start:38px;font-family:"Heebo",sans-serif;font-size:9.3pt;
- color:#382c1f;line-height:2.2}
+/* ---------- INLINE FILL-IN FIELDS ----------
+   Content-architecture pass (v3.0): fields used to live only in one
+   consolidated "Intake Form" chapter at the end, laid out under a
+   numbered .igroup header (a circle badge + group title) with the
+   field rows indented 38px to sit clear of that badge. Fields now sit
+   inline, right after the explanatory paragraph they belong to, inside
+   a chapter/section that already carries its own heading — so the
+   .igroup wrapper is gone and .ifields starts flush with the body copy
+   around it (margin-inline-start:0) rather than indented under a badge
+   that no longer exists. Same dotted-line field-row look throughout;
+   see md_guide_parser.py's render_flist for the markdown convention
+   (`- [ ] label`) that produces this block wherever it's used. */
+.ifields{margin-inline-start:0;font-family:"Heebo",sans-serif;font-size:9.3pt;
+ color:#382c1f;line-height:2.2;margin-top:4px;margin-bottom:10px}
 .ifields .f{display:flex;align-items:baseline;gap:8px;border-bottom:1px dotted var(--rule);
  padding:4px 0}
 .ifields .f .flabel{flex:1 1 auto;min-width:0;color:#4a3d2c}
@@ -323,7 +333,7 @@ table.fcast th.sec-fin{border-top:3px solid var(--purple)}
  body{background:#fff}
  .sheet{max-width:none}
  .card,.prompt,.callout,.stat,.stats,.pstep,.fine,table.micro{break-inside:avoid}
- h1.sec,h2.sub,.igroup-head,.divider-title,.eyebrow{break-after:avoid}
+ h1.sec,h2.sub,.divider-title,.eyebrow{break-after:avoid}
 }
 """
 
@@ -469,6 +479,16 @@ PAGES.append(content_page("01", _sec_assets.title, "מה עומד מאחורי �
 # ------------------------------------------------------------------
 PAGES.append(generic_section_page("01", _ch1.section("יסודות עלות ההגנה על נכסי הארגון"), "עלות ההגנה"))
 
+# ------------------------------------------------------------------
+# 1.5 — Business identity fields (content-architecture pass, v3.1):
+# these used to live in the standalone Intake Form at the end of the
+# document; they're general administrative/context fields with no
+# single strong topical home elsewhere in the guide, so they sit at the
+# end of chapter 1 instead. Generic fallback page — plain paragraphs +
+# one inline field group, nothing that needs a bespoke layout.
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("01", _ch1.section("כמה פרטים בסיסיים עליכם ועל העסק"), "פרטים מנהליים"))
+
 # ==================================================================
 # DIVIDER 02 — Engagement Models. Chapter number is load-bearing:
 # AGREEMENT_SHORT_HE.md §1 cites "מדריך הלקוח, פרק 2" for the Track
@@ -531,32 +551,14 @@ def first_sentence_split(raw):
     rest = parts[1] if len(parts) > 1 else ''
     return inline_to_html(head), inline_to_html(rest)
 
-def qmark_lines(html):
-    """Presentational line-break helper for the .prompt-q box: breaks an
-    already-inline-converted string after every '?' so a paragraph that
-    embeds several questions as running prose reads as stacked question
-    lines, exactly as written — no word is added, removed or reordered."""
-    parts = re.split(r'(?<=\?)\s+', html)
-    return '<br>'.join(p for p in parts if p)
-
-def split_ask(raw):
-    """Several sections in this guide are shaped, in the .md, as one
-    running-prose paragraph: "<label>: <question>? <question>?
-    [<trailing non-question sentence>.]" — e.g. 'ספרו לנו: מהי התקופה
-    ...? האם יש מועדים ...?'. This splits that single paragraph, purely
-    presentationally, onto the existing .prompt (label + stacked
-    questions) design, plus an optional trailing aside — never
-    rewording or reordering a single word. Returns
-    (label_html, questions_html, tail_html_or_None)."""
-    label, _, remainder = raw.partition(':')
-    remainder = remainder.strip()
-    m = re.search(r'^(.*\?)(.*)$', remainder, re.DOTALL)
-    if m:
-        questions, tail = m.group(1).strip(), m.group(2).strip(' —-;.')
-    else:
-        questions, tail = remainder, ''
-    return (inline_to_html(label), qmark_lines(inline_to_html(questions)),
-            inline_to_html(tail) if tail else None)
+# NOTE: this file used to also define qmark_lines()/split_ask() here —
+# a pair of helpers that split a single running-prose "ספרו לנו: Q? Q?"
+# paragraph into a .prompt reflection box at render time. Content-
+# architecture pass v3.1 rewrote every section that needed them so the
+# .md itself now writes those questions as real field bullets
+# (`- [ ] ...`, see md_guide_parser.py's render_flist) instead of prose
+# for a page-time splitter to pick apart — so both helpers were removed
+# as dead code rather than kept unused.
 
 # ------------------------------------------------------------------
 # 3.1 — Opening hook: the section's own first sentence as the page's
@@ -636,33 +638,35 @@ for i, item_html in enumerate(_paths_ulist["items"]):
 _paths_body = "\n".join([
     render_block(_sec_paths.blocks[0]),
     '<div class="cardgrid stack">' + "".join(_path_cards) + '</div>',
-    render_block(_sec_paths.blocks[2]),
+    render_blocks(_sec_paths.blocks[2:]),
 ])
 PAGES.append(content_page("03", _sec_paths.title, "בחירה", _sec_paths.title, _paths_body))
 
 # ------------------------------------------------------------------
-# 3.5 — Goals reflection (prompt box; single running-prose paragraph)
+# 3.5 — Goals. Content-architecture pass, v3.1: this used to be one
+# running-prose "ספרו לנו: Q? Q? Q?" paragraph split apart at render
+# time by split_ask into a .prompt reflection box; the .md now writes
+# the three questions as real field bullets (`- [ ] ...`), so the
+# generic renderer (render_blocks) already produces the field rows —
+# no bespoke splitting code needed any more.
 # ------------------------------------------------------------------
-_sec_goals = _ch3.section("היעד והציפיות שלכם")
-_goals_label, _goals_q, _goals_tail = split_ask(_sec_goals.blocks[0]["text"])
-_goals_body = f'''<p class="body-copy">{_goals_label}.</p>
-<div class="prompt"><div class="prompt-label">שאלות למחשבה</div>
-<div class="prompt-q">{_goals_q}</div></div>'''
-if _goals_tail:
-    _goals_body += f'<p class="fine">{_goals_tail}</p>'
-PAGES.append(content_page("03", _sec_goals.title, "לפני המספרים", _sec_goals.title, _goals_body))
+PAGES.append(generic_section_page("03", _ch3.section("היעד והציפיות שלכם"), "לפני המספרים"))
 
 # ------------------------------------------------------------------
-# 3.6 — Investment framework. "ספרו לנו:" + a REAL bullet list in the
-# .md maps directly onto the existing prompt-label / prompt-q boxed
-# design.
+# 3.6 — Investment framework. "ספרו לנו:" + a real field list (`- [ ]`)
+# in the .md renders via the generic flist treatment (dotted-line field
+# rows) — previously a bespoke prompt-label/prompt-q box; upgraded to
+# actual fill-in rows now that this page is also where the reader
+# answers, not just where they read the question (build report point 6
+# / the "upgrade a matching ספרו לנו prompt instead of duplicating it"
+# instruction).
 # ------------------------------------------------------------------
 _sec_invest = _ch3.section("מסגרת ההשקעה שלכם")
-_ib = _sec_invest.blocks  # [intro, "ספרו לנו:", ulist(4), reminder-para, terms-para, track0-callout]
+_ib = _sec_invest.blocks  # [intro, "ספרו לנו:", flist(4), reminder-para, terms-para, track0-fine]
 _invest_body = "\n".join([
     render_block(_ib[0]),
-    f'<div class="prompt"><div class="prompt-label">{_ib[1]["html"]}</div>'
-    f'<div class="prompt-q">' + '<br>'.join(_ib[2]["items"]) + '</div></div>',
+    render_block(_ib[1]),
+    render_block(_ib[2]),
     render_block(_ib[3]),
     '<div class="eyebrow" style="margin-top:8px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>',
     '<div class="stats" style="margin:6px 0">'
@@ -671,7 +675,7 @@ _invest_body = "\n".join([
     '</div>',
     render_block(_ib[4]),
     # Compact .fine treatment (not .callout): this page is already dense
-    # (prompt box + stat tiles), and .callout's padding/border-on-all-
+    # (field rows + stat tiles), and .callout's padding/border-on-all-
     # sides pushed the page's pagefoot onto a near-empty extra page even
     # after tightening its spacing. This note is a scoping/definitional
     # aside (which chapters don't apply to you), which is what .fine is
@@ -683,30 +687,32 @@ _invest_body = "\n".join([
 PAGES.append(content_page("03", _sec_invest.title, "תשומת הקלט המרכזית", _sec_invest.title, _invest_body))
 
 # ------------------------------------------------------------------
-# 3.7 — Timeline
+# 3.7 — Timeline (generic; see 3.5's comment — same conversion)
 # ------------------------------------------------------------------
-_sec_timeline = _ch3.section("טווח הזמן שלכם")
-_tl_label, _tl_q, _tl_tail = split_ask(_sec_timeline.blocks[0]["text"])
-PAGES.append(content_page("03", _sec_timeline.title, "תכנון", _sec_timeline.title, "\n".join([
-    f'<p class="body-copy">{_tl_label}.</p>',
-    f'<div class="prompt"><div class="prompt-label">ספרו לנו</div><div class="prompt-q">{_tl_q}</div></div>',
-    render_block(_sec_timeline.blocks[1]),
-])))
+PAGES.append(generic_section_page("03", _ch3.section("טווח הזמן שלכם"), "תכנון"))
 
 # ------------------------------------------------------------------
-# 3.8 — Financial boundaries
+# 3.8 — Financial boundaries (generic body + the existing default-value
+# stat tiles, kept as hand-authored presentation since they're not a
+# sentence of prose but a compact restatement of the two defaults
+# already stated in the section's own closing paragraph)
 # ------------------------------------------------------------------
 _sec_bounds = _ch3.section("גבולות פיננסיים")
-_bounds_label, _bounds_q, _bounds_tail = split_ask(_sec_bounds.blocks[0]["text"])
 PAGES.append(content_page("03", _sec_bounds.title, "הגנה עליכם", _sec_bounds.title, "\n".join([
-    f'<p class="body-copy">{_bounds_label}.</p>',
-    f'<div class="prompt"><div class="prompt-label">ספרו לנו</div><div class="prompt-q">{_bounds_q}</div></div>',
+    render_blocks(_sec_bounds.blocks),
     '<div class="eyebrow" style="margin-top:18px">ברירות המחדל, אם לא תיקבע תקרה</div>',
     '<div class="stats">'
     '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · תקופת מדידת Stop-Loss</div></div>'
     '<div class="stat"><div class="stat-num">10%</div><div class="stat-cap">חריגה מותרת מהתקציב החודשי</div></div>'
     '</div>',
 ])))
+
+# ------------------------------------------------------------------
+# 3.9 — Strategic boundaries (new subsection — content-architecture
+# pass, v3.1: strategic red lines used to live only in the end-of-
+# document Intake Form; placed as a sibling of "גבולות פיננסיים" here).
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("03", _ch3.section("גבולות אסטרטגיים"), "הגנה עליכם"))
 
 # ==================================================================
 # DIVIDER 04 — Genesis. Previously mentioned only as the tail of the
@@ -805,18 +811,24 @@ PAGES.append(content_page("07", "העיקרון שמנחה אותנו", "עמד�
 ])))
 
 # ------------------------------------------------------------------
-# 7.2 — Break-even
+# 7.2 — Break-even. Content-architecture pass, v3.1: the single "ספרו
+# לנו, אם ידוע לכם: ...?" ask paragraph is now a real field group
+# (gross margin, AOV) right after the two-inputs table, and the floor
+# note gained its own field group (alternate Break-Even definition,
+# extra profitability targets) — both used to live only in the
+# end-of-document Intake Form. Rendered generically around the one
+# genuinely bespoke element on this page (the table, still via
+# render_table so its column count picks the right micro/data class);
+# found positionally rather than by a fixed index so this page doesn't
+# need updating again if a future edit adds or removes a field group.
 # ------------------------------------------------------------------
 _sec_breakeven = _ch7.section("נקודת האיזון (Break-Even) — במה מדובר")
-_beb = _sec_breakeven.blocks  # [what-it-means, precise-terms, two-inputs-intro, table, ask, floor-note]
-_be_label, _be_q, _be_tail = split_ask(_beb[4]["text"])
+_beb = _sec_breakeven.blocks
+_be_table_i = next(i for i, b in enumerate(_beb) if b["type"] == "table")
 _be_body = "\n".join([
-    render_block(_beb[0]),
-    render_block(_beb[1]),
-    render_block(_beb[2]),
-    render_table(_beb[3]),
-    f'<div class="prompt"><div class="prompt-label">{_be_label}</div><div class="prompt-q">{_be_q}</div></div>',
-    render_block(_beb[5]),
+    render_blocks(_beb[:_be_table_i]),
+    render_table(_beb[_be_table_i]),
+    render_blocks(_beb[_be_table_i + 1:]),
 ])
 PAGES.append(content_page("07", "נקודת האיזון (Break-Even)", "כלי תכנון, לא הבטחה", "נקודת האיזון (Break-Even)", _be_body))
 
@@ -896,11 +908,17 @@ PAGES.append(divider("08", _ch8,
 _ch8_intro = _ch8.intro_blocks()[0]
 
 # ------------------------------------------------------------------
-# 8.1 — Tolerance
+# 8.1 — Tolerance. Content-architecture pass, v3.1: the single running-
+# prose ask ("ספרו לנו: ...?") is now a real field group (tolerance
+# period, tolerance level, temporary-deficit willingness + cap, AND the
+# Stop-Loss measurement period — the latter used to sit only in the
+# Intake Form's commercial section, moved here since its default is
+# cross-referenced from this very section's deficit paragraph) — one
+# extra block vs. before, so the two-physical-page split point below is
+# [0,1,2] / [3,4,5,6] rather than the old [0,1,2] / [3,4,5].
 # ------------------------------------------------------------------
 _sec_tol = _ch8.section("רמת ותקופת הסובלנות שלכם")
-_tb2 = _sec_tol.blocks  # [plain-terms, example-fine, default-callout, deficit-callout, ask, rights-fine]
-_tol_label, _tol_q, _tol_tail = split_ask(_tb2[4]["text"])
+_tb2 = _sec_tol.blocks  # [plain-terms, example, default-callout, deficit-callout, ask-lead, ask-flist, rights]
 # Split across two physical pages — see the four-tracks page's comment.
 PAGES.append(content_page("08", _sec_tol.title, "גמישות סביב רווחיות", _sec_tol.title, "\n".join([
     render_block(_ch8_intro),
@@ -910,9 +928,9 @@ PAGES.append(content_page("08", _sec_tol.title, "גמישות סביב רווח�
 ])))
 _tol_body2 = "\n".join([
     render_block(_tb2[3]),
-    f'<div class="prompt"><div class="prompt-label">{_tol_label}</div><div class="prompt-q">{_tol_q}</div></div>',
-] + ([f'<p class="fine">{_tol_tail}</p>'] if _tol_tail else []) + [
+    render_block(_tb2[4]),
     render_block(_tb2[5]),
+    render_block(_tb2[6]),
 ])
 PAGES.append(content_page("08", _sec_tol.title + " (המשך)", "גמישות סביב רווחיות", _sec_tol.title + " — המשך", _tol_body2))
 
@@ -969,12 +987,16 @@ PAGES.append(content_page("09", _sec_oversight.title + " (המשך)", "מה קו
 # (new chapter — build report point 4: this used to be the tail of the
 # old Genesis chapter with no divider of its own; separating it from
 # Genesis's own substance keeps chapter 4 focused and gives this
-# step-by-step walkthrough its own well-placed home right before the
-# Intake Form it leads into).
+# step-by-step walkthrough its own well-placed home as the guide's
+# closing chapter. Content-architecture pass, v3.1: this chapter used to
+# lead into the standalone Intake Form (hence the arrow ghost numeral
+# instead of "10"); now that the form is gone and chapter 10 is simply
+# the last numbered chapter, it gets the normal ghost numeral like every
+# other chapter divider.
 # ==================================================================
 _ch10 = G.chapter("10")
 PAGES.append(divider("10", _ch10,
-    "מטופס הקליטה ועד להצעה חתומה — התהליך המלא, שלב אחר שלב.", ghost="→"))
+    "מ-Genesis ועד להצעה חתומה — התהליך המלא שלב אחר שלב, ואיפה למצוא כל שדה שנדרש מכם."))
 
 # ------------------------------------------------------------------
 # 10.1 — Process diagram. Steps are the section's own numbered list, in
@@ -995,75 +1017,20 @@ PAGES.append(content_page("10", _sec_process.title, "התהליך", _sec_process
 # ------------------------------------------------------------------
 # 10.2 — Reminder
 # ------------------------------------------------------------------
-PAGES.append(generic_section_page("10", _ch10.section("תזכורת"), "לפני שממשיכים לטופס", breadcrumb_title="תזכורת"))
+PAGES.append(generic_section_page("10", _ch10.section("תזכורת"), "לפני שממשיכים", breadcrumb_title="תזכורת"))
 
-# ==================================================================
-# Intake divider. Every field row below is a verbatim md bullet (one
-# bullet -> one field row); the 3 igroups are the .md's own "א./ב./ג."
-# subsections, not a hand-split layout. The Intake Form sits outside
-# the document's priority order and isn't itself a numbered chapter
-# (AGREEMENT_SHORT_HE.md §15(a): it "אינו מסמך בסדר העדיפויות"), so it
-# gets an arrow rather than a chapter numeral, on the breadcrumb too.
-# ==================================================================
-_intake = G.chapter("טופס_קליטה")
-PAGES.append(f'''<div class="page dark divider">
-  <div class="divider-ghost">→</div>
-  <div class="divider-inner">
-    <div class="divider-eyebrow"><span class="dash"></span>הצעד הבא</div>
-    <div class="divider-title">{_intake.title}</div>
-    <div class="divider-sub">המידע כאן משמש לתכנון בלבד ואינו קובע בעצמו היקף, מחיר או תנאים מחייבים. תמציתי במכוון, ואורך כ-5 דקות למילוי.</div>
-    <div class="divider-endrule"></div>
-  </div>
-</div>''')
-
-def field(label_html):
-    return f'<div class="f"><span class="flabel">{label_html}</span><span class="fline"></span></div>'
-
-def igroup(num, title, note_html, items_html):
-    parts = [f'<div class="igroup"><div class="igroup-head"><span class="igroup-num">{num:02d}</span><span class="igroup-title">{title}</span></div>']
-    if note_html:
-        parts.append(f'<div class="igroup-note">{note_html}</div>')
-    parts.append('<div class="ifields">' + "".join(field(it) for it in items_html) + '</div></div>')
-    return "".join(parts)
-
-_intake_intro = _intake.intro_blocks()[0]["html"]
-_sec_a = _intake.section("א. הלקוח והעסק")
-_sec_b = _intake.section("ב. מסחרי")
-_sec_c = _intake.section("ג. אסטרטגי")
-_a_ulist = next(b for b in _sec_a.blocks if b["type"] == "ulist")
-_b_ulist = next(b for b in _sec_b.blocks if b["type"] == "ulist")
-_c_ulist = next(b for b in _sec_c.blocks if b["type"] == "ulist")
-_c_outro = next(b for b in _sec_c.blocks if b["type"] == "para")
-_b_note = "<br><br>".join(
-    (f'<em>{inline_to_html(b["text"][1:-1])}</em>' if b.get("italic_whole") else b["html"])
-    for b in _sec_b.blocks if b["type"] == "para"
-)
-
-# Three physical pages, one per igroup (א/ב/ג) — group ב, in particular
-# (note + 8 fields), no longer reliably fits alongside group א on one
-# printed page the way the old two-group layout assumed; splitting one
-# igroup per page avoids a silent CSS overflow onto a page with no
-# pagehead/pagefoot of its own.
-PAGES.append(f'''<div class="page">
-{pagehead("→", "טופס קליטה")}
-<div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div>
-<p class="intake-intro">{_intake_intro}</p>
-{igroup(1, _sec_a.title, None, _a_ulist["items"])}
-{pagefoot()}
-</div>''')
-
-PAGES.append(f'''<div class="page">
-{pagehead("→", "טופס קליטה (המשך)")}
-{igroup(2, _sec_b.title, _b_note, _b_ulist["items"])}
-{pagefoot()}
-</div>''')
-
-PAGES.append(f'''<div class="page">
-{pagehead("→", "טופס קליטה (המשך)")}
-{igroup(3, _sec_c.title, None, _c_ulist["items"])}
-<p class="fine">{_c_outro["html"]}</p>
-{pagefoot()}
-</div>''')
+# ------------------------------------------------------------------
+# 10.3 — Where to find each field. Content-architecture pass, v3.1:
+# this replaces the standalone end-of-document "## טופס קליטה" chapter
+# (three igroups of field rows, collected in one place away from their
+# explanations) now that every field lives inline, next to the
+# paragraph that explains it, in chapters 1/3/4/7/8. Chapter 10 already
+# carries the "here's the process" content this guide closes on, so
+# this short index absorbs the old form's closing role instead of
+# giving it a divider/chapter of its own. Generic fallback page — a
+# short paragraph plus the section's own bullet list, nothing bespoke.
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("10", _ch10.section("איפה למצוא כל שדה"), "מפת השדות"))
 
 # ==================================================================
 # Closing
