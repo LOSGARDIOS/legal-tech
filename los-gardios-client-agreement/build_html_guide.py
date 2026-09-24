@@ -664,13 +664,21 @@ _invest_body = "\n".join([
     f'<div class="prompt"><div class="prompt-label">{_ib[1]["html"]}</div>'
     f'<div class="prompt-q">' + '<br>'.join(_ib[2]["items"]) + '</div></div>',
     render_block(_ib[3]),
-    '<div class="eyebrow" style="margin-top:22px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>',
-    '<div class="stats">'
+    '<div class="eyebrow" style="margin-top:8px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>',
+    '<div class="stats" style="margin:6px 0">'
     '<div class="stat"><div class="stat-num">3</div><div class="stat-cap">חודשים · התחייבות תקציב מינימלית</div></div>'
     '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · הודעה מראש להפחתת תקציב</div></div>'
     '</div>',
     render_block(_ib[4]),
-    render_block(_ib[5]),
+    # Compact .fine treatment (not .callout): this page is already dense
+    # (prompt box + stat tiles), and .callout's padding/border-on-all-
+    # sides pushed the page's pagefoot onto a near-empty extra page even
+    # after tightening its spacing. This note is a scoping/definitional
+    # aside (which chapters don't apply to you), which is what .fine is
+    # for anyway; its lighter treatment (border-inline-start only, no
+    # fill) reclaims the remaining vertical space. Matches the generic
+    # classification (see ASIDE_CLASS — "הערה ללקוחות מסלול 0:" -> fine).
+    f'<div class="fine" style="margin:4px 0 0">{_ib[5]["html"]}</div>',
 ])
 PAGES.append(content_page("03", _sec_invest.title, "תשומת הקלט המרכזית", _sec_invest.title, _invest_body))
 

@@ -319,21 +319,59 @@ def load_guide(path):
 #
 # Convention for asides (documented here since it's the maintenance
 # contract for anyone adding new chapters):
-#   A paragraph is classified by its LEADING bold span (the exact text of
-#   a **bold lead-in** at the very start of the paragraph), looked up in
-#   ASIDE_CLASS below. Unlisted lead-ins (or no lead-in at all) render as
+#
+#   A paragraph is classified by its LEADING bold span — the exact text
+#   of a **bold lead-in** at the very start of the paragraph (`_parse_
+#   paragraph`'s `lead`), looked up verbatim in ASIDE_CLASS below.
+#   Unlisted lead-ins (or paragraphs with no lead-in at all) render as
 #   a plain `<p class="body-copy">` — the bold lead-in still shows up
 #   as inline <strong>, it just isn't pulled out into a boxed aside.
 #   A whole paragraph wrapped in single `*italic*` renders as `.fine`.
-# This keeps classification a small, explicit, auditable table instead of
-# a guess — a future author adds a new lead-in phrase here (one line) if
-# they want a new paragraph to render as a boxed aside.
+#
+#   This is deliberately a small, explicit, auditable TABLE keyed by the
+#   short lead-in PHRASE, not a regex/keyword guess and not the full
+#   sentence. Two things this buys, confirmed against how this content
+#   was hand-classified before the CLIENT_GUIDE_HE.md parser existed
+#   (`git show <pre-a473159 commit>:build_html_guide.py`, the ground
+#   truth used to calibrate every entry below):
+#     - A word like "לא" ("not") appears in the lead of both a `.callout`
+#       ("לא בטוחים איזה מסלול מתאים לכם?") and a `.callout.warn`
+#       ("מה זה לא אומר:") — so warn-vs-plain-callout is NOT a keyword
+#       rule, it is looked up per lead-in, matching original intent.
+#     - The lead-in is copied VERBATIM from the .md — never rephrased —
+#       so a content edit that changes a lead-in's wording simply drops
+#       back to plain `.body-copy` (safe, visible in a diff/render) and
+#       is picked back up the moment the same phrase is reused, rather
+#       than silently drifting.
+#   A future author adds a new lead-in phrase here (one line) whenever a
+#   new paragraph should render as a boxed aside, and should recognize
+#   the shape: a short, colon- or period-terminated **bold phrase**
+#   naming the kind of aside ("הכלל...:", "חשוב שתדעו:", "דוגמה
+#   להמחשה...", "מה זה ... אומר:"), immediately followed by its
+#   explanatory sentence(s) in the same paragraph.
+#
+#   Known limitation (not fixed here — it is a content-structure
+#   question, not a rendering one, and CLIENT_GUIDE_HE.md is out of
+#   scope for this fix): a few formerly-boxed asides (e.g. the exit-
+#   schedule note under "אם אתם מסיימים ביוזמתכם, מוקדם", the privacy
+#   summary under "נתונים, פגישות ופרטיות — בקצרה", and the pre-form
+#   notice under "לפני שממשיכים — חשוב שתדעו") were promoted during a
+#   later content reorg from an inline bold-led aside into their own
+#   `### ` section heading with an un-led body paragraph. Since the
+#   paragraph no longer carries a bold lead, this table can't catch it;
+#   fixing that would mean either editing the .md (reintroducing content
+#   drift risk) or collapsing a titled section into a box (a page-layout
+#   decision, not a paragraph-classification one). These render as plain
+#   `.body-copy` pages today — flagged for the content author, not
+#   silently reinterpreted here.
 # ---------------------------------------------------------------------
 
 ASIDE_CLASS = {
-    # .callout — key-insight / notable-but-positive asides
-    "הכלל האופרטיבי:": "callout",
+    # .callout — key-insight / notable-but-positive asides: a rule, a
+    # decision aid, or an orienting summary the reader benefits from
+    # seeing set apart, in the warm gold-bordered box.
     "חשוב שתדעו:": "callout",
+    "המסע המלא, בקצרה:": "callout",
     "ברירת המחדל: נקודת איזון, לא הפסד.": "callout",
     "גירעון זמני — רק אם תבחרו זאת במפורש, ותמיד עם תקרה.": "callout",
     "לקוחות קיימים:": "callout",
@@ -342,10 +380,19 @@ ASIDE_CLASS = {
     "לא בטוחים איזה מסלול מתאים לכם?": "callout",
     # .callout.warn — restriction / what-you-don't-get
     "מה זה לא אומר:": "callout warn",
-    # .fine — small muted print / footnote-style asides
+    # .fine — small muted print / footnote-style asides: legal-mechanism
+    # detail, worked examples and definitional cross-references that
+    # support the main text without competing with it for attention.
+    # "הערה ללקוחות מסלול 0:" lives here rather than .callout: it's a
+    # scoping/definitional note (which parts of the Guide don't apply to
+    # you), not a key-insight aside, and .callout's larger padding was
+    # overflowing the page it sits on (verified: caused an orphaned
+    # footer page). Semantically it fits .fine's own description better
+    # anyway.
+    "הערה ללקוחות מסלול 0:": "fine",
+    "הכלל האופרטיבי:": "fine",
     "למה הסכומים בטבלת סעיף 11 להסכם נראים כפי שהם.": "fine",
     "דוגמה להמחשה — למה הרצפה זהה גם לתקציב קטן.": "fine",
-    "הערה ללקוחות מסלול 0:": "fine",
     "סודיות.": "fine",
     "מתי נדרש מחקר Genesis נפרד.": "fine",
     "המשכתם אלינו לביצוע בפועל?": "fine",
