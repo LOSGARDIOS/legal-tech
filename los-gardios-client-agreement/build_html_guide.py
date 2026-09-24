@@ -21,6 +21,15 @@ first and merely visualized here. See md_guide_parser.py's module
 docstring for the parser's conventions and the aside-classification
 contract (which bold lead-ins render as .callout / .callout.warn / .fine
 vs plain .body-copy).
+
+Chapter map (content-architecture refinement pass, v3.0): 10 numbered
+chapters + the Intake Form. Two chapter numbers are LOAD-BEARING beyond
+this file — AGREEMENT_SHORT_HE.md §1 hardcodes "מדריך הלקוח, פרק 2" for
+the Track A/B/C/0 definitions, and §11(a) hardcodes "מדריך הלקוח, פרק 1"
+for the heading "יסודות עלות ההגנה על נכסי הארגון" — so chapter 1 (who we
+are + the org's protected assets) and chapter 2 (commercial models) keep
+those exact numbers even though this is otherwise a full narrative
+reorder. See CLIENT_GUIDE_HE.md's own chapter order for the rest.
 """
 import io, os, re, base64
 
@@ -355,10 +364,23 @@ def generic_section_page(num, section, eyebrow, breadcrumb_title=None):
     """The fallback template from the recommended architecture: pagehead
     + h1.sec (the section's own title) + secrule + every block of the
     section rendered in source order via the generic renderer. Used for
-    every chapter-1 sub-page below that has no bespoke visual, and ready
-    as-is for chapters added after this fix lands."""
+    every sub-page below that has no bespoke visual, and ready as-is for
+    chapters added after this fix lands."""
     body = render_blocks(section.blocks)
     return content_page(num, breadcrumb_title or section.title, eyebrow, section.title, body)
+
+
+def divider(num, chapter, sub, ghost=None):
+    """Shared shell for every chapter's dark section-divider page."""
+    return f'''<div class="page dark divider">
+  <div class="divider-ghost">{ghost if ghost is not None else num}</div>
+  <div class="divider-inner">
+    <div class="divider-eyebrow"><span class="dash"></span>פרק {num}</div>
+    <div class="divider-title">{chapter.title}</div>
+    <div class="divider-sub">{sub}</div>
+    <div class="divider-endrule"></div>
+  </div>
+</div>'''
 
 
 PAGES = []
@@ -376,44 +398,52 @@ PAGES.append(f'''<div class="page dark cover">
   <div class="cover-eyebrow">L O S &nbsp; G A R D I O S</div>
   <div class="cover-title">{_cover_title}</div>
   <div class="cover-rule"></div>
-  <div class="cover-sub">תקציב · מסגרת השקעה · טווח זמן<br>קריאה לפני תחילת הדרך המשותפת</div>
+  <div class="cover-sub">מי אנחנו · איך אנחנו עובדים · מה עומד מאחורי העבודה<br>קריאה לפני תחילת הדרך המשותפת</div>
   <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסה {G.version} · {G.updated_date}</span></div>
   <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS GROUP</div>
 </div>''')
 
 # ==================================================================
-# DIVIDER 01 — How Los Gardios Works
+# DIVIDER 01 — How Los Gardios Works (identity, operating mechanics,
+# who-decides-what, and the org's protected assets). Chapter number is
+# load-bearing: AGREEMENT_SHORT_HE.md §11(a) cites "מדריך הלקוח, פרק 1"
+# by the exact heading "יסודות עלות ההגנה על נכסי הארגון" — see module
+# docstring.
 # ==================================================================
 _ch1 = G.chapter("1")
-PAGES.append(f'''<div class="page dark divider">
-  <div class="divider-ghost">01</div>
-  <div class="divider-inner">
-    <div class="divider-eyebrow"><span class="dash"></span>פרק 01</div>
-    <div class="divider-title">{_ch1.title}</div>
-    <div class="divider-sub">מי אנחנו, אילו נכסים ומערכות עומדים מאחורי העבודה, ואיך מורכבת מעטפת המומחים סביב הפרויקט שלכם.</div>
-    <div class="divider-endrule"></div>
-  </div>
-</div>''')
+PAGES.append(divider("01", _ch1,
+    "מי אנחנו, איך ההתקשרות מתנהלת, מי קובע מה, ואילו נכסים ומערכות עומדים מאחורי העבודה."))
 
-# ==================================================================
-# 1.1 — Who we are + the client-controlled principle
-# ==================================================================
+# ------------------------------------------------------------------
+# 1.1 — Who we are + how the relationship works
+# ------------------------------------------------------------------
 _sec_who = _ch1.section("מי אנחנו")
-_sec_principle = _ch1.section("העיקרון המנחה: הלקוח קובע את המסגרת")
+_sec_how = _ch1.section("איך ההתקשרות מתנהלת")
 PAGES.append(f'''<div class="page">
 {pagehead("01", _sec_who.title)}
 <div class="eyebrow">זהות</div>
 <h1 class="sec">{_sec_who.title}</h1>
 <div class="secrule"></div>
 {render_blocks(_sec_who.blocks)}
-<h2 class="sub">{_sec_principle.title}</h2>
-{render_blocks(_sec_principle.blocks)}
+<h2 class="sub">{_sec_how.title}</h2>
+{render_blocks(_sec_how.blocks)}
 {pagefoot()}
 </div>''')
 
-# ==================================================================
-# 1.2 — Organization's assets (table -> cardgrid)
-# ==================================================================
+# ------------------------------------------------------------------
+# 1.2 — The client-controlled principle + who-decides-what
+# ------------------------------------------------------------------
+_sec_principle = _ch1.section("העיקרון המנחה: הלקוח קובע את המסגרת")
+_sec_control = _ch1.section("מי קובע מה — הלקוח מול הארגון")
+PAGES.append(content_page("01", _sec_principle.title, "עקרון התפעול", _sec_principle.title, "\n".join([
+    render_blocks(_sec_principle.blocks),
+    f'<h2 class="sub">{_sec_control.title}</h2>',
+    render_blocks(_sec_control.blocks),
+])))
+
+# ------------------------------------------------------------------
+# 1.3 — Organization's assets (table -> cardgrid)
+# ------------------------------------------------------------------
 def cardgrid_from_table(table_block, grid="grid2"):
     cards = []
     for row in table_block["rows"]:
@@ -431,55 +461,29 @@ _assets_body = "\n".join([
 ])
 PAGES.append(content_page("01", _sec_assets.title, "מה עומד מאחורי העבודה", _sec_assets.title, _assets_body))
 
-# ==================================================================
-# 1.2b — Cost basis behind the protection floors (generic fallback page)
-# ==================================================================
+# ------------------------------------------------------------------
+# 1.4 — Cost basis behind the protection floors (generic fallback page;
+# shorter now than before the dedup fix — see build report / point 8:
+# this used to carry its own second copy of the four-category table,
+# which now lives once, merged, in 1.3 above).
+# ------------------------------------------------------------------
 PAGES.append(generic_section_page("01", _ch1.section("יסודות עלות ההגנה על נכסי הארגון"), "עלות ההגנה"))
 
 # ==================================================================
-# 1.3 — Proprietary technology (Neuron)
-# ==================================================================
-PAGES.append(generic_section_page("01", _ch1.section("טכנולוגיה קניינית ומערכות פנימיות"), "תשתית תפעולית"))
-
-# ==================================================================
-# 1.4 — Atlas Network + Data/meetings/privacy. Two short sections
-# combined onto one page (a page-grouping choice — both are a few short
-# paragraphs on their own); the second keeps its own real section title
-# as an h2.sub rather than a fabricated label.
-# ==================================================================
-_sec_atlas = _ch1.section("Atlas Network")
-_sec_privacy = _ch1.section("נתונים, פגישות ופרטיות — בקצרה")
-PAGES.append(content_page("01", _sec_atlas.title, "רשת מסחרית בינלאומית", _sec_atlas.title, "\n".join([
-    render_blocks(_sec_atlas.blocks),
-    f'<h2 class="sub">{_sec_privacy.title}</h2>',
-    render_blocks(_sec_privacy.blocks),
-])))
-
-# ==================================================================
-# 1.5 — Specialist capabilities
-# ==================================================================
-PAGES.append(generic_section_page("01", _ch1.section("יכולות מומחים"), "הרכב הצוות לפי צורך"))
-
-# ==================================================================
-# DIVIDER 02 — Engagement Models
+# DIVIDER 02 — Engagement Models. Chapter number is load-bearing:
+# AGREEMENT_SHORT_HE.md §1 cites "מדריך הלקוח, פרק 2" for the Track
+# A/B/C/0 definitions.
 # ==================================================================
 _ch2 = G.chapter("2")
-PAGES.append(f'''<div class="page dark divider">
-  <div class="divider-ghost">02</div>
-  <div class="divider-inner">
-    <div class="divider-eyebrow"><span class="dash"></span>פרק 02</div>
-    <div class="divider-title">{_ch2.title}</div>
-    <div class="divider-sub">ארבעת המסלולים שההסכם תומך בהם, ולמה גמישות מסחרית היא ארכיטקטורה — לא הנחה.</div>
-    <div class="divider-endrule"></div>
-  </div>
-</div>''')
+PAGES.append(divider("02", _ch2,
+    "ארבעת המסלולים שההסכם תומך בהם, ומה קורה אם אתם מסיימים ביוזמתכם לפני הזמן."))
 
-# ==================================================================
+# ------------------------------------------------------------------
 # 2.1 — The four tracks. Each track is its own md paragraph, whose
 # leading bold span is "מסלול <letter> — <title>." — the badge and card
 # title are derived from that lead (never retyped), the card body from
 # the rest of that same paragraph.
-# ==================================================================
+# ------------------------------------------------------------------
 _TRACK_LEAD_RE = re.compile(r'^מסלול\s+(\S+)\s*—\s*(.+?)\.?$')
 
 def _track_card(block):
@@ -504,36 +508,19 @@ PAGES.append(content_page("02", _sec_tracks.title + " (המשך)", "מסגרות
     render_block(_tb[5]),
 ])))
 
-# ==================================================================
-# 2.2 — Flexibility, exit schedule and shared growth. Three md sections
-# combined onto one page (a structural/page-grouping choice), each kept
-# under its own real section-title h2.
-# ==================================================================
-_sec_flex = _ch2.section("גמישות מסחרית — ארכיטקטורה, לא הנחה")
-_sec_exit = _ch2.section("אם אתם מסיימים ביוזמתכם, מוקדם — לוח הנסיגה")
-_sec_growth = _ch2.section("צמיחה משותפת — עד כמה שהמבנה המסחרי מאפשר זאת")
-_flex_body = "\n".join([
-    render_blocks(_sec_flex.blocks),
-    f'<h2 class="sub">{_sec_growth.title}</h2>',
-    render_blocks(_sec_growth.blocks),
-    f'<h2 class="sub">{_sec_exit.title}</h2>',
-    render_blocks(_sec_exit.blocks),
-])
-PAGES.append(content_page("02", "גמישות מסחרית וצמיחה משותפת", "ארכיטקטורה, לא הנחה", _sec_flex.title, _flex_body))
+# ------------------------------------------------------------------
+# 2.2 — Exit schedule (the flexibility/staged-architecture and shared-
+# growth sections that used to share this page moved to chapter 8,
+# "מצבי צמיחה" — see build report point 3).
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("02", _ch2.section("אם אתם מסיימים ביוזמתכם, מוקדם — לוח הנסיגה"), "אם ההתקשרות מסתיימת מוקדם"))
 
 # ==================================================================
 # DIVIDER 03 — Budget / investment / timeline
 # ==================================================================
 _ch3 = G.chapter("3")
-PAGES.append(f'''<div class="page dark divider">
-  <div class="divider-ghost">03</div>
-  <div class="divider-inner">
-    <div class="divider-eyebrow"><span class="dash"></span>פרק 03</div>
-    <div class="divider-title">{_ch3.title}</div>
-    <div class="divider-sub">איך אנחנו חושבים על תקציב, מדוע אנחנו שואלים עליו, ואיך זה מתורגם לתוכנית אמיתית.</div>
-    <div class="divider-endrule"></div>
-  </div>
-</div>''')
+PAGES.append(divider("03", _ch3,
+    "איך אנחנו חושבים על תקציב, מדוע אנחנו שואלים עליו, ואיך זה מתורגם לתוכנית אמיתית."))
 
 def first_sentence_split(raw):
     """A bespoke page's h1.sec pull-quote headline: the section's own
@@ -553,7 +540,7 @@ def qmark_lines(html):
     return '<br>'.join(p for p in parts if p)
 
 def split_ask(raw):
-    """Several sections in chapter 3 are shaped, in the .md, as one
+    """Several sections in this guide are shaped, in the .md, as one
     running-prose paragraph: "<label>: <question>? <question>?
     [<trailing non-question sentence>.]" — e.g. 'ספרו לנו: מהי התקופה
     ...? האם יש מועדים ...?'. This splits that single paragraph, purely
@@ -571,11 +558,11 @@ def split_ask(raw):
     return (inline_to_html(label), qmark_lines(inline_to_html(questions)),
             inline_to_html(tail) if tail else None)
 
-# ==================================================================
-# 3 — Opening hook: the section's own first sentence as the page's
+# ------------------------------------------------------------------
+# 3.1 — Opening hook: the section's own first sentence as the page's
 # headline (see first_sentence_split), the rest of that paragraph plus
 # the section's remaining two paragraphs as body copy.
-# ==================================================================
+# ------------------------------------------------------------------
 _sec_why = _ch3.section("למה אנחנו שואלים על כך")
 _headline, _rest0 = first_sentence_split(_sec_why.blocks[0]["text"])
 PAGES.append(content_page("03", "למה אנחנו שואלים", "פתיח", _headline, "\n".join([
@@ -584,16 +571,13 @@ PAGES.append(content_page("03", "למה אנחנו שואלים", "פתיח", _h
     render_block(_sec_why.blocks[2]),
 ])))
 
-# ==================================================================
-# 4 — Operating-model flow. Diagram stage captions ("אתם"/"אנחנו
+# ------------------------------------------------------------------
+# 3.2 — Operating-model flow. Diagram stage captions ("אתם"/"אנחנו
 # בוחנים"/"יחד" + short sub-captions) are hand-authored diagram
 # scaffolding (they label the graphic, they aren't sentences of prose);
 # every paragraph of actual prose on this page is the section's own two
-# blocks, rendered in full — including their natural inline bold on
-# "אתם"/"אנחנו"/"יחד", which does the "not this, but this" contrast job
-# the old hand-written contrast-row graphic used to do, without
-# paraphrasing anything.
-# ==================================================================
+# blocks, rendered in full.
+# ------------------------------------------------------------------
 _flow_icon = '''<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
 <circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="21" y2="21"/></svg>'''
 _sec_model = _ch3.section("המודל שלנו: אתם קובעים את המסגרת")
@@ -609,10 +593,10 @@ PAGES.append(content_page("03", "המודל שלנו", "הגישה שלנו", _s
     f'<div class="flow-loop">{_sec_model.blocks[1]["html"]}</div>',
 ])))
 
-# ==================================================================
-# 5 — Trust + permission (pull-quote). The oversized quote is this
+# ------------------------------------------------------------------
+# 3.3 — Trust + permission (pull-quote). The oversized quote is this
 # section's own leading bold sentence (split_lead), never retyped.
-# ==================================================================
+# ------------------------------------------------------------------
 _sec_trust = _ch3.section("האמון שלנו מתחיל בכנות")
 _sec_before = _ch3.section("לפני שממשיכים — חשוב שתדעו")
 _quote_lead, _quote_rest = split_lead(_sec_trust.blocks[0])
@@ -632,17 +616,16 @@ PAGES.append(f'''<div class="page">
 {pagefoot()}
 </div>''')
 
-# ==================================================================
-# 6 — Two paths. The two bullets become the two stacked cards; card
+# ------------------------------------------------------------------
+# 3.4 — Two paths. The two bullets become the two stacked cards; card
 # labels are Hebrew ordinal captions (נתיב א׳/ב׳ — a card index, not
 # prose), card body is each bullet's own text.
-# ==================================================================
+# ------------------------------------------------------------------
 _HEBREW_ORDINALS = ["א׳", "ב׳", "ג׳", "ד׳"]
 _sec_paths = _ch3.section("שני נתיבים אפשריים")
 _paths_ulist = _sec_paths.blocks[1]
 _path_cards = []
 for i, item_html in enumerate(_paths_ulist["items"]):
-    lead, rest = None, item_html
     m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
     title = m.group(1) if m else item_html
     body = m.group(2) if m else ''
@@ -657,9 +640,9 @@ _paths_body = "\n".join([
 ])
 PAGES.append(content_page("03", _sec_paths.title, "בחירה", _sec_paths.title, _paths_body))
 
-# ==================================================================
-# 7 — Goals reflection (prompt box; single running-prose paragraph)
-# ==================================================================
+# ------------------------------------------------------------------
+# 3.5 — Goals reflection (prompt box; single running-prose paragraph)
+# ------------------------------------------------------------------
 _sec_goals = _ch3.section("היעד והציפיות שלכם")
 _goals_label, _goals_q, _goals_tail = split_ask(_sec_goals.blocks[0]["text"])
 _goals_body = f'''<p class="body-copy">{_goals_label}.</p>
@@ -669,10 +652,11 @@ if _goals_tail:
     _goals_body += f'<p class="fine">{_goals_tail}</p>'
 PAGES.append(content_page("03", _sec_goals.title, "לפני המספרים", _sec_goals.title, _goals_body))
 
-# ==================================================================
-# 8 — Investment framework. "ספרו לנו:" + a REAL bullet list in the .md
-# maps directly onto the existing prompt-label / prompt-q boxed design.
-# ==================================================================
+# ------------------------------------------------------------------
+# 3.6 — Investment framework. "ספרו לנו:" + a REAL bullet list in the
+# .md maps directly onto the existing prompt-label / prompt-q boxed
+# design.
+# ------------------------------------------------------------------
 _sec_invest = _ch3.section("מסגרת ההשקעה שלכם")
 _ib = _sec_invest.blocks  # [intro, "ספרו לנו:", ulist(4), reminder-para, terms-para, track0-callout]
 _invest_body = "\n".join([
@@ -690,9 +674,9 @@ _invest_body = "\n".join([
 ])
 PAGES.append(content_page("03", _sec_invest.title, "תשומת הקלט המרכזית", _sec_invest.title, _invest_body))
 
-# ==================================================================
-# 9 — Timeline
-# ==================================================================
+# ------------------------------------------------------------------
+# 3.7 — Timeline
+# ------------------------------------------------------------------
 _sec_timeline = _ch3.section("טווח הזמן שלכם")
 _tl_label, _tl_q, _tl_tail = split_ask(_sec_timeline.blocks[0]["text"])
 PAGES.append(content_page("03", _sec_timeline.title, "תכנון", _sec_timeline.title, "\n".join([
@@ -701,46 +685,9 @@ PAGES.append(content_page("03", _sec_timeline.title, "תכנון", _sec_timeline
     render_block(_sec_timeline.blocks[1]),
 ])))
 
-# ==================================================================
-# 10 — Sustainability principle (horizon rings)
-# ==================================================================
-_rings = []
-_radii = [14, 24, 35, 47, 60]
-for i, r in enumerate(_radii):
-    t = i / (len(_radii) - 1)
-    # gold -> purple stroke gradient across rings
-    color = f"rgb({int(169+(91-169)*t)},{int(130+(41-130)*t)},{int(79+(134-79)*t)})"
-    _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
-_horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
-_sec_sustain = _ch3.section("העיקרון שמנחה אותנו: לא למצות עד הסוף")
-PAGES.append(content_page("03", "העיקרון שמנחה אותנו", "עמדה שקופה", "לא למצות עד הסוף", "\n".join([
-    f'<div class="horizon-wrap">{_horizon_svg}<div class="horizon-cap">{_sec_sustain.blocks[0]["html"]}</div></div>',
-    render_block(_sec_sustain.blocks[1]),
-])))
-
-# ==================================================================
-# 11 — Tolerance
-# ==================================================================
-_sec_tol = _ch3.section("רמת ותקופת הסובלנות שלכם")
-_tb2 = _sec_tol.blocks  # [plain-terms, example-fine, default-callout, deficit-callout, ask, rights-fine]
-_tol_label, _tol_q, _tol_tail = split_ask(_tb2[4]["text"])
-# Split across two physical pages — see the four-tracks page's comment.
-PAGES.append(content_page("03", _sec_tol.title, "גמישות סביב רווחיות", _sec_tol.title, "\n".join([
-    render_block(_tb2[0]),
-    render_block(_tb2[1]),
-    render_block(_tb2[2]),
-])))
-_tol_body2 = "\n".join([
-    render_block(_tb2[3]),
-    f'<div class="prompt"><div class="prompt-label">{_tol_label}</div><div class="prompt-q">{_tol_q}</div></div>',
-] + ([f'<p class="fine">{_tol_tail}</p>'] if _tol_tail else []) + [
-    render_block(_tb2[5]),
-])
-PAGES.append(content_page("03", _sec_tol.title + " (המשך)", "גמישות סביב רווחיות", _sec_tol.title + " — המשך", _tol_body2))
-
-# ==================================================================
-# 12 — Financial boundaries
-# ==================================================================
+# ------------------------------------------------------------------
+# 3.8 — Financial boundaries
+# ------------------------------------------------------------------
 _sec_bounds = _ch3.section("גבולות פיננסיים")
 _bounds_label, _bounds_q, _bounds_tail = split_ask(_sec_bounds.blocks[0]["text"])
 PAGES.append(content_page("03", _sec_bounds.title, "הגנה עליכם", _sec_bounds.title, "\n".join([
@@ -754,33 +701,105 @@ PAGES.append(content_page("03", _sec_bounds.title, "הגנה עליכם", _sec_b
 ])))
 
 # ==================================================================
-# 13 — Oversight & reporting. Each bullet's own leading bold phrase
-# becomes its card title (split_lead), the rest of that bullet its card
-# body.
+# DIVIDER 04 — Genesis. Previously mentioned only as the tail of the
+# old chapter 3/4 split, with no divider of its own — this fixes that
+# (build report point 2).
 # ==================================================================
-_sec_oversight = _ch3.section("בקרה ודיווח שוטף")
-_oversight_ulist = _sec_oversight.blocks[1]
-_oversight_cards = []
-for item_html in _oversight_ulist["items"]:
-    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
-    title = (m.group(1).rstrip('.') if m else item_html)
-    body = m.group(2) if m else ''
-    _oversight_cards.append(f'<div class="card"><div class="card-label">{title}</div><p>{body}</p></div>')
-# 5 cards no longer fit one page under a real intro paragraph (the
-# verbatim intro is longer than the old paraphrase) — 3 + 2 across two
-# physical pages, same content_page shell.
-PAGES.append(content_page("03", _sec_oversight.title, "מה קורה אחרי החתימה", _sec_oversight.title, "\n".join([
-    render_block(_sec_oversight.blocks[0]),
-    '<div class="cardgrid grid3">' + "".join(_oversight_cards[:3]) + '</div>',
-])))
-PAGES.append(content_page("03", _sec_oversight.title + " (המשך)", "מה קורה אחרי החתימה", _sec_oversight.title + " — המשך", "\n".join([
-    '<div class="cardgrid grid2">' + "".join(_oversight_cards[3:]) + '</div>',
-])))
+_ch4 = G.chapter("4")
+PAGES.append(divider("04", _ch4,
+    "מה עומד מאחורי מחקר Genesis, מה מקבלים בסופו, ומה קורה אם תבחרו ליישם אותו בעצמכם."))
+
+# ------------------------------------------------------------------
+# 4.1 — Genesis specialist lenses
+# ------------------------------------------------------------------
+_icon_a = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="4" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>'
+_icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>'
+_icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
+_icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
+_sec_lenses = _ch4.section("מה עומד מאחורי מחקר Genesis")
+PAGES.append(f'''<div class="page">
+{pagehead("04", _sec_lenses.title)}
+<div class="eyebrow">לא נקודת מבט אחת</div>
+<h1 class="sec">{_sec_lenses.title}</h1>
+<div class="secrule"></div>
+{render_block(_sec_lenses.blocks[0])}
+<div class="lenses">
+  <div class="lens"><div class="lens-icon">{_icon_a}</div><div class="lens-label">אנליטיקה<br>ומחקר</div></div>
+  <div class="lens c2"><div class="lens-icon">{_icon_b}</div><div class="lens-label">שיווק<br>ופרסום</div></div>
+  <div class="lens c3"><div class="lens-icon">{_icon_c}</div><div class="lens-label">קריאייטיב ופסיכולוגיה צרכנית</div></div>
+  <div class="lens c4"><div class="lens-icon">{_icon_d}</div><div class="lens-label">אסטרטגיה ופיתוח עסקי</div></div>
+</div>
+<div class="lens-converge"><div class="lens-line"></div><div class="lens-node">התוכנית</div></div>
+<p class="body-copy" style="text-align:center;color:var(--muted);font-size:9pt">תוכנית עסקית, שיווקית ופיננסית אחת — לא מבט בודד וגנרי על העסק שלכם</p>
+{pagefoot()}
+</div>''')
+
+# ------------------------------------------------------------------
+# 4.2 — Genesis output rights
+# ------------------------------------------------------------------
+_sec_rights = _ch4.section("מה מקבלים, ומה זה לא כולל")
+_rb = _sec_rights.blocks  # [what-you-get, what-you-dont-warn, buyout, continued-fine, secrecy-fine, separate-genesis-fine]
+PAGES.append(content_page("04", _sec_rights.title, "שקיפות מלאה", _sec_rights.title, render_blocks(_rb[0:2])))
+PAGES.append(content_page("04", _sec_rights.title + " (המשך)", "שקיפות מלאה", _sec_rights.title + " — המשך", render_blocks(_rb[2:])))
 
 # ==================================================================
-# 14 — Break-even
+# DIVIDER 05 — Project Infrastructure (new chapter — build report
+# point 4). Source-backed: the specialist-mix fragment already in the
+# old chapter 1, plus Atlas Network, plus a short synthesis paragraph
+# on the org's operational (not just advisory) capability once a
+# project moves past Genesis into execution.
 # ==================================================================
-_sec_breakeven = _ch3.section("נקודת האיזון (Break-Even) — במה מדובר")
+_ch5 = G.chapter("5")
+PAGES.append(divider("05", _ch5,
+    "מה עומד מאחורי הביצוע בפועל של הפרויקט, מעבר לשלב המחקר — ואיך Atlas Network מרחיב את הטווח התפעולי."))
+
+PAGES.append(generic_section_page("05", _ch5.section("מה עומד מאחורי הביצוע בפועל"), "מייעוץ לביצוע"))
+PAGES.append(generic_section_page("05", _ch5.section("Atlas Network"), "רשת מסחרית בינלאומית"))
+
+# ==================================================================
+# DIVIDER 06 — Human Capital & Proprietary Technology (new chapter —
+# build report point 4: separates WHAT the org's people/tech are from
+# WHY protecting them costs what it costs, which chapter 1 covers).
+# ==================================================================
+_ch6 = G.chapter("6")
+PAGES.append(divider("06", _ch6,
+    "מי מפעיל את הפרויקט שלכם בפועל, ואיזו תשתית טכנולוגית — Neuron — עומדת מאחורי הצוות."))
+
+PAGES.append(generic_section_page("06", _ch6.section("הון אנושי"), "הרשת שמאחורי הצוות"))
+PAGES.append(generic_section_page("06", _ch6.section("טכנולוגיה קניינית ומערכות פנימיות"), "תשתית תפעולית"))
+PAGES.append(generic_section_page("06", _ch6.section("נתונים, פגישות ופרטיות — בקצרה"), "בקצרה"))
+
+# ==================================================================
+# DIVIDER 07 — Break-Even (its own chapter now — build report point 6:
+# previously folded into the old budget chapter, now clearly separated
+# from both the client's investment frame (chapter 3) and growth modes
+# (chapter 8)).
+# ==================================================================
+_ch7 = G.chapter("7")
+PAGES.append(divider("07", _ch7,
+    "למה ברירת המחדל שלנו היא לפעול בנקודת איזון, ומה זה אומר בפועל — כלי תכנון, לא הבטחת רווח."))
+
+# ------------------------------------------------------------------
+# 7.1 — Sustainability principle (horizon rings)
+# ------------------------------------------------------------------
+_rings = []
+_radii = [14, 24, 35, 47, 60]
+for i, r in enumerate(_radii):
+    t = i / (len(_radii) - 1)
+    # gold -> purple stroke gradient across rings
+    color = f"rgb({int(169+(91-169)*t)},{int(130+(41-130)*t)},{int(79+(134-79)*t)})"
+    _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
+_horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
+_sec_sustain = _ch7.section("העיקרון שמנחה אותנו: לא למצות עד הסוף")
+PAGES.append(content_page("07", "העיקרון שמנחה אותנו", "עמדה שקופה", "לא למצות עד הסוף", "\n".join([
+    f'<div class="horizon-wrap">{_horizon_svg}<div class="horizon-cap">{_sec_sustain.blocks[0]["html"]}</div></div>',
+    render_block(_sec_sustain.blocks[1]),
+])))
+
+# ------------------------------------------------------------------
+# 7.2 — Break-even
+# ------------------------------------------------------------------
+_sec_breakeven = _ch7.section("נקודת האיזון (Break-Even) — במה מדובר")
 _beb = _sec_breakeven.blocks  # [what-it-means, precise-terms, two-inputs-intro, table, ask, floor-note]
 _be_label, _be_q, _be_tail = split_ask(_beb[4]["text"])
 _be_body = "\n".join([
@@ -791,16 +810,16 @@ _be_body = "\n".join([
     f'<div class="prompt"><div class="prompt-label">{_be_label}</div><div class="prompt-q">{_be_q}</div></div>',
     render_block(_beb[5]),
 ])
-PAGES.append(content_page("03", "נקודת האיזון (Break-Even)", "כלי תכנון, לא הבטחה", "נקודת האיזון (Break-Even)", _be_body))
+PAGES.append(content_page("07", "נקודת האיזון (Break-Even)", "כלי תכנון, לא הבטחה", "נקודת האיזון (Break-Even)", _be_body))
 
-# ==================================================================
-# 14b — Illustrative forecast example table. Column VALUES and headers
+# ------------------------------------------------------------------
+# 7.3 — Illustrative forecast example table. Column VALUES and headers
 # come straight from the .md's own table (no second, hand-typed copy of
 # the same numbers to drift out of sync); only the per-column-group
 # coloring and fixed pixel-measured widths — pure presentation — stay
 # Python-authored, keyed by header text so they survive column
 # reordering as long as the header text itself doesn't change.
-# ==================================================================
+# ------------------------------------------------------------------
 _FORECAST_GROUP_BY_HEADER = {
     "תקציב": "mkt", "CPM": "mkt", "חשיפה": "mkt", "CTR": "mkt", "מבקרים": "mkt", "ROAS": "mkt",
     "יחס המרה": "com", "המרות": "com", "CPA": "com", "AOV": "com",
@@ -832,13 +851,13 @@ def render_forecast_table(table_block):
         body_rows.append(f'<tr>{cells}</tr>')
     return f'<table class="fcast"><colgroup>{colgroup}</colgroup><tr>{head_cells}</tr>{"".join(body_rows)}</table>'
 
-_sec_forecast = _ch3.section("דוגמה להמחשה: כך נראית תוכנית לאורך זמן")
+_sec_forecast = _ch7.section("דוגמה להמחשה: כך נראית תוכנית לאורך זמן")
 _fcb = _sec_forecast.blocks  # [illustrative-callout-lead, table, closing-note]
 _forecast_table_block = next(b for b in _fcb if b["type"] == "table")
 _forecast_intro = next(b for b in _fcb if b["type"] == "para" and b.get("lead"))
 _forecast_closing = _fcb[-1]
 PAGES.append(f'''<div class="page">
-{pagehead("03", "דוגמה להמחשה: תוכנית לאורך זמן")}
+{pagehead("07", "דוגמה להמחשה: תוכנית לאורך זמן")}
 <div class="eyebrow">להמחשה בלבד — לא תחזית</div>
 <h1 class="sec">{_sec_forecast.title}</h1>
 <div class="secrule" style="margin-bottom:6px"></div>
@@ -855,69 +874,132 @@ PAGES.append(f'''<div class="page">
 </div>''')
 
 # ==================================================================
-# 15 — Genesis specialist lenses
+# DIVIDER 08 — Growth Modes (new chapter — build report point 3).
+# Source-backed: the tolerance-level table already carried a "הרחבה
+# מרבית (Scale)" option, the staged/graduated commercial architecture
+# already existed in the old chapter 2, and Track B/C's value-sharing
+# alignment already existed there too — this chapter unifies the three
+# under one banner rather than inventing anything new.
 # ==================================================================
-_icon_a = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="4" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>'
-_icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>'
-_icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
-_icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
-_ch4 = G.chapter("4")
-_sec_lenses = _ch4.section("מה עומד מאחורי מחקר Genesis")
-PAGES.append(f'''<div class="page">
-{pagehead("03", _sec_lenses.title)}
-<div class="eyebrow">לא נקודת מבט אחת</div>
-<h1 class="sec">{_sec_lenses.title}</h1>
-<div class="secrule"></div>
-{render_block(_sec_lenses.blocks[0])}
-<div class="lenses">
-  <div class="lens"><div class="lens-icon">{_icon_a}</div><div class="lens-label">אנליטיקה<br>ומחקר</div></div>
-  <div class="lens c2"><div class="lens-icon">{_icon_b}</div><div class="lens-label">שיווק<br>ופרסום</div></div>
-  <div class="lens c3"><div class="lens-icon">{_icon_c}</div><div class="lens-label">קריאייטיב ופסיכולוגיה צרכנית</div></div>
-  <div class="lens c4"><div class="lens-icon">{_icon_d}</div><div class="lens-label">אסטרטגיה ופיתוח עסקי</div></div>
-</div>
-<div class="lens-converge"><div class="lens-line"></div><div class="lens-node">התוכנית</div></div>
-<p class="body-copy" style="text-align:center;color:var(--muted);font-size:9pt">תוכנית עסקית, שיווקית ופיננסית אחת — לא מבט בודד וגנרי על העסק שלכם</p>
-{pagefoot()}
-</div>''')
+_ch8 = G.chapter("8")
+PAGES.append(divider("08", _ch8,
+    "כמה מרחב נשימה אתם מוכנים לתת למודל כדי לצמוח מעבר לנקודת האיזון — ואילו מבנים מסחריים תומכים בכך."))
+
+_ch8_intro = _ch8.intro_blocks()[0]
+
+# ------------------------------------------------------------------
+# 8.1 — Tolerance
+# ------------------------------------------------------------------
+_sec_tol = _ch8.section("רמת ותקופת הסובלנות שלכם")
+_tb2 = _sec_tol.blocks  # [plain-terms, example-fine, default-callout, deficit-callout, ask, rights-fine]
+_tol_label, _tol_q, _tol_tail = split_ask(_tb2[4]["text"])
+# Split across two physical pages — see the four-tracks page's comment.
+PAGES.append(content_page("08", _sec_tol.title, "גמישות סביב רווחיות", _sec_tol.title, "\n".join([
+    render_block(_ch8_intro),
+    render_block(_tb2[0]),
+    render_block(_tb2[1]),
+    render_block(_tb2[2]),
+])))
+_tol_body2 = "\n".join([
+    render_block(_tb2[3]),
+    f'<div class="prompt"><div class="prompt-label">{_tol_label}</div><div class="prompt-q">{_tol_q}</div></div>',
+] + ([f'<p class="fine">{_tol_tail}</p>'] if _tol_tail else []) + [
+    render_block(_tb2[5]),
+])
+PAGES.append(content_page("08", _sec_tol.title + " (המשך)", "גמישות סביב רווחיות", _sec_tol.title + " — המשך", _tol_body2))
+
+# ------------------------------------------------------------------
+# 8.2 — Staged commercial architecture + shared growth. Two md sections
+# combined onto one page (a page-grouping choice), the second kept
+# under its own real section-title as an h2.sub.
+# ------------------------------------------------------------------
+_sec_flex = _ch8.section("גמישות מסחרית — ארכיטקטורה, לא הנחה")
+_sec_growth = _ch8.section("צמיחה משותפת — עד כמה שהמבנה המסחרי מאפשר זאת")
+_flex_body = "\n".join([
+    render_blocks(_sec_flex.blocks),
+    f'<h2 class="sub">{_sec_growth.title}</h2>',
+    render_blocks(_sec_growth.blocks),
+])
+PAGES.append(content_page("08", _sec_flex.title, "ארכיטקטורה, לא הנחה", _sec_flex.title, _flex_body))
 
 # ==================================================================
-# 15.1 — Genesis output rights
+# DIVIDER 09 — Execution & Ongoing Reporting (new chapter — build
+# report point 6: the oversight mechanics that used to be folded into
+# the old budget chapter, now clearly the "actual deployed budget"
+# control layer).
 # ==================================================================
-_sec_rights = _ch4.section("מה מקבלים, ומה זה לא כולל")
-_rb = _sec_rights.blocks  # [what-you-get, what-you-dont-warn, buyout, continued-fine, secrecy-fine, separate-genesis-fine]
-PAGES.append(content_page("03", _sec_rights.title, "שקיפות מלאה", _sec_rights.title, render_blocks(_rb[0:2])))
-PAGES.append(content_page("03", _sec_rights.title + " (המשך)", "שקיפות מלאה", _sec_rights.title + " — המשך", render_blocks(_rb[2:])))
+_ch9 = G.chapter("9")
+PAGES.append(divider("09", _ch9,
+    "מה קורה אחרי החתימה: קצב הדיווח, מה טעון אישורכם, ומה קורה אם רף ה-Stop-Loss נחצה."))
+
+# ------------------------------------------------------------------
+# 9.1 — Oversight & reporting. Each bullet's own leading bold phrase
+# becomes its card title (split_lead), the rest of that bullet its card
+# body.
+# ------------------------------------------------------------------
+_sec_oversight = _ch9.section("בקרה ודיווח שוטף")
+_oversight_ulist = _sec_oversight.blocks[1]
+_oversight_cards = []
+for item_html in _oversight_ulist["items"]:
+    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
+    title = (m.group(1).rstrip('.') if m else item_html)
+    body = m.group(2) if m else ''
+    _oversight_cards.append(f'<div class="card"><div class="card-label">{title}</div><p>{body}</p></div>')
+# 5 cards no longer fit one page under a real intro paragraph (the
+# verbatim intro is longer than the old paraphrase) — 3 + 2 across two
+# physical pages, same content_page shell.
+PAGES.append(content_page("09", _sec_oversight.title, "מה קורה אחרי החתימה", _sec_oversight.title, "\n".join([
+    render_block(_sec_oversight.blocks[0]),
+    '<div class="cardgrid grid3">' + "".join(_oversight_cards[:3]) + '</div>',
+])))
+PAGES.append(content_page("09", _sec_oversight.title + " (המשך)", "מה קורה אחרי החתימה", _sec_oversight.title + " — המשך", "\n".join([
+    '<div class="cardgrid grid2">' + "".join(_oversight_cards[3:]) + '</div>',
+])))
 
 # ==================================================================
-# 16 — Process diagram. Steps are the section's own numbered list, in
+# DIVIDER 10 — The Practical Journey: Genesis to a signed Proposal
+# (new chapter — build report point 4: this used to be the tail of the
+# old Genesis chapter with no divider of its own; separating it from
+# Genesis's own substance keeps chapter 4 focused and gives this
+# step-by-step walkthrough its own well-placed home right before the
+# Intake Form it leads into).
+# ==================================================================
+_ch10 = G.chapter("10")
+PAGES.append(divider("10", _ch10,
+    "מטופס הקליטה ועד להצעה חתומה — התהליך המלא, שלב אחר שלב.", ghost="→"))
+
+# ------------------------------------------------------------------
+# 10.1 — Process diagram. Steps are the section's own numbered list, in
 # order; "לקוחות קיימים:" is that section's own leading-bold callout.
-# ==================================================================
-_sec_process = _ch4.section("מהמדריך להצעה")
+# ------------------------------------------------------------------
+_sec_process = _ch10.section("מהמדריך להצעה")
 _process_olist = next(b for b in _sec_process.blocks if b["type"] == "olist")
 _process_existing_clients = next(b for b in _sec_process.blocks if b["type"] == "para")
 _steps_html = "".join(
     f'<div class="pstep"><div class="pnum">{i}</div><div class="ptxt">{item}</div></div>'
     for i, item in enumerate(_process_olist["items"], start=1)
 )
-PAGES.append(content_page("03", _sec_process.title, "התהליך", _sec_process.title, "\n".join([
+PAGES.append(content_page("10", _sec_process.title, "התהליך", _sec_process.title, "\n".join([
     f'<div class="process">{_steps_html}</div>',
     render_block(_process_existing_clients),
 ])))
 
-# ==================================================================
-# 17 — Reminder
-# ==================================================================
-PAGES.append(generic_section_page("03", _ch4.section("תזכורת"), "לפני שממשיכים לטופס", breadcrumb_title="תזכורת"))
+# ------------------------------------------------------------------
+# 10.2 — Reminder
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("10", _ch10.section("תזכורת"), "לפני שממשיכים לטופס", breadcrumb_title="תזכורת"))
 
 # ==================================================================
-# 18 — Intake divider. Every field row below is a verbatim md bullet
-# (one bullet -> one field row); the 3 igroups are the .md's own "א./ב./
-# ג." subsections, not a hand-split 9-group layout — a simplification
-# from the previous hand-split design (documented in the build report).
+# Intake divider. Every field row below is a verbatim md bullet (one
+# bullet -> one field row); the 3 igroups are the .md's own "א./ב./ג."
+# subsections, not a hand-split layout. The Intake Form sits outside
+# the document's priority order and isn't itself a numbered chapter
+# (AGREEMENT_SHORT_HE.md §15(a): it "אינו מסמך בסדר העדיפויות"), so it
+# gets an arrow rather than a chapter numeral, on the breadcrumb too.
 # ==================================================================
 _intake = G.chapter("טופס_קליטה")
 PAGES.append(f'''<div class="page dark divider">
-  <div class="divider-ghost">04</div>
+  <div class="divider-ghost">→</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>הצעד הבא</div>
     <div class="divider-title">{_intake.title}</div>
@@ -949,17 +1031,27 @@ _b_note = "<br><br>".join(
     for b in _sec_b.blocks if b["type"] == "para"
 )
 
+# Three physical pages, one per igroup (א/ב/ג) — group ב, in particular
+# (note + 8 fields), no longer reliably fits alongside group א on one
+# printed page the way the old two-group layout assumed; splitting one
+# igroup per page avoids a silent CSS overflow onto a page with no
+# pagehead/pagefoot of its own.
 PAGES.append(f'''<div class="page">
-{pagehead("04", "טופס קליטה")}
+{pagehead("→", "טופס קליטה")}
 <div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div>
 <p class="intake-intro">{_intake_intro}</p>
 {igroup(1, _sec_a.title, None, _a_ulist["items"])}
+{pagefoot()}
+</div>''')
+
+PAGES.append(f'''<div class="page">
+{pagehead("→", "טופס קליטה (המשך)")}
 {igroup(2, _sec_b.title, _b_note, _b_ulist["items"])}
 {pagefoot()}
 </div>''')
 
 PAGES.append(f'''<div class="page">
-{pagehead("04", "טופס קליטה (המשך)")}
+{pagehead("→", "טופס קליטה (המשך)")}
 {igroup(3, _sec_c.title, None, _c_ulist["items"])}
 <p class="fine">{_c_outro["html"]}</p>
 {pagefoot()}
