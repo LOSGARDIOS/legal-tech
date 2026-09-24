@@ -75,6 +75,24 @@ Consolidates the four Pass-1 specialist reports (Legal Architecture / Source Rec
 
 ---
 
+## E. FINAL COMPRESSION & SCOPE AUDIT (post-closure round)
+
+Triggered by a separate client request, after D above: does the Agreement still carry Guide-style material, and can it compress toward ~10 pages? Run as two phases — an analysis-only pass, reviewed by the client before any edit landed.
+
+**Compression finding:** after 8+ rounds of audit/restoration/compression this session, the document is close to its legal floor. Every section was classified against an A–F test (legal-necessary / explain-how-org-operates / duplicated Guide detail / client-fill-in / example-rationale / deal-specific). Result: ~300–500 words of genuinely safe compression found, not the ~19 pages needed to reach 10. The 10-page target was accepted as an optimization hypothesis, not enforced — per explicit client instruction not to weaken protections or force a page count. Realistic floor: ~27–29 pages, because what remains is overwhelmingly locked mechanisms (long *because* precisely drafted: §11(a), §12(a)/(a1), §15(a)/(a1), §2(a)) or provisions recently restored to close a named CRITICAL/HIGH finding (§4(b), Appendix B §2(c)/§3, Appendix C §1(a), Appendix A §1(c)) — moving any of these to the Guide would silently reopen a closed finding.
+
+**Out-of-scope change found and reconciled — §8(a) "קשר מוגן" vs. H-03.** Git-archaeology (not assumption) confirmed: `MASTER_AUDIT_MATRIX.md`'s H-03 (HIGH, Enforceability) flagged this definition's open-ended counterparty-side catch-all ("...גורם עסקי אחר," no geographic/materiality limit) as early as `21d4cc7`, warning of a real risk the *entire clause* could be voided under Israeli proportionality doctrine for restraint-of-trade overbreadth — and recommended narrowing it. H-03 was never addressed by name across ~15 subsequent commits. This session's `ee63abc` consolidation pass then added a symmetric catch-all to the previously-closed org-side prong (for an unrelated, independently valid reason — a client-counsel red-team finding about mutuality) *without* cross-checking it against H-03, making the standing overbreadth concern broader rather than narrower. Reconciled in `433aed9`: removed the org-side catch-all (the named-role list already covers the real population — no protection lost), and made the clause's existing-but-implicit "the org actually exposed/brokered/was materially involved" nexus explicit on both prongs, giving a court an objective, examinable boundary instead of an open-ended one. H-03's other two sub-recommendations — a Buyout-style release mechanism, and a carve-out for when the org itself is the breaching party — are new commercial mechanisms, not narrowing, and were deliberately left as open items rather than decided inside a compression pass.
+
+**Three other out-of-scope-flagged items — reviewed, kept as-is:** §12(a1)'s later-added attribution priority-order/burden-of-proof/closed-engagement refinements (consistent with the H-08 mechanism's own design, not a scope change); §1's "average monthly consideration" rescoping to the breached engagement only (client-favorable, internally consistent with the LD table's proportionality recital); the opening-page governing-state default (resolves to information already on the same page, doesn't silently pick a forum).
+
+**Applied (client-approved, `433aed9`):** §8(a) reconciliation above; §7(a) trimmed (Genesis-description sentence removed — already duplicated in Guide ch.1/ch.4; the good-faith duty, asset-protection duty, and pre-signature Genesis-rights trigger all preserved); Supplementary Understanding appendix now cross-references §15(b) instead of restating it (closes an edit-one-not-both drift risk `MASTER_AUDIT_MATRIX.md` M-09 had flagged); roadmap table's redundant "what activates it" column dropped. Net effect: 29 pages, unchanged — these were targeted, not page-count-driven.
+
+**Guide-consistency check (this round):** confirmed `CLIENT_GUIDE_HE.md` only cross-references §7(a) and §8(a) by pointer, never restates their text — so none of the above required a Guide-side update. Verified directly (grep + read), not assumed.
+
+**Remaining genuine open items, not part of this or any compression pass, flagged for awareness:** `MASTER_AUDIT_MATRIX.md` M-08 (CRITICAL, unresolved) — Appendix D's DPA applicability runs purely on a manual checkbox with no objective statutory-trigger fallback; H-09 (HIGH, unresolved) — §14's arbitration forum for non-Israel clients stays all-Israeli (institution/seat/procedural law) regardless of the client's own jurisdiction, a possible surprising-term risk for a low-bargaining-power foreign client. Both predate this session's compression work and are counsel questions, not drafting ones.
+
+---
+
 ## C. Decision points — RESOLVED
 
 **Decision 1 — Incorporation model: Model C, scoped (CONFIRMED by user).**
