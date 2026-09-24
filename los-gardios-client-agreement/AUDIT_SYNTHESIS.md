@@ -63,6 +63,18 @@ Consolidates the four Pass-1 specialist reports (Legal Architecture / Source Rec
 
 ---
 
+## D. FINAL STATUS (this session's closing pass)
+
+**Agreement (`AGREEMENT_SHORT_HE.md`, 29 pages):** closed. Pass-1 audit → two locked decisions (Model C incorporation, LD intent/malice gate) → 8 historical clauses restored → H-08 liability-cap mechanism (per-engagement cap + anti-double-recovery, user-directed drafting) → adversarial client-counsel red-team + exhaustive cross-reference audit → consolidated fix pass → final full-document coherence read-through (this pass). No open contradictions found. Four items were raised for a floor/threshold/restriction and explicitly declined by the client (§10(d) general-knowledge carve-out, Appendix A §3(a) Buyout-circumvention scope, §12(d) IP-indemnity floor, §5(e) insolvency threshold) — left as-is by direction, not oversight.
+
+**Guide (`CLIENT_GUIDE_HE.md`, 49 pages, v3.0):** closed as a content-architecture refinement (not a rebuild, per client correction) — design system preserved, 10-point reorder/refinement applied, two new chapters (Growth Modes, Project Infrastructure) built from repo-sourced material only, one duplication merged, cross-references fixed, consistency with final Agreement verified. Known open item: a subset of pages lost their original callout-box styling during the build-pipeline fix (now render as plain paragraphs) — functionally correct, not visually polished; flagged rather than silently accepted as final.
+
+**Build pipeline:** fixed and independently verified (round-trip tested) — `CLIENT_GUIDE_HE.md` is now the actual source the Guide renders from.
+
+**Not covered by this session, by design:** no Israeli-qualified-lawyer sign-off (this was never a substitute for one); a handful of template blanks (signatory names/titles, official notice email, e-signature platform) remain for the client to fill per `PARAMETERS_TO_CONFIRM.md`'s administrative items; whether this Agreement, used as a uniform template across all clients, triggers חוק החוזים האחידים review was flagged in that same file and was never resolved — worth one final check with counsel, not something this session can decide.
+
+---
+
 ## C. Decision points — RESOLVED
 
 **Decision 1 — Incorporation model: Model C, scoped (CONFIRMED by user).**
