@@ -9,19 +9,26 @@ on the cover, a single narrative accent inside two of the new diagrams)
 rather than as the dominant hue — the warm gold/espresso palette is the
 editorial atmosphere; purple is the brand anchor.
 
-The underlying Hebrew CONTENT is copied verbatim from CLIENT_GUIDE_HE.md
-(source of truth); this build script is presentation-only — page
-grouping, diagram composition and the Intake Form's field grouping/order
-are the only structural decisions made here, and they never introduce a
-sentence that isn't in the .md. New concepts (the operating-model flow,
+The underlying Hebrew CONTENT is parsed from CLIENT_GUIDE_HE.md (source
+of truth) at build time by md_guide_parser.py; this build script is
+presentation-only — page grouping, diagram composition and the Intake
+Form's field grouping/order are the only structural decisions made here,
+and every sentence of prose it prints comes from the parsed tree, never
+from a Python string literal. New concepts (the operating-model flow,
 the sustainability principle, the Genesis specialist-lens system, the
 oversight/reporting mechanics) are all authored in CLIENT_GUIDE_HE.md
-first and merely visualized here.
+first and merely visualized here. See md_guide_parser.py's module
+docstring for the parser's conventions and the aside-classification
+contract (which bold lead-ins render as .callout / .callout.warn / .fine
+vs plain .body-copy).
 """
-import io, os, base64
+import io, os, re, base64
+
+from md_guide_parser import load_guide, render_block, render_blocks, render_table, split_lead, inline_to_html
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ASSETS = os.path.join(_HERE, "assets")
+G = load_guide(os.path.join(_HERE, "CLIENT_GUIDE_HE.md"))
 
 def _data_uri(fname):
     with open(os.path.join(_ASSETS, fname), "rb") as f:
@@ -280,8 +287,8 @@ table.fcast th.sec-fin{border-top:3px solid var(--purple)}
  color:#382c1f;line-height:2.2}
 .ifields .f{display:flex;align-items:baseline;gap:8px;border-bottom:1px dotted var(--rule);
  padding:4px 0}
-.ifields .f .flabel{flex:none;color:#4a3d2c}
-.ifields .f .fline{flex:1;border-bottom:1px solid var(--rule);min-height:13px}
+.ifields .f .flabel{flex:1 1 auto;min-width:0;color:#4a3d2c}
+.ifields .f .fline{flex:0 0 70px;border-bottom:1px solid var(--rule);min-height:13px}
 
 /* ---------- CLOSING (sign-off style) ---------- */
 .closing{min-height:257mm;display:flex;flex-direction:column;justify-content:flex-end;
@@ -321,29 +328,68 @@ def pagehead(num, title, dark=False):
 def pagefoot():
     return '<div class="pagefoot"><span>סודי · חלק ממכלול ההתקשרות</span><span>© לוס גרדיוס בע"מ</span></div>'
 
+# ------------------------------------------------------------------
+# Generic page templates. content_page() is the shared shell every page
+# (bespoke or generic) is built on: pagehead + eyebrow + h1.sec + secrule
+# + arbitrary body HTML + pagefoot. generic_section_page() is the
+# fallback described in the module docstring for a chapter/section that
+# has no bespoke layout of its own yet — it renders every block of a
+# parsed section, in order, with nothing hand-authored except the short
+# eyebrow caption. It is genuinely used below (not just wired up and
+# left idle), for every section in this guide that doesn't need a
+# cardgrid/diagram/table/stat-tile of its own.
+# ------------------------------------------------------------------
+
+def content_page(num, breadcrumb_title, eyebrow, h1, body_html, dark=False):
+    return f'''<div class="page">
+{pagehead(num, breadcrumb_title, dark=dark)}
+<div class="eyebrow">{eyebrow}</div>
+<h1 class="sec">{h1}</h1>
+<div class="secrule"></div>
+{body_html}
+{pagefoot()}
+</div>'''
+
+
+def generic_section_page(num, section, eyebrow, breadcrumb_title=None):
+    """The fallback template from the recommended architecture: pagehead
+    + h1.sec (the section's own title) + secrule + every block of the
+    section rendered in source order via the generic renderer. Used for
+    every chapter-1 sub-page below that has no bespoke visual, and ready
+    as-is for chapters added after this fix lands."""
+    body = render_blocks(section.blocks)
+    return content_page(num, breadcrumb_title or section.title, eyebrow, section.title, body)
+
+
 PAGES = []
 
 # ==================================================================
 # COVER
 # ==================================================================
+# cover-title is the document's own title (parsed), minus the " — Los
+# Gardios" tail; the version tag is the parsed version line — this is
+# the "closes a related, smaller version-drift risk" fix: there is no
+# second, hand-typed copy of the version/date anywhere in this script.
+_cover_title = G.title.split('—')[0].strip()
 PAGES.append(f'''<div class="page dark cover">
   <img src="{LOGO_MARK}" class="cover-mark">
   <div class="cover-eyebrow">L O S &nbsp; G A R D I O S</div>
-  <div class="cover-title">מדריך הלקוח</div>
+  <div class="cover-title">{_cover_title}</div>
   <div class="cover-rule"></div>
   <div class="cover-sub">תקציב · מסגרת השקעה · טווח זמן<br>קריאה לפני תחילת הדרך המשותפת</div>
-  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסה 2.0 · 23.09.2026</span></div>
+  <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסה {G.version} · {G.updated_date}</span></div>
   <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS GROUP</div>
 </div>''')
 
 # ==================================================================
 # DIVIDER 01 — How Los Gardios Works
 # ==================================================================
-PAGES.append('''<div class="page dark divider">
+_ch1 = G.chapter("1")
+PAGES.append(f'''<div class="page dark divider">
   <div class="divider-ghost">01</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>פרק 01</div>
-    <div class="divider-title">איך לוס גרדיוס עובד</div>
+    <div class="divider-title">{_ch1.title}</div>
     <div class="divider-sub">מי אנחנו, אילו נכסים ומערכות עומדים מאחורי העבודה, ואיך מורכבת מעטפת המומחים סביב הפרויקט שלכם.</div>
     <div class="divider-endrule"></div>
   </div>
@@ -352,275 +398,311 @@ PAGES.append('''<div class="page dark divider">
 # ==================================================================
 # 1.1 — Who we are + the client-controlled principle
 # ==================================================================
+_sec_who = _ch1.section("מי אנחנו")
+_sec_principle = _ch1.section("העיקרון המנחה: הלקוח קובע את המסגרת")
 PAGES.append(f'''<div class="page">
-{pagehead("01", "מי אנחנו")}
+{pagehead("01", _sec_who.title)}
 <div class="eyebrow">זהות</div>
-<h1 class="sec">מי אנחנו</h1>
+<h1 class="sec">{_sec_who.title}</h1>
 <div class="secrule"></div>
-<p class="body-copy">לוס גרדיוס היא קבוצת שירותים מקצועית הפועלת בתחומי המיתוג, השיווק, הפיתוח והמסחר, המעמידה ללקוחותיה החיצוניים צוותים, מתודולוגיות ומערכות קנייניות לצורך קידום עסקיהם. אנחנו עובדים עם כל לקוח כישות עסקית נפרדת (B2B), במסגרת פרויקט מסחרי בתשלום.</p>
-<h2 class="sub">העיקרון המנחה: הלקוח קובע את המסגרת</h2>
-<p class="body-copy">עיקרון התפעול המרכזי של הארגון פשוט: הלקוח מגדיר את המסגרת הכלכלית והאסטרטגית שבה הוא רוצה ויכול לפעול, והארגון בוחן מה ניתן לבנות באחריות בתוכה — ורק אז, יחד, מגיעים לתוכנית ולמודל מסחרי קונקרטיים. זהו ההפך מהמודל הנפוץ, שבו ספק קובע מראש כמה על הלקוח לשלם.</p>
-<div class="callout"><span class="callout-label">בהמשך המדריך:</span> פרק 3 (תקציב, מסגרת השקעה וטווח זמן) מסביר את העיקרון הזה לעומק, כולל האופן שבו הוא בא לידי ביטוי בפועל.</div>
+{render_blocks(_sec_who.blocks)}
+<h2 class="sub">{_sec_principle.title}</h2>
+{render_blocks(_sec_principle.blocks)}
 {pagefoot()}
 </div>''')
 
 # ==================================================================
-# 1.2 — Organization's assets
+# 1.2 — Organization's assets (table -> cardgrid)
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("01", "נכסי הארגון וההשקעה שביסודם")}
-<div class="eyebrow">מה עומד מאחורי העבודה</div>
-<h1 class="sec">נכסי הארגון וההשקעה שביסודם</h1>
-<div class="secrule"></div>
-<p class="body-copy">כדי לספק שירות ברמה גבוהה ועקבית לכל לקוח, אנחנו משקיעים משאבים משמעותיים עוד לפני תחילת ההתקשרות הספציפית עמכם — בגיוס ובהכשרת אנשי מקצוע, בבניית קשרים עסקיים, בפיתוח ידע ותהליכים פנימיים, ובמערכות טכנולוגיות קנייניות (ראו העמוד הבא). ההגנה על נכסים אלה היא הבסיס שמאפשר לנו להמשיך להשקיע באותה רצינות בכל התקשרות, בלי קשר להיקפה.</p>
-<div class="cardgrid grid2">
-  <div class="card"><div class="card-label">הון אנושי</div><p>לארגון רשת רחבה של שותפים ברחבי העולם, העוברים איתור וסינון קפדניים, הכשרה מקצועית מתמשכת לאורך תקופה ארוכה, וליווי ופיקוח שוטפים של כל נציג ושותף מטעמנו.</p></div>
-  <div class="card"><div class="card-label">רשת קשרים עסקיים</div><p>קשרים עם ספקים, יצרנים, מפיצים ושותפים עסקיים, המבוססים על אמון ומוניטין שנצברים לאורך זמן ולא בבת-אחת (ראו גם Atlas Network בהמשך).</p></div>
-  <div class="card"><div class="card-label">מידע סודי</div><p>מבנה תמחור, תהליכים פנימיים, ומידע מצטבר על ספקים ולקוחות.</p></div>
-  <div class="card"><div class="card-label">הון אינטלקטואלי ותשתית</div><p>מתודולוגיות, מודלים, תבניות עבודה, ומערכות טכנולוגיות — לרבות מערכות ומודלי בינה מלאכותית בפיתוחנו (ראו העמוד הבא).</p></div>
-</div>
-<div class="fine">הכלל האופרטיבי: פגיעה מכוונת באחד מהנכסים האלה — למשל שידול של נציג מטעמנו לעבוד ישירות מולכם מחוץ למסגרת הארגון, או עקיפת קשר עסקי שנחשפתם אליו באמצעותנו ("קשר מוגן", כהגדרתו בסעיף 8(א) להסכם) — מזכה אותנו בפיצוי מוסכם, ללא צורך בהוכחת נזק, לפי הסכומים והתקרות הקבועים בסעיף 11 להסכם. החובה חלה משלב המגע הראשוני ולאורך ההתקשרות, ונמשכת גם לאחריה — עשרים וארבעה (24) חודשים נוספים (סעיף 8(ה)). זה אינו חל על ההתקשרות הרגילה שלכם עמנו; זה חל רק על ניצול לרעה מכוון של מה שחשפנו לכם.</div>
-<div class="fine"><strong>יסודות עלות ההגנה:</strong> הרצפות הקבועות שבסעיף 11 להסכם (100,000–150,000 ₪ למקרה) משקפות את העלות הקבועה שאנחנו נושאים בה כדי להקים ולתחזק כל נכס — איתור, סינון, גיוס והכשרה מתמשכת (הון אנושי), בניית אמון ומוניטין (רשת קשרים), פיתוח מבנה תמחור ותהליכים (מידע סודי), פיתוח מתודולוגיות ומערכות (הון אינטלקטואלי) — ולכן אינה תלויה בגודל ההתקשרות: העלות שכבר שילמנו על נציג ששודל לעבוד ישירות מולכם זהה בין אם ההתקשרות הייתה בהיקף 15,000 ₪ לחודש או 150,000 ₪ לחודש.</div>
-{pagefoot()}
-</div>''')
+def cardgrid_from_table(table_block, grid="grid2"):
+    cards = []
+    for row in table_block["rows"]:
+        label, body = row[0], row[1]
+        cards.append(f'<div class="card"><div class="card-label">{inline_to_html(label)}</div><p>{inline_to_html(body)}</p></div>')
+    return f'<div class="cardgrid {grid}">' + "".join(cards) + '</div>'
+
+_sec_assets = _ch1.section("נכסי הארגון וההשקעה שביסודם")
+_assets_blocks = _sec_assets.blocks  # [para(intro), para(list-lead-in), table, para(operative rule)]
+_assets_body = "\n".join([
+    render_block(_assets_blocks[0]),
+    render_block(_assets_blocks[1]),
+    cardgrid_from_table(_assets_blocks[2]),
+    render_block(_assets_blocks[3]),
+])
+PAGES.append(content_page("01", _sec_assets.title, "מה עומד מאחורי העבודה", _sec_assets.title, _assets_body))
 
 # ==================================================================
-# 1.3 — Proprietary technology (Neuron, unified)
+# 1.2b — Cost basis behind the protection floors (generic fallback page)
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("01", "טכנולוגיה קניינית ומערכות פנימיות")}
-<div class="eyebrow">תשתית תפעולית</div>
-<h1 class="sec">טכנולוגיה קניינית ומערכות פנימיות</h1>
-<div class="secrule"></div>
-<p class="body-copy">מעבר לצוות המומחים שלנו, מפתח הארגון מערכת פנימית קניינית בשם <strong>Neuron</strong> — משלבת תיעוד, ניהול פרויקטים ותקשורת פנימית (ובהם הדוחות התקופתיים שתקבלו), יחד עם מודלים אלגוריתמיים ייעודיים המכונים נוירונים. כל נוירון בנוי לזהות את הדפוסים שמאחורי הנתונים: מיפוי הזדמנויות, חיזוי תוצאות, ותרגום אותות לכדי החלטות ברורות בזמן אמת. ברגע שמודל מגיע לרמת ביטחון ביצוע גבוהה, ניתן להפוך תהליך נתון לאוטומטי — אך המערכת עובדת כי אנשים עובדים: האלגוריתמים פועלים לצד צוות גלובלי של אסטרטגים, אנליסטים ואנשי קריאייטיב שמביאים שיקול דעת, חוש נרטיבי וטעם, וקובעים מתי ואיך תהליך עובר לאוטומציה.</p>
-<div class="callout"><span class="callout-label">חשוב שתדעו:</span> המערכת בפיתוח פנימי מתקדם ומשמשת את הארגון פנימית — אינה נמכרת כמוצר תוכנה עצמאי. תפקידה להרחיב את יכולת הצוותים לצפות בדפוסים ולנתח היקפי מידע גדולים (לעיתים במונחי מיליוני עד טריליוני נתונים, כמושג של קנה-מידה — לא כמדד מובטח לכל פרויקט) — לא להחליף שיקול דעת אנושי. מומחי הארגון קובעים, מפקחים ומאשרים את הפעולה בכל שלב; היכולות בפועל תלויות בהיקף הנתונים הזמין ובבשלות המערכת באותו שלב.</div>
-<p class="fine">מערכות אלה, לרבות כל שיפור בהן, הן נכס קנייני בלעדי של הארגון בכל עת (סעיף 10(ב) להסכם) — גם כשהן משמשות לתכנון או לביצוע עבורכם באופן ספציפי. אתם מקבלים רישיון שימוש בתוצרים שהופקו באמצעותן — לא בעלות או גישה למערכות עצמן. הארגון אינו חושף כאן פרטים על הארכיטקטורה הטכנית או השיטות הפנימיות של מערכות אלה — אלה סוד מסחרי שלו (סעיף 9 להסכם).</p>
-<p class="fine">ייתכן שבמסגרת אספקת השירותים תיחשפו להיבטים מסוימים ממערכות אלה או מתוצרים שהופקו באמצעותן. חשיפה זו כפופה לחובת הסודיות ההדדית שבהסכם: נכסי הארגון — לרבות מערכות Neuron — מהווים "מידע סודי" כהגדרתו בסעיף 9, ואתם מחויבים לשמור עליו בסודיות באותו אופן שהארגון מחויב כלפיכם, הן במהלך ההתקשרות והן חמש שנים לאחריה (וללא הגבלת זמן ביחס לסוד מסחרי — סעיף 9(ה)). החשיפה ניתנת לכם לתועלת במסגרת ההתקשרות בלבד, ואינה מקנה זכות, בעלות או עניין בנכסים עצמם (סעיף 2(ג)).</p>
-{pagefoot()}
-</div>''')
+PAGES.append(generic_section_page("01", _ch1.section("יסודות עלות ההגנה על נכסי הארגון"), "עלות ההגנה"))
 
 # ==================================================================
-# 1.4 — Atlas Network
+# 1.3 — Proprietary technology (Neuron)
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("01", "Atlas Network")}
-<div class="eyebrow">רשת מסחרית בינלאומית</div>
-<h1 class="sec">Atlas Network</h1>
-<div class="secrule"></div>
-<p class="body-copy">בנוסף לצוות הפנימי, מתחזק הארגון את <strong>Atlas Network</strong> — רשת קשרים מסחריים בינלאומית הפרוסה על פני מדינות מרכזיות, ובהן סין, ארצות הברית, דובאי, פקיסטן, ערב הסעודית, אמריקה הלטינית, אירופה ואחרות.</p>
-<p class="body-copy">הרשת כוללת קשרים עם יצרנים, ספקים, מפיצים וגורמי הפצה ומכירה, ומאפשרת לארגון לבחון עבור לקוחותיו אפשרויות במיקור חוץ, הפצה, הרחבה בינלאומית, אופטימיזציית עלויות ואלטרנטיבות בשרשרת אספקה — בהתאם לצרכים הספציפיים של כל פרויקט.</p>
-<div class="fine">לא כל הזדמנות ברשת רלוונטית או זמינה לכל לקוח; ההתאמה נבחנת לפי אופי הפרויקט.</div>
-<div class="fine"><strong>נתונים, פגישות ופרטיות — בקצרה:</strong> פגישות ושיחות עמכם עשויות להיות מוקלטות (לאחר הודעה מפורשת בתחילת כל שיחה מוקלטת, ובזכותכם להתנגד ולבקש חלופה בלתי-מוקלטת בכל עת) — לצורכי תיעוד אישורים, שיפור השירות ויישוב מחלוקות. מידע מזהה ומידע סודי משמשים לאספקת השירותים בלבד, ולעולם לא לאימון מודלים ללא הסכמתכם המפורשת בכתב; רק מידע שעבר הליך הסרת-זיהוי בלתי-הפיך עשוי לשמש לפיתוח מערכות הארגון. הפרטים המלאים — נספחים C ו-D להסכם.</div>
-{pagefoot()}
-</div>''')
+PAGES.append(generic_section_page("01", _ch1.section("טכנולוגיה קניינית ומערכות פנימיות"), "תשתית תפעולית"))
+
+# ==================================================================
+# 1.4 — Atlas Network + Data/meetings/privacy. Two short sections
+# combined onto one page (a page-grouping choice — both are a few short
+# paragraphs on their own); the second keeps its own real section title
+# as an h2.sub rather than a fabricated label.
+# ==================================================================
+_sec_atlas = _ch1.section("Atlas Network")
+_sec_privacy = _ch1.section("נתונים, פגישות ופרטיות — בקצרה")
+PAGES.append(content_page("01", _sec_atlas.title, "רשת מסחרית בינלאומית", _sec_atlas.title, "\n".join([
+    render_blocks(_sec_atlas.blocks),
+    f'<h2 class="sub">{_sec_privacy.title}</h2>',
+    render_blocks(_sec_privacy.blocks),
+])))
 
 # ==================================================================
 # 1.5 — Specialist capabilities
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("01", "יכולות מומחים")}
-<div class="eyebrow">הרכב הצוות לפי צורך</div>
-<h1 class="sec">יכולות מומחים</h1>
-<div class="secrule"></div>
-<p class="body-copy">אנחנו לא בנויים סביב חבילת שירות אחידה. כל התקשרות נבנית סביב הצרכים בפועל של העסק — שילוב שונה של אסטרטגיה, מחקר, שיווק, קריאייטיב, פיתוח ותפעול, בהתאם למה שהפרויקט דורש. הביטוי המובנה ביותר לעיקרון הזה הוא הרכב מעטפת המומחים במחקר Genesis — ראו פרק 3.</p>
-{pagefoot()}
-</div>''')
+PAGES.append(generic_section_page("01", _ch1.section("יכולות מומחים"), "הרכב הצוות לפי צורך"))
 
 # ==================================================================
 # DIVIDER 02 — Engagement Models
 # ==================================================================
-PAGES.append('''<div class="page dark divider">
+_ch2 = G.chapter("2")
+PAGES.append(f'''<div class="page dark divider">
   <div class="divider-ghost">02</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>פרק 02</div>
-    <div class="divider-title">מודלי ההתקשרות</div>
+    <div class="divider-title">{_ch2.title}</div>
     <div class="divider-sub">ארבעת המסלולים שההסכם תומך בהם, ולמה גמישות מסחרית היא ארכיטקטורה — לא הנחה.</div>
     <div class="divider-endrule"></div>
   </div>
 </div>''')
 
 # ==================================================================
-# 2.1 — The four tracks
+# 2.1 — The four tracks. Each track is its own md paragraph, whose
+# leading bold span is "מסלול <letter> — <title>." — the badge and card
+# title are derived from that lead (never retyped), the card body from
+# the rest of that same paragraph.
 # ==================================================================
-_track_badge = lambda t: f'<div class="igroup-num" style="width:32px;height:32px;font-size:12pt">{t}</div>'
-PAGES.append(f'''<div class="page">
-{pagehead("02", "ארבעת המסלולים")}
-<div class="eyebrow">מסגרות מסחריות נתמכות</div>
-<h1 class="sec">ארבעת המסלולים</h1>
-<div class="secrule"></div>
-<p class="body-copy">התמורה הכלכלית הסופית של כל התקשרות ספציפית נקבעת ונחתמת ב"הצעה" נפרדת, לאחר השלמת מחקר Genesis (פרק 3) — אבל כדאי להכיר כבר עכשיו את מסגרות המודל המסחרי שההסכם תומך בהן.</p>
-<div class="cardgrid grid2">
-  <div class="card"><div class="card-label">{_track_badge("0")} מסלול 0</div><div class="card-title">מחקר ואסטרטגיה, ללא תקציב שוטף</div><p>תשלום חד-פעמי במחיר בסיס של 10,000$ בתוספת מע"מ (נספח A סעיף 2) — אותו מחקר ואותו שווי כמו במסלולים מבוססי-התקציב; ההבדל הוא באופן המימון בלבד.</p></div>
-  <div class="card"><div class="card-label">{_track_badge("A")} מסלול A</div><div class="card-title">ריטיינר קבוע</div><p>תמורה חודשית קבועה ומוסכמת מראש עבור היקף עבודה ומשאבים מוגדרים. מתאים כשאתם מעדיפים ודאות תקציבית מלאה.</p></div>
-  <div class="card"><div class="card-label">{_track_badge("B")} מסלול B</div><div class="card-title">מודל משולב</div><p>ריטיינר מופחת + חלוקת ערך (רכיב מבוסס-תוצאות). מתאים כשרוצים לחלוק סיכון והזדמנות, בלי לוותר לגמרי על ודאות תשלום בסיסית.</p></div>
-  <div class="card"><div class="card-label">{_track_badge("C")} מסלול C</div><div class="card-title">מודל תוצאות</div><p>התמורה מבוססת בעיקרה על חלוקת ערך/אחוזים, בכפוף למנגנון שייקבע בהצעה. מתאים כשההשתתפות הכלכלית שלנו קשורה ישירות לתוצאה.</p></div>
-</div>
-<div class="fine">בכל מסלול מבוסס-אחוזים או משולב: פרטי המנגנון המדויק — על מה חל האחוז, מה מפעיל אותו, מהי תקופת ההתחשבנות — ייקבעו ויירשמו ב"הצעה" החתומה עצמה; טבלת התנאים המסחריים שבנספח B קובעת רק את פרמטרי הקלט (תקציב, גבולות גזרה, סובלנות ו-Stop-Loss), לא את מבנה התמורה הסופי.</div>
-<div class="callout"><span class="callout-label">לא בטוחים איזה מסלול מתאים?</span> אפשר לסמן "ייקבע בהצעה" ולבקש את המלצתנו (ראו "שני נתיבים אפשריים", פרק 3) — מחקר Genesis מתבצע באותו אופן ובאותו מחיר קבוע, שאינו תלוי במסלול, והמסלול הסופי נקבע עם חתימת ההצעה.</div>
-{pagefoot()}
-</div>''')
+_TRACK_LEAD_RE = re.compile(r'^מסלול\s+(\S+)\s*—\s*(.+?)\.?$')
+
+def _track_card(block):
+    m = _TRACK_LEAD_RE.match(block["lead"])
+    badge, title = m.group(1), m.group(2)
+    _, rest_html = split_lead(block)
+    return (f'<div class="card"><div class="card-label">'
+            f'<div class="igroup-num" style="width:32px;height:32px;font-size:12pt;display:inline-flex;vertical-align:middle;margin-inline-end:8px">{badge}</div>'
+            f'מסלול {badge}</div><div class="card-title">{title}</div><p>{rest_html}</p></div>')
+
+_sec_tracks = _ch2.section("ארבעת המסלולים")
+_tb = _sec_tracks.blocks  # [track0, trackA, trackB, trackC, mechanism-fine, unsure-callout]
+# Split across two physical pages (structural, page-grouping only) — the
+# full verbatim section no longer fits one page the way the old
+# paraphrase did.
+PAGES.append(content_page("02", _sec_tracks.title, "מסגרות מסחריות נתמכות", _sec_tracks.title, "\n".join([
+    render_block(_ch2.intro_blocks()[0]),
+    '<div class="cardgrid grid2">' + "".join(_track_card(b) for b in _tb[0:4]) + '</div>',
+])))
+PAGES.append(content_page("02", _sec_tracks.title + " (המשך)", "מסגרות מסחריות נתמכות", _sec_tracks.title + " — המשך", "\n".join([
+    f'<div class="fine">{_tb[4]["html"]}</div>',
+    render_block(_tb[5]),
+])))
 
 # ==================================================================
-# 2.2 — Flexibility + shared growth
+# 2.2 — Flexibility, exit schedule and shared growth. Three md sections
+# combined onto one page (a structural/page-grouping choice), each kept
+# under its own real section-title h2.
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("02", "גמישות מסחרית וצמיחה משותפת")}
-<div class="eyebrow">ארכיטקטורה, לא הנחה</div>
-<h1 class="sec">גמישות מסחרית — ארכיטקטורה, לא הנחה</h1>
-<div class="secrule"></div>
-<p class="body-copy">כשההזדמנות, ההתאמה האסטרטגית והערך הצפוי לטווח ארוך מצדיקים זאת, אנחנו עשויים לבנות את השתתפותנו בהתקשרות באופן שונה — למשל היקף התחלתי מצומצם שגדל בהדרגה, או שלביות בהתקשרות. אלה מבני התקשרות שהמסמכים המשפטיים תומכים בהם, לא הנחות ולא צעד של רצון טוב — זו ארכיטקטורה מסחרית, שנועדה להתאים את ההתקשרות למציאות של העסק.</p>
-<h2 class="sub">צמיחה משותפת — עד כמה שהמבנה המסחרי מאפשר זאת</h2>
-<p class="body-copy">כאשר המבנה המסחרי כולל רכיב תלוי-ערך (מסלול B או C), האינטרס הכלכלי שלנו מתואם באופן חלקי עם האינטרס שלכם — ככל שהפרויקט מצליח יותר, כך גדלה גם ההשתתפות הכלכלית שלנו בו. זו הסיבה שאנחנו עשויים להעדיף מבנה כזה כשיש לנו אמון גבוה בפוטנציאל הפרויקט.</p>
-<div class="fine">זהו תיאור של תמריץ מבני — לא הבטחה לתוצאה או להצלחה משותפת; הביצועים בפועל תלויים בגורמים רבים, כמפורט בפרק 3.</div>
-<div class="fine"><strong>אם אתם מסיימים ביוזמתכם, מוקדם — לוח הנסיגה:</strong> בהתקשרות מבוססת-תקציב (מסלולים A/B/C), אנחנו משקיעים בבניית התוכנית והפעילות עוד לפני שההשקעה הזו מוחזרת דרך התמורה השוטפת. אם אתם יוזמים סיום לפני שהתקופה שהוגדרה מלכתחילה הסתיימה, ההצעה החתומה שלכם עשויה לכלול <strong>לוח נסיגה (Exit Schedule)</strong> — סכום יורד ומדורג, המשקף את ההשקעה שטרם הוחזרה; ככל שההתקשרות נמשכת זמן רב יותר, הסכום קטן, עד שהוא מתאפס. אם ההצעה אינה כוללת לוח נסיגה, לא יחול עליכם חיוב כזה כלל (סעיף 13(ה) להסכם); הוא גם אינו חל אם אנחנו יזמנו את הסיום, אם ההתקשרות הסתיימה עקב הפרה מצדנו, או בנסיבות כוח עליון.</div>
-{pagefoot()}
-</div>''')
+_sec_flex = _ch2.section("גמישות מסחרית — ארכיטקטורה, לא הנחה")
+_sec_exit = _ch2.section("אם אתם מסיימים ביוזמתכם, מוקדם — לוח הנסיגה")
+_sec_growth = _ch2.section("צמיחה משותפת — עד כמה שהמבנה המסחרי מאפשר זאת")
+_flex_body = "\n".join([
+    render_blocks(_sec_flex.blocks),
+    f'<h2 class="sub">{_sec_growth.title}</h2>',
+    render_blocks(_sec_growth.blocks),
+    f'<h2 class="sub">{_sec_exit.title}</h2>',
+    render_blocks(_sec_exit.blocks),
+])
+PAGES.append(content_page("02", "גמישות מסחרית וצמיחה משותפת", "ארכיטקטורה, לא הנחה", _sec_flex.title, _flex_body))
 
 # ==================================================================
 # DIVIDER 03 — Budget / investment / timeline
 # ==================================================================
-PAGES.append('''<div class="page dark divider">
+_ch3 = G.chapter("3")
+PAGES.append(f'''<div class="page dark divider">
   <div class="divider-ghost">03</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>פרק 03</div>
-    <div class="divider-title">תקציב, מסגרת השקעה וטווח זמן</div>
+    <div class="divider-title">{_ch3.title}</div>
     <div class="divider-sub">איך אנחנו חושבים על תקציב, מדוע אנחנו שואלים עליו, ואיך זה מתורגם לתוכנית אמיתית.</div>
     <div class="divider-endrule"></div>
   </div>
 </div>''')
 
-# ==================================================================
-# 3 — Opening hook (trimmed)
-# ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "למה אנחנו שואלים")}
-<div class="eyebrow">פתיח</div>
-<h1 class="sec">אנחנו לא מתחילים מ"הנה החבילה שלנו והמחיר שלה"</h1>
-<div class="secrule"></div>
-<p class="body-copy">אנחנו מתחילים מ: ספרו לנו מה אתם מנסים להשיג, כמה אתם באמת מוכנים ויכולים להשקיע, אילו אילוצים קיימים, ומה אתם מאמינים שאפשר. אנחנו נקבע מה ניתן לבנות באחריות בתוך המסגרת הזו.</p>
-<p class="body-copy">לפני שאנחנו בונים תוכנית עסקית, שיווקית ופיננסית עבורכם, אנחנו צריכים להבין את המציאות הכלכלית שבתוכה אתם רוצים ויכולים לפעול. המידע הזה לא נועד לקבוע כמה אפשר לגבות מכם — הוא נועד לקבוע מה אפשר לבנות באחריות, בהיקף, בקצב ובמודל שמתאימים לעסק שלכם.</p>
-<div class="callout"><span class="callout-label">העיקרון:</span> תקציב גדול יותר עשוי לאפשר היקף רחב יותר — אבל לא תוצאה טובה יותר מאליה. הקשר בין תקציב להיקף העבודה הוא שאלה של תכנון, לא הבטחה.</div>
-<p class="body-copy"><strong>רמת תשומת הלב, המקצועיות וההשקעה שלנו בפרויקט שלכם אינה תלויה בגודל התקציב — היא זהה, בכל היקף עבודה.</strong></p>
-{pagefoot()}
-</div>''')
+def first_sentence_split(raw):
+    """A bespoke page's h1.sec pull-quote headline: the section's own
+    first sentence (split on the first '. '), never a separately typed
+    headline. Returns (headline_without_period, rest_of_paragraph_html)."""
+    parts = re.split(r'(?<=\.)\s+', raw, maxsplit=1)
+    head = parts[0].rstrip('.')
+    rest = parts[1] if len(parts) > 1 else ''
+    return inline_to_html(head), inline_to_html(rest)
+
+def qmark_lines(html):
+    """Presentational line-break helper for the .prompt-q box: breaks an
+    already-inline-converted string after every '?' so a paragraph that
+    embeds several questions as running prose reads as stacked question
+    lines, exactly as written — no word is added, removed or reordered."""
+    parts = re.split(r'(?<=\?)\s+', html)
+    return '<br>'.join(p for p in parts if p)
+
+def split_ask(raw):
+    """Several sections in chapter 3 are shaped, in the .md, as one
+    running-prose paragraph: "<label>: <question>? <question>?
+    [<trailing non-question sentence>.]" — e.g. 'ספרו לנו: מהי התקופה
+    ...? האם יש מועדים ...?'. This splits that single paragraph, purely
+    presentationally, onto the existing .prompt (label + stacked
+    questions) design, plus an optional trailing aside — never
+    rewording or reordering a single word. Returns
+    (label_html, questions_html, tail_html_or_None)."""
+    label, _, remainder = raw.partition(':')
+    remainder = remainder.strip()
+    m = re.search(r'^(.*\?)(.*)$', remainder, re.DOTALL)
+    if m:
+        questions, tail = m.group(1).strip(), m.group(2).strip(' —-;.')
+    else:
+        questions, tail = remainder, ''
+    return (inline_to_html(label), qmark_lines(inline_to_html(questions)),
+            inline_to_html(tail) if tail else None)
 
 # ==================================================================
-# 4 — NEW: operating-model flow + contrast
+# 3 — Opening hook: the section's own first sentence as the page's
+# headline (see first_sentence_split), the rest of that paragraph plus
+# the section's remaining two paragraphs as body copy.
+# ==================================================================
+_sec_why = _ch3.section("למה אנחנו שואלים על כך")
+_headline, _rest0 = first_sentence_split(_sec_why.blocks[0]["text"])
+PAGES.append(content_page("03", "למה אנחנו שואלים", "פתיח", _headline, "\n".join([
+    f'<p class="body-copy">{_rest0}</p>',
+    render_block(_sec_why.blocks[1]),
+    render_block(_sec_why.blocks[2]),
+])))
+
+# ==================================================================
+# 4 — Operating-model flow. Diagram stage captions ("אתם"/"אנחנו
+# בוחנים"/"יחד" + short sub-captions) are hand-authored diagram
+# scaffolding (they label the graphic, they aren't sentences of prose);
+# every paragraph of actual prose on this page is the section's own two
+# blocks, rendered in full — including their natural inline bold on
+# "אתם"/"אנחנו"/"יחד", which does the "not this, but this" contrast job
+# the old hand-written contrast-row graphic used to do, without
+# paraphrasing anything.
 # ==================================================================
 _flow_icon = '''<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
 <circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="21" y2="21"/></svg>'''
-PAGES.append(f'''<div class="page">
-{pagehead("03", "המודל שלנו")}
-<div class="eyebrow">הגישה שלנו</div>
-<h1 class="sec">אתם קובעים את המסגרת. אנחנו בוחנים מה אפשר לבנות בתוכה</h1>
-<div class="secrule"></div>
-<div class="flow">
+_sec_model = _ch3.section("המודל שלנו: אתם קובעים את המסגרת")
+PAGES.append(content_page("03", "המודל שלנו", "הגישה שלנו", _sec_model.title, "\n".join([
+    f'''<div class="flow">
   <div class="flow-stage"><div class="flow-eyebrow">שלב 1</div><div class="flow-card">אתם<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">תקציב · מסגרת · חזון</span></div></div>
   <div class="flow-connector"></div>
   <div class="flow-stage"><div class="flow-eyebrow">שלב 2</div><div class="flow-node">{_flow_icon}</div><div style="font-family:'Heebo',sans-serif;font-size:9pt;font-weight:700">אנחנו בוחנים</div></div>
   <div class="flow-connector"></div>
   <div class="flow-stage"><div class="flow-eyebrow">שלב 3</div><div class="flow-card">יחד<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">תוכנית + הצעה</span></div></div>
-</div>
-<div class="flow-loop">אם המסגרת שהגדרתם אינה תואמת את היקף הפרויקט המבוקש — ננהל איתכם שיחה בתום-לב לפני כל החלטה על המשך התהליך, ולא נבנה עבורכם הצעה שאיננו מאמינים שהיא בת-קיימא.</div>
-<h2 class="sub">לא ככה, אלא ככה</h2>
-<div class="contrast dim">✕ אנחנו קובעים כמה עליכם לשלם, ואתם מתאימים את עצמכם לזה</div>
-<div class="contrast affirm">✓ אתם קובעים את המסגרת הכלכלית. אנחנו בוחנים מה ניתן לבנות באחריות בתוכה — ורק אז מגיעים יחד לתוכנית ולמודל מסחרי קונקרטיים.</div>
-<p class="body-copy" style="margin-top:14px">המטרה שלנו היא התקשרות שאתם יכולים לקיים לאורך זמן — לא התקשרות שדוחקת אתכם מעבר ליכולת שלכם.</p>
-{pagefoot()}
-</div>''')
+</div>''',
+    render_block(_sec_model.blocks[0]),
+    f'<div class="flow-loop">{_sec_model.blocks[1]["html"]}</div>',
+])))
 
 # ==================================================================
-# 5 — NEW: trust + permission
+# 5 — Trust + permission (pull-quote). The oversized quote is this
+# section's own leading bold sentence (split_lead), never retyped.
 # ==================================================================
+_sec_trust = _ch3.section("האמון שלנו מתחיל בכנות")
+_sec_before = _ch3.section("לפני שממשיכים — חשוב שתדעו")
+_quote_lead, _quote_rest = split_lead(_sec_trust.blocks[0])
+# "לפני שממשיכים — חשוב שתדעו" (a short before-you-continue caveat) is
+# folded onto this page as fine print rather than given its own
+# near-empty page — a page-grouping choice, its own text unchanged.
 PAGES.append(f'''<div class="page">
-{pagehead("03", "האמון שלנו מתחיל בכנות")}
-<div class="permission-quote">"תנו לנו את המספר האמיתי —<br>לא את המספר שאתם חושבים שאנחנו רוצים לשמוע."</div>
+{pagehead("03", _sec_trust.title)}
+<div class="permission-quote">{_quote_lead}</div>
 <div class="permission-dots">
   <span class="permission-dot"></span><span class="permission-dot"></span><span class="permission-dot you"></span><span class="permission-dot"></span><span class="permission-dot"></span>
 </div>
 <div class="permission-cap">אותה תשומת לב. בכל היקף.</div>
-<p class="body-copy">מרבית הלקוחות חוששים משתי טעויות הפוכות: להגיד מספר קטן מדי ולהיראות לא רציניים, או להגיד מספר גדול מדי כדי להצדיק את החזון. שתי הטעויות מובילות לאותה תוצאה — תוכנית שלא מתאימה לכם באמת. יש לכך גם השלכה מעשית: לאחר החתימה, התקציב שתקבעו הופך למחויבות תפעולית לשלושה חודשים לפחות — כך שמספר מנופח לא הופך את הפרויקט שלכם למרשים יותר; הוא הופך למחויבות אמיתית שתצטרכו לעמוד בה. <strong>אין כאן מספר "קטן מדי" — יש רק מספר לא מדויק.</strong></p>
-<h2 class="sub">חזון גדול, תקציב קטן כרגע</h2>
-<p class="body-copy">זה בדיוק המצב שיש לנו מבנה בשבילו. תקציב הוא שאלה של איפה העסק נמצא היום; הזדמנות היא שאלה של לאן הוא יכול להגיע — אלה שני צירים נפרדים, לא אחד. עסק עם פוטנציאל יוצא דופן, נזילות מוגבלת כרגע, הזדמנות שוק ייחודית או חזון מייסד חזק עשוי להצדיק מבנה מסחרי מותאם באותה מידה שעסק עם תקציב גדול יכול שלא להתאים לנו כלל. כשהפער הזה קיים, יש לנו מבנים מסחריים שנבנו בדיוק בשבילו — היקף התחלתי מצומצם, מבנה מבוסס-אחוזים, או שלביות (ראו "שני נתיבים אפשריים" בעמוד הבא). אלה לא הנחות שבות-לב — הן ארכיטקטורה מסחרית. אבל כדי שנוכל להשתמש בהן, אנחנו צריכים את התקציב הנוכחי האמיתי.</p>
-<div class="fine">המידע שתמסרו בפרק הזה משמש לתכנון, להערכה ולבניית ה"הצעה" בלבד — ואינו מהווה התחייבות לרכישת שירותים, לתשלום סכום מסוים או להשגת תוצאה עסקית. שום מספר שתרשמו אינו סופי ואינו "נועל" אתכם. הערה זו חלה על כל הלקוחות, ללא תלות במסלול.</div>
+<p class="body-copy">{_quote_rest}</p>
+{render_block(_sec_trust.blocks[1])}
+<div class="fine">{_sec_before.blocks[0]["html"]}</div>
 {pagefoot()}
 </div>''')
 
 # ==================================================================
-# 6 — Two paths (trimmed)
+# 6 — Two paths. The two bullets become the two stacked cards; card
+# labels are Hebrew ordinal captions (נתיב א׳/ב׳ — a card index, not
+# prose), card body is each bullet's own text.
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "שני נתיבים אפשריים")}
-<div class="eyebrow">בחירה</div>
-<h1 class="sec">שני נתיבים אפשריים</h1>
-<div class="secrule"></div>
-<p class="body-copy">יש שתי דרכים לגיטימיות להתחיל את השיחה המסחרית, ואתם בוחרים — שתיהן תקפות באותה מידה:</p>
-<div class="cardgrid stack">
-  <div class="card"><div class="card-label">נתיב א׳</div>
-    <div class="card-title">אתם מגדירים את מסגרת ההשקעה</div>
-    <p>למשל: "אנחנו רוצים להשקיע כ-X בחודש למשך כ-Y חודשים" — ואנחנו בונים את התוכנית בתוכה.</p></div>
-  <div class="card"><div class="card-label">נתיב ב׳</div>
-    <div class="card-title">אתם מבקשים שנציע מודל מסחרי</div>
-    <p>אנחנו מציגים מבנה תמחור, ריטיינר או מודל אחר שלדעתנו המקצועית מתאים לפרויקט, ואתם שוקלים אותו. אפשר להשיב על השאלות הבאות בטווחים כלליים, לציין אילוצים בלבד, או להשאיר אותן לשיקול דעתנו המקצועי — אין צורך לנחש מספר.</p></div>
-</div>
-<p class="body-copy"><strong>גמישות מסחרית — לא הנחה.</strong> כשההזדמנות, ההתאמה האסטרטגית והערך הצפוי לטווח ארוך מצדיקים זאת, הארגון עשוי לבנות את השתתפותו בהתקשרות באופן שונה — למשל מבנה מבוסס-אחוזים, מבנה משולב, היקף התחלתי מצומצם, או שלביות בהתקשרות. אלה מבני התקשרות שהמסמכים המשפטיים תומכים בהם, לא הנחות ולא צעד של רצון טוב — זו ארכיטקטורה מסחרית, שנועדה להתאים את ההתקשרות למציאות של העסק.</p>
-{pagefoot()}
-</div>''')
+_HEBREW_ORDINALS = ["א׳", "ב׳", "ג׳", "ד׳"]
+_sec_paths = _ch3.section("שני נתיבים אפשריים")
+_paths_ulist = _sec_paths.blocks[1]
+_path_cards = []
+for i, item_html in enumerate(_paths_ulist["items"]):
+    lead, rest = None, item_html
+    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
+    title = m.group(1) if m else item_html
+    body = m.group(2) if m else ''
+    _path_cards.append(
+        f'<div class="card"><div class="card-label">נתיב {_HEBREW_ORDINALS[i]}</div>'
+        f'<div class="card-title">{title}</div><p>{body}</p></div>'
+    )
+_paths_body = "\n".join([
+    render_block(_sec_paths.blocks[0]),
+    '<div class="cardgrid stack">' + "".join(_path_cards) + '</div>',
+    render_block(_sec_paths.blocks[2]),
+])
+PAGES.append(content_page("03", _sec_paths.title, "בחירה", _sec_paths.title, _paths_body))
 
 # ==================================================================
-# 7 — Goals reflection
+# 7 — Goals reflection (prompt box; single running-prose paragraph)
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "היעד והציפיות שלכם")}
-<div class="eyebrow">לפני המספרים</div>
-<h1 class="sec">היעד והציפיות שלכם</h1>
-<div class="secrule"></div>
-<p class="body-copy">לפני המספרים, נשמח להבין מה אתם מנסים להשיג.</p>
+_sec_goals = _ch3.section("היעד והציפיות שלכם")
+_goals_label, _goals_q, _goals_tail = split_ask(_sec_goals.blocks[0]["text"])
+_goals_body = f'''<p class="body-copy">{_goals_label}.</p>
 <div class="prompt"><div class="prompt-label">שאלות למחשבה</div>
-<div class="prompt-q">מהי התוצאה העסקית שאתם שואפים אליה?<br>איך תגדירו התקדמות עבור הפרויקט?<br>מהם הדברים החשובים לכם ביותר בו?</div></div>
-<p class="fine">התשובות כאן מכוונות אותנו בעדיפויות ובטון של התוכנית שנבנה — הן אינן יעד מדיד או הבטחה להשגת תוצאה; היעדים המדידים בפועל, ככל שייקבעו, ייקבעו בהסכם ובטבלת התנאים המסחריים בלבד.</p>
-{pagefoot()}
-</div>''')
+<div class="prompt-q">{_goals_q}</div></div>'''
+if _goals_tail:
+    _goals_body += f'<p class="fine">{_goals_tail}</p>'
+PAGES.append(content_page("03", _sec_goals.title, "לפני המספרים", _sec_goals.title, _goals_body))
 
 # ==================================================================
-# 8 — Investment framework
+# 8 — Investment framework. "ספרו לנו:" + a REAL bullet list in the .md
+# maps directly onto the existing prompt-label / prompt-q boxed design.
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "מסגרת ההשקעה שלכם")}
-<div class="eyebrow">תשומת הקלט המרכזית</div>
-<h1 class="sec">מסגרת ההשקעה שלכם</h1>
-<div class="secrule"></div>
-<p class="body-copy">השדה החשוב ביותר עבורנו כדי להתחיל לתכנן הוא <strong>התקציב החודשי</strong>; שאר השאלות כאן עוזרות לנו לדייק את התוכנית, וניתן לחדד אותן יחד איתנו בהמשך.</p>
-<div class="prompt"><div class="prompt-label">ספרו לנו</div>
-<div class="prompt-q">מהו התקציב החודשי המועדף עליכם?<br>האם יש היקף השקעה כולל שאתם מתכננים אליו?<br>מהו טווח הגמישות שלכם — תקציב קבוע, או מרחב תמרון בכפוף לאישורכם?<br>התקציב שאתם מוסרים כולל או לא כולל עלויות חיצוניות מסוימות (כגון תקציבי מדיה המועברים ישירות לפלטפורמות)?</div></div>
-<p class="body-copy">המספר שתמסרו הוא נקודת פתיחה לתכנון בלבד — לא הצעת מחיר ולא רצפה מחייבת. <strong>תזכורת לפני שאתם עונים: אין כאן "תשובה גדולה יותר שנכון לתת". מספר קטן ואמיתי מאפשר לנו לבנות תוכנית שמדויקת לגודל הזה; מספר מנופח רק מרחיק את התוכנית מהמציאות שלכם.</strong></p>
-<div class="eyebrow" style="margin-top:22px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>
-<div class="stats">
-  <div class="stat"><div class="stat-num">3</div><div class="stat-cap">חודשים · התחייבות תקציב מינימלית</div></div>
-  <div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · הודעה מראש להפחתת תקציב</div></div>
-</div>
-<p class="fine">זה קיים כדי ששנינו נוכל לתכנן — לא כדי לגרום לכם להרגיש נעולים. זהו תנאי מההסכם עצמו (נספח B), לא תנאי מהפרק הזה — אך כדאי שתכירו אותו כבר עכשיו.</p>
-<div class="callout"><span class="callout-label">מסלול 0 בלבד:</span> אם בחרתם ברכישת מחקר Genesis חד-פעמית בלבד, ללא תקציב שוטף (נספח A סעיף 2) — פרקי המשנה מכאן ועד "נקודת האיזון" (כולל) אינם חלים עליכם, ואינכם נדרשים למלא את השדות הנוגעים אליהם. גם דמי ההשתתפות העצמית שיוזכרו בהמשך שייכים למסלולים A/B/C בלבד. אפשר לדלג ישירות לתהליך שבסוף הפרק.</div>
-{pagefoot()}
-</div>''')
+_sec_invest = _ch3.section("מסגרת ההשקעה שלכם")
+_ib = _sec_invest.blocks  # [intro, "ספרו לנו:", ulist(4), reminder-para, terms-para, track0-callout]
+_invest_body = "\n".join([
+    render_block(_ib[0]),
+    f'<div class="prompt"><div class="prompt-label">{_ib[1]["html"]}</div>'
+    f'<div class="prompt-q">' + '<br>'.join(_ib[2]["items"]) + '</div></div>',
+    render_block(_ib[3]),
+    '<div class="eyebrow" style="margin-top:22px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>',
+    '<div class="stats">'
+    '<div class="stat"><div class="stat-num">3</div><div class="stat-cap">חודשים · התחייבות תקציב מינימלית</div></div>'
+    '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · הודעה מראש להפחתת תקציב</div></div>'
+    '</div>',
+    render_block(_ib[4]),
+    render_block(_ib[5]),
+])
+PAGES.append(content_page("03", _sec_invest.title, "תשומת הקלט המרכזית", _sec_invest.title, _invest_body))
 
 # ==================================================================
 # 9 — Timeline
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "טווח הזמן שלכם")}
-<div class="eyebrow">תכנון</div>
-<h1 class="sec">טווח הזמן שלכם</h1>
-<div class="secrule"></div>
-<p class="body-copy">פרויקט עסקי רציני כולל בדרך כלל שלבי מחקר, בדיקה, פיתוח, כניסה לשוק, איסוף נתונים ואופטימיזציה — לפני שאפשר למדוד את האפקט המסחרי שלו בבירור.</p>
-<div class="prompt"><div class="prompt-label">ספרו לנו</div>
-<div class="prompt-q">מהי התקופה שאתם מתכננים לפעול בה?<br>האם יש מועדים עסקיים משמעותיים שכדאי שנכיר?</div></div>
-<p class="fine">זהו שיח תכנוני כללי בלבד. המספר המדויק שישמש בפועל למדידת ביצועים הוא <strong>תקופת הסובלנות</strong> שתקבעו בעמוד הבא, ותירשם בטבלת התנאים המסחריים.</p>
-{pagefoot()}
-</div>''')
+_sec_timeline = _ch3.section("טווח הזמן שלכם")
+_tl_label, _tl_q, _tl_tail = split_ask(_sec_timeline.blocks[0]["text"])
+PAGES.append(content_page("03", _sec_timeline.title, "תכנון", _sec_timeline.title, "\n".join([
+    f'<p class="body-copy">{_tl_label}.</p>',
+    f'<div class="prompt"><div class="prompt-label">ספרו לנו</div><div class="prompt-q">{_tl_q}</div></div>',
+    render_block(_sec_timeline.blocks[1]),
+])))
 
 # ==================================================================
-# 10 — NEW: sustainability principle (horizon rings)
+# 10 — Sustainability principle (horizon rings)
 # ==================================================================
 _rings = []
 _radii = [14, 24, 35, 47, 60]
@@ -630,202 +712,163 @@ for i, r in enumerate(_radii):
     color = f"rgb({int(169+(91-169)*t)},{int(130+(41-130)*t)},{int(79+(134-79)*t)})"
     _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
 _horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
-PAGES.append(f'''<div class="page">
-{pagehead("03", "העיקרון שמנחה אותנו")}
-<div class="eyebrow">עמדה שקופה</div>
-<h1 class="sec">לא למצות עד הסוף</h1>
-<div class="secrule"></div>
-<div class="horizon-wrap">{_horizon_svg}
-<div class="horizon-cap">נאמר את זה בגלוי: יש לנו אינטרס ברור לא לדחוף אתכם למצות את התקציב החודשי. לקוח שמיצה את תזרים המזומנים שלו לא ממשיך להשקיע ברבעון הבא — מיצוי מלא היום עולה לנו בלקוח לטווח ארוך, בשביל חשבונית גדולה יותר לטווח קצר.</div></div>
-<p class="body-copy">זו לא רק עמדה ערכית מצידנו — זה ההיגיון הכלכלי שמניע אותנו לשמר את יכולתו של העסק להמשיך להשקיע, לפעול ולצמוח. וזו גם הסיבה שברירת המחדל התפעולית שלנו, בכל התקשרות, היא לפעול <strong>בנקודת איזון</strong> ולא במיצוי תקציב מלא — לא רק כמשפט כאן, אלא כתוב במנגנון עצמו (ראו "נקודת האיזון" בהמשך).</p>
-{pagefoot()}
-</div>''')
+_sec_sustain = _ch3.section("העיקרון שמנחה אותנו: לא למצות עד הסוף")
+PAGES.append(content_page("03", "העיקרון שמנחה אותנו", "עמדה שקופה", "לא למצות עד הסוף", "\n".join([
+    f'<div class="horizon-wrap">{_horizon_svg}<div class="horizon-cap">{_sec_sustain.blocks[0]["html"]}</div></div>',
+    render_block(_sec_sustain.blocks[1]),
+])))
 
 # ==================================================================
-# 11 — Tolerance (redesigned, plain-language first, neutral deficit callout)
+# 11 — Tolerance
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "רמת ותקופת הסובלנות שלכם")}
-<div class="eyebrow">גמישות סביב רווחיות</div>
-<h1 class="sec">רמת ותקופת הסובלנות שלכם</h1>
-<div class="secrule"></div>
-<p class="body-copy"><strong>במילים פשוטות:</strong> יש לכם תקופה מוסכמת מראש שבה מותר לנו לבנות ולבחון בלי לרדוף אחרי רווח מיידי — אבל יש לזה שני בלמים מובנים שמגנים עליכם. הבלם הראשון: גם בתקופה הזו, ברירת המחדל היא שאנחנו פועלים בנקודת איזון — לא גורמים לכם הפסד בכוונה, גם אם עוד אין רווח. הבלם השני: אם תבחרו במפורש לרדת מתחת לאיזון כדי להאיץ בנייה, תמיד תיקבע תקרה מוסכמת מראש (Stop-Loss) שאסור לחרוג ממנה. במילים אחרות: אתם קובעים כמה "מרחב נשימה" לתת למודל, ואנחנו לא מאפשרים לחריגה מעבר לתקרה שקבעתם להימשך — חציית הרף עוצרת או מצמצמת את הפעילות בתוך יום עסקים אחד, תוך התחשבות בתנודתיות יומית שגרתית שאינה מהותית.</p>
-<p class="fine">לדוגמה: תקציב של 20,000 ₪ לחודש ותקופת סובלנות של חמישה חודשים אומרים שבמהלך התקופה הזו, אנחנו רשאים להשתמש בתקציב הזמין כדי לבנות, לבחון ולהרחיב את הפעילות — גם אם היא עדיין לא מניבה רווח, ותמיד בתוך הבלמים שלמעלה.</p>
-<div class="callout"><span class="callout-label">ברירת המחדל: נקודת איזון, לא הפסד.</span> גם בתוך תקופת הסובלנות, היעד השוטף הוא לפעול בנקודת האיזון — לא לייצר רווח מלאכותי ולא לייצר הפסד במתכוון. הסובלנות מקנה גמישות סביב ציפיית הרווחיות; היא אינה אישור להפסיד כסף.</div>
-<div class="callout"><span class="callout-label">גירעון זמני — רק אם תבחרו זאת במפורש, ותמיד עם תקרה.</span> לקוחות מסוימים מעדיפים להטות את מלוא התקציב לבנייה והרחבה בתקופה הראשונה, גם אם זה אומר גירעון תפעולי זמני ולא רק היעדר רווח. זו העדפה עסקית לגיטימית — אך שונה מברירת המחדל, ותצוין במפורש עם מסגרת ותקרה מוסכמות מראש. התקרה שתיקבע היא רף ה-Stop-Loss התפעולי לאותה תקופה — לא מנגנון נוסף עליו.</div>
-<div class="prompt"><div class="prompt-label">ספרו לנו</div>
-<div class="prompt-q">כמה זמן אתם מוכנים לתת למודל להתפתח (תקופת סובלנות)?<br>אתם מעדיפים שנתמקד בהגעה מהירה לרווחיות, או בבנייה והרחבה תוך הישארות בנקודת האיזון (רמת סובלנות: שמרנית / מאוזנת / אגרסיבית / הרחבה מרבית (Scale))?<br>אם רלוונטי — האם אתם מוכנים לגירעון זמני בפועל, ובאיזו תקרה?</div></div>
-<p class="fine">חשוב שתדעו: זה לא אומר שאתם מוותרים על זכות כלשהי. בכל עת, גם בתוך תקופת הסובלנות, תוכלו לעצור פעילות, לבחון תוצאות ולסיים את ההתקשרות — בכפוף לתקופת ההודעה המוקדמת שנקבעה בהצעה (ברירת מחדל: 30 יום, סעיף 13(ב) להסכם) וללוח הנסיגה, אם נקבע. רמת ותקופת הסובלנות, וגירעון זמני מוסכם אם הוסכם, יירשמו בטבלת התנאים המסחריים (נספח B); אף אחד מהם אינו יוצר מנגנון משפטי חדש מעבר לקבוע שם.</p>
-{pagefoot()}
-</div>''')
+_sec_tol = _ch3.section("רמת ותקופת הסובלנות שלכם")
+_tb2 = _sec_tol.blocks  # [plain-terms, example-fine, default-callout, deficit-callout, ask, rights-fine]
+_tol_label, _tol_q, _tol_tail = split_ask(_tb2[4]["text"])
+# Split across two physical pages — see the four-tracks page's comment.
+PAGES.append(content_page("03", _sec_tol.title, "גמישות סביב רווחיות", _sec_tol.title, "\n".join([
+    render_block(_tb2[0]),
+    render_block(_tb2[1]),
+    render_block(_tb2[2]),
+])))
+_tol_body2 = "\n".join([
+    render_block(_tb2[3]),
+    f'<div class="prompt"><div class="prompt-label">{_tol_label}</div><div class="prompt-q">{_tol_q}</div></div>',
+] + ([f'<p class="fine">{_tol_tail}</p>'] if _tol_tail else []) + [
+    render_block(_tb2[5]),
+])
+PAGES.append(content_page("03", _sec_tol.title + " (המשך)", "גמישות סביב רווחיות", _sec_tol.title + " — המשך", _tol_body2))
 
 # ==================================================================
 # 12 — Financial boundaries
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "גבולות פיננסיים")}
-<div class="eyebrow">הגנה עליכם</div>
-<h1 class="sec">גבולות פיננסיים</h1>
-<div class="secrule"></div>
-<p class="body-copy">זהו שדה אופציונלי, שתפקידו להגן עליכם.</p>
-<div class="prompt"><div class="prompt-label">ספרו לנו</div>
-<div class="prompt-q">מהו הסכום שאתם לא רוצים לחרוג ממנו?<br>האם יש שינויים בתקציב שדורשים אישור מפורש שלכם מראש, גם אם לדעתנו המקצועית הם משרתים את הפרויקט?</div></div>
-<p class="body-copy">לא חובה לנקוב בתקרה — גם השארת השדה פתוח היא תשובה לגיטימית.</p>
-<div class="eyebrow" style="margin-top:18px">ברירות המחדל, אם לא תיקבע תקרה</div>
-<div class="stats">
-  <div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · תקופת מדידת Stop-Loss</div></div>
-  <div class="stat"><div class="stat-num">10%</div><div class="stat-cap">חריגה מותרת מהתקציב החודשי</div></div>
-</div>
-<p class="fine">הגבולות שתגדירו כאן ישמשו לקביעת רף ה-Stop-Loss ותקופת המדידה שלו, ויחייבו את הארגון לעצור או לצמצם פעילות בהתאם.</p>
-{pagefoot()}
-</div>''')
+_sec_bounds = _ch3.section("גבולות פיננסיים")
+_bounds_label, _bounds_q, _bounds_tail = split_ask(_sec_bounds.blocks[0]["text"])
+PAGES.append(content_page("03", _sec_bounds.title, "הגנה עליכם", _sec_bounds.title, "\n".join([
+    f'<p class="body-copy">{_bounds_label}.</p>',
+    f'<div class="prompt"><div class="prompt-label">ספרו לנו</div><div class="prompt-q">{_bounds_q}</div></div>',
+    '<div class="eyebrow" style="margin-top:18px">ברירות המחדל, אם לא תיקבע תקרה</div>',
+    '<div class="stats">'
+    '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · תקופת מדידת Stop-Loss</div></div>'
+    '<div class="stat"><div class="stat-num">10%</div><div class="stat-cap">חריגה מותרת מהתקציב החודשי</div></div>'
+    '</div>',
+])))
 
 # ==================================================================
-# 13 — NEW: oversight & reporting
+# 13 — Oversight & reporting. Each bullet's own leading bold phrase
+# becomes its card title (split_lead), the rest of that bullet its card
+# body.
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "בקרה ודיווח שוטף")}
-<div class="eyebrow">מה קורה אחרי החתימה</div>
-<h1 class="sec">בקרה ודיווח שוטף</h1>
-<div class="secrule"></div>
-<p class="body-copy">כדי שתוכלו לעקוב אחרי הפרויקט בלי להיות מעורבים בכל החלטה תפעולית יומיומית, ההסכם קובע כמה מנגנוני בקרה קבועים — כדאי שתכירו אותם כבר בשלב הזה:</p>
-<div class="cardgrid grid2">
-  <div class="card"><div class="card-label">דיווח שוטף</div><p>דוח ביצועים חודשי תמציתי אחד לפחות, וסקירה אסטרטגית רבעונית אחת לפחות — הוצאה בפועל, תוצאות ומדדי רווחיות/נקודת איזון מול התוכנית. הדוחות מועברים בכתב, באמצעות מערכת Neuron (פרק 1) ו/או בדוא"ל לנציג המוסמך שלכם.</p></div>
-  <div class="card"><div class="card-label">כניסה לערוץ חדש</div><p>גם בתוך התקציב שאושר, כניסה לערוץ שיווקי או מסחרי חדש שלא נכלל בתוכנית שאושרה טעונה אישור מפורש שלכם מראש ובכתב.</p></div>
-  <div class="card"><div class="card-label">אם נחצה רף ה-Stop-Loss</div><p>הפעילות בתשלום תיעצר או תצומצם תוך יום עסקים אחד, ותקבלו הודעה בכתב המפרטת את הגורם וחלופה להמשך; חידוש הפעילות טעון אישורכם.</p></div>
-  <div class="card"><div class="card-label">אתם יכולים לעצור בכל עת</div><p>עצירה יזומה מצדכם מתבצעת תוך יום עסקים אחד מבקשתכם; עד חמישה ימי עסקים בחודש אינה נחשבת הפחתת תקציב ואינה הפרה מצדכם.</p></div>
-  <div class="card"><div class="card-label">זמן תגובה שלכם לתוצרים</div><p>ברירת מחדל: תשובה מוגדרת וסופית מכם בכתב תוך שלושה (3) ימי עסקים ממועד המסירה, אלא אם נקבע מועד אחר בהצעה (סעיף 4(א) להסכם) — כדי ששנינו נוכל לשמור על קצב עבודה סביר.</p></div>
-</div>
-{pagefoot()}
-</div>''')
+_sec_oversight = _ch3.section("בקרה ודיווח שוטף")
+_oversight_ulist = _sec_oversight.blocks[1]
+_oversight_cards = []
+for item_html in _oversight_ulist["items"]:
+    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
+    title = (m.group(1).rstrip('.') if m else item_html)
+    body = m.group(2) if m else ''
+    _oversight_cards.append(f'<div class="card"><div class="card-label">{title}</div><p>{body}</p></div>')
+# 5 cards no longer fit one page under a real intro paragraph (the
+# verbatim intro is longer than the old paraphrase) — 3 + 2 across two
+# physical pages, same content_page shell.
+PAGES.append(content_page("03", _sec_oversight.title, "מה קורה אחרי החתימה", _sec_oversight.title, "\n".join([
+    render_block(_sec_oversight.blocks[0]),
+    '<div class="cardgrid grid3">' + "".join(_oversight_cards[:3]) + '</div>',
+])))
+PAGES.append(content_page("03", _sec_oversight.title + " (המשך)", "מה קורה אחרי החתימה", _sec_oversight.title + " — המשך", "\n".join([
+    '<div class="cardgrid grid2">' + "".join(_oversight_cards[3:]) + '</div>',
+])))
 
 # ==================================================================
-# 14 — Break-even (tightened, micro-table)
+# 14 — Break-even
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "נקודת האיזון (Break-Even)")}
-<div class="eyebrow">כלי תכנון, לא הבטחה</div>
-<h1 class="sec">נקודת האיזון (Break-Even)</h1>
-<div class="secrule"></div>
-<p class="body-copy"><strong>מה זה אומר עבורכם בפועל:</strong> תחשבו על נקודת האיזון כמו מד דלק, לא כמו יעד רווח. כל עוד עלות הרכישה של לקוח לא עוברת את מה שהלקוח הזה שווה לכם בממוצע — אנחנו בטווח הבטוח. זה לא אומר שיש רווח נקי גדול; זה אומר שאנחנו לא שורפים כסף כדי להביא לקוחות. זהו כלי תכנון, <strong>לא הבטחה לרווחיות ולא תחזית מובטחת</strong>.</p>
-<p class="body-copy">ובמונחים מדויקים: נקודת האיזון היא נקודת ייחוס תכנונית — כל עוד עלות הרכישה בפועל אינה עולה על שווי העסקה הממוצע כפול שיעור הרווח הגולמי שלכם, הפעילות נחשבת בנקודת האיזון או מעליה. ההגדרה המלאה, המחייבת — נספח B סעיף 2(ה) להסכם; ניתן גם לקבוע בטבלת התנאים המסחריים הגדרה אחרת ומפורשת, שתגבר.</p>
-<table class="micro">
-  <tr><th>שדה</th><th>ברירת מחדל אם לא יימסר</th></tr>
-  <tr><td>שיעור הרווח הגולמי (לפני הוצאות קבועות)</td><td><strong>אין ברירת מחדל.</strong> מנגנון נקודת האיזון כולו לא יופעל</td></tr>
-  <tr><td>שווי עסקה ממוצע (AOV)</td><td><strong>יש</strong> — השווי שייקבע במחקר Genesis שלכם</td></tr>
-</table>
-<div class="prompt"><div class="prompt-label">ספרו לנו, אם ידוע לכם</div>
-<div class="prompt-q">מהו שיעור הרווח הגולמי שלכם?<br>מהו שווי העסקה הממוצע שלכם, או שנסתמך על מחקר Genesis?</div></div>
-<p class="fine">נקודת האיזון היא רצפה, לא תקרה — אפשר וכדאי להגדיר גם יעדי רווחיות נוספים מעליה. ככל שנקודת האיזון וההגדרות הפיננסיות רשומות בהסכם ובטבלת התנאים המסחריים — הן אלה שיחייבו, לא ההסברים הכלליים כאן.</p>
-{pagefoot()}
-</div>''')
+_sec_breakeven = _ch3.section("נקודת האיזון (Break-Even) — במה מדובר")
+_beb = _sec_breakeven.blocks  # [what-it-means, precise-terms, two-inputs-intro, table, ask, floor-note]
+_be_label, _be_q, _be_tail = split_ask(_beb[4]["text"])
+_be_body = "\n".join([
+    render_block(_beb[0]),
+    render_block(_beb[1]),
+    render_block(_beb[2]),
+    render_table(_beb[3]),
+    f'<div class="prompt"><div class="prompt-label">{_be_label}</div><div class="prompt-q">{_be_q}</div></div>',
+    render_block(_beb[5]),
+])
+PAGES.append(content_page("03", "נקודת האיזון (Break-Even)", "כלי תכנון, לא הבטחה", "נקודת האיזון (Break-Even)", _be_body))
 
 # ==================================================================
-# 14b — NEW: Illustrative forecast example table (real methodology,
-# section-color-coded: marketing / commerce / returning customers / financial)
+# 14b — Illustrative forecast example table. Column VALUES and headers
+# come straight from the .md's own table (no second, hand-typed copy of
+# the same numbers to drift out of sync); only the per-column-group
+# coloring and fixed pixel-measured widths — pure presentation — stay
+# Python-authored, keyed by header text so they survive column
+# reordering as long as the header text itself doesn't change.
 # ==================================================================
-_FORECAST_COLS = [
-    ("חודש", None),
-    ("תקציב", "mkt"), ("CPM", "mkt"), ("חשיפה", "mkt"), ("CTR", "mkt"), ("מבקרים", "mkt"), ("ROAS", "mkt"),
-    ("יחס המרה", "com"), ("המרות", "com"), ("CPA", "com"), ("AOV", "com"),
-    ("יחס שימור", "ret"), ("רכישות חוזרות", "ret"), ('סה"כ המרות', "ret"),
-    ("הכנסות", "fin"), ("הוצ' קבועות", "fin"), ('סה"כ הוצאות', "fin"), ("רווח", "fin"), ("ROI", "fin"),
-]
-_FORECAST_ROWS = [
-    [1, "15K ₪", "20 ₪", "0.75M", "1.8%", "13,500", "3.00", "1.2%", "162", "93 ₪",
-     "278 ₪", "–", "–", "162", "45K ₪", "4K ₪", "51K ₪", "-6K ₪", "-12%"],
-    [2, "20K ₪", "20 ₪", "1.0M", "1.7%", "17,000", "3.50", "1.4%", "238", "84 ₪",
-     "294 ₪", "8%", "13", "251", "70K ₪", "4.5K ₪", "74K ₪", "-4K ₪", "-5%"],
-    [3, "26K ₪", "19 ₪", "1.37M", "1.5%", "20,500", "3.85", "1.6%", "328", "79 ₪",
-     "305 ₪", "12%", "29", "357", "100K ₪", "5K ₪", "93K ₪", "7K ₪", "8%"],
-    [4, "34K ₪", "19 ₪", "1.79M", "1.4%", "25,000", "4.12", "1.8%", "450", "76 ₪",
-     "311 ₪", "16%", "52", "502", "140K ₪", "5.5K ₪", "119K ₪", "21K ₪", "18%"],
-    [5, "42K ₪", "18 ₪", "2.33M", "1.2%", "28,000", "4.40", "2.0%", "560", "75 ₪",
-     "330 ₪", "19%", "86", "646", "185K ₪", "6K ₪", "147K ₪", "38K ₪", "26%"],
-    [6, "50K ₪", "18 ₪", "2.78M", "1.2%", "33,000", "4.60", "2.1%", "693", "72 ₪",
-     "332 ₪", "21%", "118", "811", "230K ₪", "6.5K ₪", "174K ₪", "56K ₪", "32%"],
-    [7, "58K ₪", "17 ₪", "3.41M", "1.1%", "37,500", "4.66", "2.2%", "825", "70 ₪",
-     "327 ₪", "23%", "159", "984", "270K ₪", "7K ₪", "200K ₪", "70K ₪", "35%"],
-    [8, "65K ₪", "17 ₪", "3.82M", "1.1%", "42,000", "4.69", "2.2%", "924", "70 ₪",
-     "330 ₪", "24%", "198", "1,122", "305K ₪", "7K ₪", "229K ₪", "76K ₪", "33%"],
-    [9, "70K ₪", "17 ₪", "4.12M", "1.0%", "41,200", "4.79", "2.3%", "948", "74 ₪",
-     "353 ₪", "25%", "231", "1,179", "335K ₪", "7.5K ₪", "258K ₪", "77K ₪", "30%"],
-    [10, "76K ₪", "16 ₪", "4.75M", "1.0%", "47,500", "4.80", "2.3%", "1,093", "70 ₪",
-     "334 ₪", "26%", "246", "1,339", "365K ₪", "7.5K ₪", "285K ₪", "80K ₪", "28%"],
-    [11, "82K ₪", "16 ₪", "5.13M", "0.9%", "46,100", "4.82", "2.3%", "1,060", "77 ₪",
-     "373 ₪", "27%", "295", "1,355", "395K ₪", "8K ₪", "313K ₪", "82K ₪", "26%"],
-    [12, "88K ₪", "16 ₪", "5.5M", "0.9%", "49,500", "4.83", "2.3%", "1,139", "77 ₪",
-     "373 ₪", "28%", "297", "1,436", "425K ₪", "8K ₪", "340K ₪", "85K ₪", "25%"],
-]
-# Months as rows, metrics as columns (original orientation). Each column's
-# width is sized individually (percent of the table's own 800px rendered
-# width, not equal tiers) from actual Playwright-measured header-text and
-# data-text widths, so every header renders on one line without wrapping OR
-# overflowing into its neighbor — equal/tiered widths left several headers
-# (e.g. "רכישות חוזרות") narrower than their own label.
+_FORECAST_GROUP_BY_HEADER = {
+    "תקציב": "mkt", "CPM": "mkt", "חשיפה": "mkt", "CTR": "mkt", "מבקרים": "mkt", "ROAS": "mkt",
+    "יחס המרה": "com", "המרות": "com", "CPA": "com", "AOV": "com",
+    "יחס שימור": "ret", "רכישות חוזרות": "ret", 'סה"כ המרות': "ret",
+    "הכנסות": "fin", "הוצ' קבועות": "fin", 'סה"כ הוצאות': "fin", "רווח": "fin", "ROI": "fin",
+}
+# Percent widths, positional (one per column in the table's own header
+# order), measured from actual Playwright header/data text widths so
+# every header renders on one line without wrapping or overflowing —
+# see the historical note this replaces for how they were derived.
 _FORECAST_COL_WIDTHS = [
-    3.625,  # חודש
-    4.375, 3.625, 4.5, 3.625, 5.125, 4.25,  # תקציב..ROAS
-    6.375, 4.375, 3.625, 4.25,  # יחס המרה, המרות, CPA, AOV
-    6.375, 9.5, 7.625,  # יחס שימור, רכישות חוזרות, סה"כ המרות
-    5.125, 7.25, 8.0, 4.375, 3.75,  # הכנסות..ROI
+    3.625, 4.375, 3.625, 4.5, 3.625, 5.125, 4.25,
+    6.375, 4.375, 3.625, 4.25,
+    6.375, 9.5, 7.625,
+    5.125, 7.25, 8.0, 4.375, 3.75,
 ]
-assert len(_FORECAST_COL_WIDTHS) == len(_FORECAST_COLS)
-_forecast_colgroup = ''.join(
-    f'<col style="width:{w}%">' for w in _FORECAST_COL_WIDTHS
-)
-_forecast_head_cells = ''.join(
-    f'<th class="sec-{grp}">{label}</th>' if grp else f'<th>{label}</th>'
-    for label, grp in _FORECAST_COLS
-)
-_forecast_body_rows = []
-for _row in _FORECAST_ROWS:
-    _cells = ''.join(
-        f'<td class="sec-{grp}">{val}</td>' if grp else f'<td>{val}</td>'
-        for (label, grp), val in zip(_FORECAST_COLS, _row)
-    )
-    _forecast_body_rows.append(f'<tr>{_cells}</tr>')
-_FORECAST_TABLE_HTML = (
-    '<table class="fcast">'
-    f'<colgroup>{_forecast_colgroup}</colgroup>'
-    f'<tr>{_forecast_head_cells}</tr>'
-    + ''.join(_forecast_body_rows)
-    + '</table>'
-)
 
-# ==================================================================
-# 14b — NEW: Illustrative forecast example table
-# ==================================================================
+def render_forecast_table(table_block):
+    headers = table_block["headers"]
+    widths = _FORECAST_COL_WIDTHS if len(_FORECAST_COL_WIDTHS) == len(headers) else [100.0 / len(headers)] * len(headers)
+    colgroup = ''.join(f'<col style="width:{w}%">' for w in widths)
+    def grp_cls(h):
+        g = _FORECAST_GROUP_BY_HEADER.get(h)
+        return f' class="sec-{g}"' if g else ''
+    head_cells = ''.join(f'<th{grp_cls(h)}>{inline_to_html(h)}</th>' for h in headers)
+    body_rows = []
+    for row in table_block["rows"]:
+        cells = ''.join(f'<td{grp_cls(h)}>{inline_to_html(v)}</td>' for h, v in zip(headers, row))
+        body_rows.append(f'<tr>{cells}</tr>')
+    return f'<table class="fcast"><colgroup>{colgroup}</colgroup><tr>{head_cells}</tr>{"".join(body_rows)}</table>'
+
+_sec_forecast = _ch3.section("דוגמה להמחשה: כך נראית תוכנית לאורך זמן")
+_fcb = _sec_forecast.blocks  # [illustrative-callout-lead, table, closing-note]
+_forecast_table_block = next(b for b in _fcb if b["type"] == "table")
+_forecast_intro = next(b for b in _fcb if b["type"] == "para" and b.get("lead"))
+_forecast_closing = _fcb[-1]
 PAGES.append(f'''<div class="page">
 {pagehead("03", "דוגמה להמחשה: תוכנית לאורך זמן")}
 <div class="eyebrow">להמחשה בלבד — לא תחזית</div>
-<h1 class="sec">כך נראית תוכנית לאורך זמן</h1>
+<h1 class="sec">{_sec_forecast.title}</h1>
 <div class="secrule" style="margin-bottom:6px"></div>
-<div class="callout" style="margin:6px 0;padding:8px 16px"><span class="callout-label">דוגמה להמחשה בלבד — לא תחזית:</span> הטבלה שלהלן בנויה לפי אותם מדדים, שמות וקטגוריות (שיווק, מסחר, לקוחות חוזרים, פיננסי) שבהם משתמש הארגון בפועל במודל התכנון הפיננסי הפנימי שלו, ומציגה 12 חודשים בצורת עקומה ריאלית — הפסד קל בהתחלה, מעבר לנקודת איזון, שיא, והתייצבות — בדיוק כפי שתוכנית עבודה אמיתית מתפתחת. עם זאת, המספרים עצמם מומצאים להמחשה בלבד: הטבלה אינה משקפת פרויקט או לקוח אמיתי, ואינה מהווה הבטחה או התחייבות לתוצאה כלשהי בפרויקט שלכם.</div>
+<div class="callout" style="margin:6px 0;padding:8px 16px">{_forecast_intro["html"]}</div>
 <div class="tbl-legend">
   <span><span class="dot" style="background:var(--gold)"></span>שיווק</span>
   <span><span class="dot" style="background:var(--gold-deep)"></span>מסחר</span>
   <span><span class="dot" style="background:var(--muted)"></span>לקוחות חוזרים</span>
   <span><span class="dot" style="background:var(--purple)"></span>פיננסי</span>
 </div>
-{_FORECAST_TABLE_HTML}
-<p class="fine">שימו לב לצורת העקומה: הפסד קל בחודשים הראשונים (שלב למידה), מעבר לנקודת איזון, ואז שיפור הדרגתי ב-ROI ככל שמצטבר יותר מידע ונבנית תשתית לקוחות חוזרים — בדיוק העיקרון שהוסבר למעלה. התוכנית שתקבלו בפועל, בסיום מחקר Genesis שלכם, תיראה באותה צורה — אבל תהיה בנויה על הנתונים האמיתיים של העסק שלכם, לא על הדוגמה הכללית שלמעלה.</p>
+{render_forecast_table(_forecast_table_block)}
+{render_block(_forecast_closing)}
 {pagefoot()}
 </div>''')
 
 # ==================================================================
-# 15 — NEW: Genesis specialist lenses
+# 15 — Genesis specialist lenses
 # ==================================================================
 _icon_a = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="4" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>'
 _icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>'
 _icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
 _icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
+_ch4 = G.chapter("4")
+_sec_lenses = _ch4.section("מה עומד מאחורי מחקר Genesis")
 PAGES.append(f'''<div class="page">
-{pagehead("03", "מה עומד מאחורי מחקר Genesis")}
+{pagehead("03", _sec_lenses.title)}
 <div class="eyebrow">לא נקודת מבט אחת</div>
-<h1 class="sec">כמה עדשות מקצועיות, בו-זמנית</h1>
+<h1 class="sec">{_sec_lenses.title}</h1>
 <div class="secrule"></div>
-<p class="body-copy">מחקר Genesis אינו נשען על נקודת מבט בודדת. הוא מבוצע באמצעות מעטפת מומחים רב-תחומית — ארבעה תחומים בוחנים את ההזדמנות שלכם, כל אחד דרך העדשה שלו, לפני שהתובנות מתכנסות לכדי תוכנית אחת.</p>
+{render_block(_sec_lenses.blocks[0])}
 <div class="lenses">
   <div class="lens"><div class="lens-icon">{_icon_a}</div><div class="lens-label">אנליטיקה<br>ומחקר</div></div>
   <div class="lens c2"><div class="lens-icon">{_icon_b}</div><div class="lens-label">שיווק<br>ופרסום</div></div>
@@ -838,135 +881,89 @@ PAGES.append(f'''<div class="page">
 </div>''')
 
 # ==================================================================
-# 15.1 — NEW: Genesis output rights (two-layer: explanation + operative rule)
+# 15.1 — Genesis output rights
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "מה מקבלים, ומה זה לא כולל")}
-<div class="eyebrow">שקיפות מלאה</div>
-<h1 class="sec">מה מקבלים, ומה זה לא כולל</h1>
-<div class="secrule"></div>
-<p class="body-copy"><strong>מה זה אומר עבורכם בפועל:</strong> תקבלו תוכנית עסקית, שיווקית ופיננסית מלאה — תוצר אנליטי אמיתי, לא רק שלב מקדים לקראת הצעת מחיר. תוכלו לקרוא אותה, ללמוד ממנה, ולהחליט על בסיסה אם להמשיך. גם אם תחליטו שלא להמשיך, לא יחול עליכם חיוב נוסף מעבר לדמי ההשתתפות העצמית ששילמתם (נספח A סעיף 1). דמי ההשתתפות העצמית גם מוחזרים במלואם, תוך 14 יום, אם לא מסרנו לכם תוצרים תוך 90 יום מהתשלום (למעט עיכוב מצדכם/כוח עליון), או אם קבענו בעצמנו שאיננו מסוגלים לייצר עבורכם ערך אמיתי ומדיד (נספח A סעיף 1(א)).</p>
-<div class="callout warn"><span class="callout-label">מה זה לא אומר:</span> קבלת התוכנית אינה מקנה לכם רישיון ליישם אותה באופן עצמאי — בעצמכם, באמצעות חברה קשורה או באמצעות צד שלישי — כי אנחנו נושאים ב-95% מעלות המחקר עוד לפני שאנחנו יודעים אם תמשיכו. בחרתם שלא להמשיך לביצוע בפועל מולנו: יישום עצמאי של מחקר Genesis, האסטרטגיה או ההצעה שהוכנו עבורכם טעון אישור מוקדם ובכתב מאיתנו, או רכישת רישיון יישום עצמאי (Buyout, ראו בהמשך) — למשך <strong>עשרים וארבעה (24) חודשים</strong> ממועד מסירת המחקר, לכל מחקר בנפרד (נספח A סעיף 3(א)). מגבלה זו אינה חלה על יישום המבוסס על ידע כללי, מגמות שוק פומביות, או מידע שהיה בידיכם כדין קודם לכן.</div>
-<h2 class="sub">רישיון היישום העצמאי (Buyout)</h2>
-<p class="body-copy">בכל עת, ניתן לרכוש מאיתנו רישיון עולמי, בלתי-ייחודי ולצמיתות ליישום עצמאי של תוצרי מחקר מסוים, במחיר השווה לשוויו המלא (10,000$) בניכוי דמי ההשתתפות העצמית וכל תמורה ששולמה כבר בגינו — כלומר 9,500$ עבור מי שביצע Genesis בלבד, <strong>כברירת מחדל</strong> (נספח A סעיף 3(ב)); מחיר אחר לאותו מחקר ייקבע ויירשם בהצעה החתומה או בטבלת התנאים המסחריים, אם הוסכם כך. <strong>לקוחות מסלול 0</strong> ששילמו את מלוא התמורה נחשבים כמי שמימשו את ה-Buyout באופן אוטומטי, ללא צורך בפעולה נוספת, והמגבלה שלעיל אינה חלה עליהם כלל. בעלותנו במודלים, באלגוריתמים ובמערכות Neuron נותרת בידינו בכל מקרה, ואינה נמכרת במסגרת ה-Buyout.</p>
-<div class="fine"><strong>המשכתם אלינו לביצוע בפועל?</strong> בעוד ההתקשרות הספציפית נמשכת, אתם ממשיכים ליישם את התוכנית דרכנו — והמגבלה שלעיל אינה פעילה כלל. אם ההתקשרות הספציפית מסתיימת בתוך 24 החודשים ממועד מסירת המחקר, המגבלה עשויה לחול מחדש — אך רק ביחס להמשך יישום עצמאי מעבר לתוצרים; היא אינה חלה על התוצרים שכבר נמסרו ושולמו במלואם, שבהם יש לכם רישיון קבוע לשימוש הרגיל בעסקכם (סעיף 10(ב) להסכם). <strong>סודיות:</strong> מחקר Genesis ותוצריו הם מידע סודי לכל דבר ועניין (סעיף 9 להסכם) — מיועדים לשימושכם הפנימי בלבד.</div>
-<p class="fine"><strong>מתי נדרש מחקר Genesis נפרד:</strong> לכל פרויקט, מותג או יחידה עסקית הדורש מיצוב, קהל יעד, אסטרטגיה שיווקית או מודל הכנסה נפרדים, או שוק גיאוגרפי/רגולטורי נפרד — אך לא לגיוון פנימי באותו מותג או פרויקט. הכלל המלא, המחייב — נספח A סעיף 1(ה). מספר המחקרים וזהותם נמסרים על ידכם בטופס הקליטה שבסוף מדריך זה, ומועתקים ומאושרים בטבלת התנאים המסחריים; מחקר נוסף שהתברר תוך כדי עבודה ייערך ויחויב אך ורק לאחר אישורכם בכתב.</p>
-{pagefoot()}
-</div>''')
+_sec_rights = _ch4.section("מה מקבלים, ומה זה לא כולל")
+_rb = _sec_rights.blocks  # [what-you-get, what-you-dont-warn, buyout, continued-fine, secrecy-fine, separate-genesis-fine]
+PAGES.append(content_page("03", _sec_rights.title, "שקיפות מלאה", _sec_rights.title, render_blocks(_rb[0:2])))
+PAGES.append(content_page("03", _sec_rights.title + " (המשך)", "שקיפות מלאה", _sec_rights.title + " — המשך", render_blocks(_rb[2:])))
 
 # ==================================================================
-# 16 — Process diagram
+# 16 — Process diagram. Steps are the section's own numbered list, in
+# order; "לקוחות קיימים:" is that section's own leading-bold callout.
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "מהמדריך להצעה")}
-<div class="eyebrow">התהליך</div>
-<h1 class="sec">מהמדריך להצעה</h1>
-<div class="secrule"></div>
-<div class="process">
-  <div class="pstep"><div class="pnum">1</div><div class="ptxt">אתם מספרים לנו את המסגרת שלכם — תקציב, מטרות, טווח זמן, סובלנות וגבולות — בטופס הקליטה שבסוף מדריך זה; הנתונים מועתקים ומאושרים בטבלת התנאים המסחריים שבנספח B להסכם.</div></div>
-  <div class="pstep"><div class="pnum">2</div><div class="ptxt">עם חתימת הסכם ההתקשרות ותשלום הרלוונטי למסלולכם (דמי ההשתתפות העצמית במסלולים A/B/C, או מחיר המחקר המלא במסלול 0), אנחנו עורכים את מחקר Genesis באמצעות מעטפת המומחים הרב-תחומית, ובוחנים מה ניתן לבנות באחריות בתוך המסגרת שהגדרתם.</div></div>
-  <div class="pstep"><div class="pnum">3</div><div class="ptxt">אנחנו מציגים לכם תוכנית עסקית, שיווקית ופיננסית, לצד הצעת התקשרות מסחרית — היקף, מבנה תמחור, לוח זמנים ומסגרת עבודה.</div></div>
-  <div class="pstep"><div class="pnum">4</div><div class="ptxt">אתם מחליטים — לאשר, לדחות או לדון בהצעה המוצעת.</div></div>
-  <div class="pstep"><div class="pnum">5</div><div class="ptxt">ה"הצעה" שתאושר ותיחתם מפעילה את ההתקשרות הספציפית הרלוונטית, לפי מסגרת ההסכם.</div></div>
-</div>
-<div class="callout"><span class="callout-label">לקוחות קיימים:</span> אם כבר חתמתם על הסכם ההתקשרות, והפרק הזה רלוונטי עבורכם לגבי התקשרות נוספת — התהליך חוזר על עצמו ביחס לאותה התקשרות בלבד, ואינו מצריך חתימה מחודשת; טבלת נספח B תעודכן ביחס אליה בלבד.</div>
-{pagefoot()}
-</div>''')
+_sec_process = _ch4.section("מהמדריך להצעה")
+_process_olist = next(b for b in _sec_process.blocks if b["type"] == "olist")
+_process_existing_clients = next(b for b in _sec_process.blocks if b["type"] == "para")
+_steps_html = "".join(
+    f'<div class="pstep"><div class="pnum">{i}</div><div class="ptxt">{item}</div></div>'
+    for i, item in enumerate(_process_olist["items"], start=1)
+)
+PAGES.append(content_page("03", _sec_process.title, "התהליך", _sec_process.title, "\n".join([
+    f'<div class="process">{_steps_html}</div>',
+    render_block(_process_existing_clients),
+])))
 
 # ==================================================================
-# 17 — Reminder (fixed: track-aware)
+# 17 — Reminder
 # ==================================================================
-PAGES.append(f'''<div class="page">
-{pagehead("03", "תזכורת")}
-<div class="eyebrow">לפני שממשיכים לטופס</div>
-<h1 class="sec">תזכורת</h1>
-<div class="secrule"></div>
-<p class="body-copy">כל המידע שתמסרו בפרק הזה — תקציב, טווח זמן, סובלנות וגבולות — משמש לתכנון ולהערכה בלבד, ואינו יוצר כשלעצמו התחייבות כלכלית.</p>
-<p class="body-copy">שימו לב: חתימה על הסכם ההתקשרות עצמו כרוכה בתשלום מהמסלול שבחרתם — דמי ההשתתפות העצמית למחקר Genesis במסלולים A/B/C, או מחיר המחקר המלא במסלול 0 — אך ההתחייבות המסחרית המלאה להיקף, למחיר ולתנאי ההתקשרות הספציפית נוצרת רק ב"הצעה" חתומה בנפרד, כפי שקיבלתם הסבר עליה למעלה.</p>
-{pagefoot()}
-</div>''')
+PAGES.append(generic_section_page("03", _ch4.section("תזכורת"), "לפני שממשיכים לטופס", breadcrumb_title="תזכורת"))
 
 # ==================================================================
-# 18 — Intake divider (reframed)
+# 18 — Intake divider. Every field row below is a verbatim md bullet
+# (one bullet -> one field row); the 3 igroups are the .md's own "א./ב./
+# ג." subsections, not a hand-split 9-group layout — a simplification
+# from the previous hand-split design (documented in the build report).
 # ==================================================================
-PAGES.append('''<div class="page dark divider">
+_intake = G.chapter("טופס_קליטה")
+PAGES.append(f'''<div class="page dark divider">
   <div class="divider-ghost">04</div>
   <div class="divider-inner">
     <div class="divider-eyebrow"><span class="dash"></span>הצעד הבא</div>
-    <div class="divider-title">טופס קליטה</div>
+    <div class="divider-title">{_intake.title}</div>
     <div class="divider-sub">המידע כאן משמש לתכנון בלבד ואינו קובע בעצמו היקף, מחיר או תנאים מחייבים. תמציתי במכוון, ואורך כ-5 דקות למילוי.</div>
     <div class="divider-endrule"></div>
   </div>
 </div>''')
 
-def field(label):
-    return f'<div class="f"><span class="flabel">{label}</span><span class="fline"></span></div>'
+def field(label_html):
+    return f'<div class="f"><span class="flabel">{label_html}</span><span class="fline"></span></div>'
 
-INTAKE_GROUPS = [
-    ("העסק והמצב הנוכחי", None, [
-        "שם העסק/החברה ומספר ח.פ./עוסק", "תחום הפעילות ותיאור קצר של המוצר/השירות המרכזי",
-        "מדינת הלקוח (קובעת, בין היתר, את הפורום ליישוב מחלוקות — סעיף 14 להסכם)",
-        "המצב העסקי הנוכחי בקצרה (עסק קיים ופעיל / השקה חדשה / הרחבה לשוק נוסף)",
-        "אילוצים חשובים שכדאי שנכיר לפני תחילת המחקר",
-        "כמה פרויקטים/מותגים/יחידות עסקיות נפרדות דורשים מחקר Genesis משלהם, ומהי זהותם — רלוונטי לכל הלקוחות",
-    ]),
-    ("האנשים שמקבלים את ההחלטות", None, [
-        "נציג מוסמך ראשי — שם, תפקיד, דוא\"ל", "נציג מוסמך חלופי, אם יש — שם, תפקיד, דוא\"ל",
-    ]),
-    ("הנתיב המועדף", "מסלולים A/B/C בלבד — ראו \"שני נתיבים אפשריים\"; שתי התשובות תקפות באותה מידה. מסלול 0: כל שדות קבוצות 3–6 אינם רלוונטיים לכם — השאירו ריק ועברו לקבוצה 7", [
-        "אתם מגדירים את מסגרת ההשקעה, או מבקשים שנציע מודל מסחרי?",
-    ]),
-    ("מסגרת ההשקעה שלכם", None, [
-        "תקציב חודשי מועדף", "היקף השקעה כולל, אם ידוע", "טווח הגמישות (תקציב קבוע / מרחב תמרון)",
-    ]),
-    ("סובלנות ורווחיות", None, [
-        "תקופת הסובלנות המועדפת", "רמת הסובלנות (שמרנית / מאוזנת / אגרסיבית / הרחבה מרבית (Scale))",
-        "העדפת רווחיות: מהר ככל האפשר, או בנייה והרחבה תוך שמירה על נקודת האיזון",
-        "נכונות לגירעון תפעולי זמני בפועל, ואם כן — התקרה המבוקשת (תשמש כרף ה-Stop-Loss)",
-        "שיעור הרווח הגולמי שלכם, אם ידוע", "שווי עסקה ממוצע (AOV), אם ידוע — אם לא, נסתמך על מחקר Genesis",
-        "הגדרה חלופית לנקודת האיזון, אם אתם מעדיפים שלא להסתמך על ברירת המחדל; ויעדי רווחיות נוספים מעבר לה, אם יש",
-    ]),
-    ("גבולות פיננסיים", "אופציונלי", [
-        "סכום שאין לחרוג ממנו, אם יש", "שינויים בתקציב הדורשים אישור מראש, אם יש",
-        "שיעור החריגה המרבי המותר מהתקציב החודשי (ברירת מחדל: 10%)",
-        "תקופת המדידה של רף ה-Stop-Loss, אם לא ברירת המחדל (הפסד בגובה תקציב חודש אחד, על פני 30 יום)",
-    ]),
-    ("החזון והיעדים", None, [
-        "החזון והמטרה העסקית של הפרויקט", "איך תגדירו הצלחה/התקדמות בעוד שישה חודשים?",
-        "שלושת הדברים החשובים לכם ביותר בהתקשרות הזו",
-    ]),
-    ("טווח זמן וקווים אדומים", None, [
-        "טווח הזמן שאתם מתכננים לפעול בו, ומועדים עסקיים משמעותיים",
-        "גבולות או \"קווים אדומים\" אסטרטגיים (ערוצים/שווקים שלא לגעת בהם, מותג לשמור עליו בקפידה)",
-    ]),
-    ("מידע נוסף", "אופציונלי — קישורים וחומרי רקע פומביים/לא רגישים בלבד; אין למסור כאן פרטי גישה או סיסמאות", [
-        "קישורים וחומרי רקע שיעזרו לצוות המחקר להכיר את העסק",
-    ]),
-]
+def igroup(num, title, note_html, items_html):
+    parts = [f'<div class="igroup"><div class="igroup-head"><span class="igroup-num">{num:02d}</span><span class="igroup-title">{title}</span></div>']
+    if note_html:
+        parts.append(f'<div class="igroup-note">{note_html}</div>')
+    parts.append('<div class="ifields">' + "".join(field(it) for it in items_html) + '</div></div>')
+    return "".join(parts)
 
-def intake_page(num, title, groups, intro=None, outro=None):
-    html = [f'<div class="page">{pagehead(num, title)}']
-    if intro:
-        html.append(f'<div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div><p class="intake-intro">{intro}</p>')
-    for idx, title_, note, items in groups:
-        grp = [f'<div class="igroup"><div class="igroup-head"><span class="igroup-num">{idx:02d}</span><span class="igroup-title">{title_}</span></div>']
-        if note:
-            grp.append(f'<div class="igroup-note">{note}</div>')
-        grp.append('<div class="ifields">')
-        for it in items:
-            grp.append(field(it))
-        grp.append('</div></div>')
-        html.append("".join(grp))
-    if outro:
-        html.append(f'<p class="fine">{outro}</p>')
-    html.append(pagefoot() + '</div>')
-    return "".join(html)
+_intake_intro = _intake.intro_blocks()[0]["html"]
+_sec_a = _intake.section("א. הלקוח והעסק")
+_sec_b = _intake.section("ב. מסחרי")
+_sec_c = _intake.section("ג. אסטרטגי")
+_a_ulist = next(b for b in _sec_a.blocks if b["type"] == "ulist")
+_b_ulist = next(b for b in _sec_b.blocks if b["type"] == "ulist")
+_c_ulist = next(b for b in _sec_c.blocks if b["type"] == "ulist")
+_c_outro = next(b for b in _sec_c.blocks if b["type"] == "para")
+_b_note = "<br><br>".join(
+    (f'<em>{inline_to_html(b["text"][1:-1])}</em>' if b.get("italic_whole") else b["html"])
+    for b in _sec_b.blocks if b["type"] == "para"
+)
 
-numbered = [(i, t, n, it) for i, (t, n, it) in enumerate(INTAKE_GROUPS, start=1)]
-PAGES.append(intake_page("04", "טופס קליטה", numbered[:5],
-    intro='מטרת הטופס: לאסוף את המידע הדרוש לצוות המחקר והתכנון כדי לבנות עבורכם תוכנית עסקית, שיווקית ופיננסית מותאמת, ולתרגם אותה בהמשך להצעת התקשרות מסחרית ספציפית. מה שלמעלה היה ההסבר; מה שלמטה הוא רק התרגום שלו לשדות קצרים — שום דבר כאן לא אמור להפתיע אתכם.'))
-PAGES.append(intake_page("04", "טופס קליטה (המשך)", numbered[5:],
-    outro='הטופס תמציתי במכוון — כל שדה כאן משמש ישירות את שלב המחקר והתכנון. פרטים נוספים ומדויקים יותר ייאספו בשיחה ישירה איתכם, ואינם "נועלים" אתכם בשום מחויבות עד לחתימה על הצעה ספציפית.'))
+PAGES.append(f'''<div class="page">
+{pagehead("04", "טופס קליטה")}
+<div class="eyebrow">טופס קליטה</div><h1 class="sec">טופס קליטה</h1><div class="secrule"></div>
+<p class="intake-intro">{_intake_intro}</p>
+{igroup(1, _sec_a.title, None, _a_ulist["items"])}
+{igroup(2, _sec_b.title, _b_note, _b_ulist["items"])}
+{pagefoot()}
+</div>''')
+
+PAGES.append(f'''<div class="page">
+{pagehead("04", "טופס קליטה (המשך)")}
+{igroup(3, _sec_c.title, None, _c_ulist["items"])}
+<p class="fine">{_c_outro["html"]}</p>
+{pagefoot()}
+</div>''')
 
 # ==================================================================
 # Closing
