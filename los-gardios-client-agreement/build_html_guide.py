@@ -463,21 +463,27 @@ def cardgrid_from_table(table_block, grid="grid2"):
 
 _sec_assets = _ch1.section("נכסי הארגון וההשקעה שביסודם")
 _assets_blocks = _sec_assets.blocks  # [para(intro), para(list-lead-in), table, para(operative rule)]
+_sec_cost = _ch1.section("יסודות עלות ההגנה על נכסי הארגון")
 _assets_body = "\n".join([
     render_block(_assets_blocks[0]),
     render_block(_assets_blocks[1]),
     cardgrid_from_table(_assets_blocks[2]),
     render_block(_assets_blocks[3]),
+    f'<h2 class="sub">{_sec_cost.title}</h2>',
+    render_blocks(_sec_cost.blocks),
 ])
 PAGES.append(content_page("01", _sec_assets.title, "מה עומד מאחורי העבודה", _sec_assets.title, _assets_body))
 
 # ------------------------------------------------------------------
-# 1.4 — Cost basis behind the protection floors (generic fallback page;
-# shorter now than before the dedup fix — see build report / point 8:
-# this used to carry its own second copy of the four-category table,
-# which now lives once, merged, in 1.3 above).
+# 1.4 — Cost basis behind the protection floors (Phase 2 compression:
+# merged onto 1.3's page above as a sub-heading instead of its own
+# page — its remaining content was the worked example only, the
+# generic abstract restatement was cut as a duplicate of 1.3's own
+# intro paragraph. NOT deleted: AGREEMENT_SHORT_HE.md §11(a) cites this
+# exact heading text within chapter 1 (see module docstring) — the
+# heading and its section() lookup both still exist, just rendered on
+# 1.3's page rather than via a standalone generic_section_page call.
 # ------------------------------------------------------------------
-PAGES.append(generic_section_page("01", _ch1.section("יסודות עלות ההגנה על נכסי הארגון"), "עלות ההגנה"))
 
 # ------------------------------------------------------------------
 # 1.5 — Business identity fields (content-architecture pass, v3.1):
